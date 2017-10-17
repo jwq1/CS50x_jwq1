@@ -1,0 +1,146 @@
+1. What’s stdint.h?
+
+    stdin.h provides a set of typedef's which specify exact-width integer types. This helps make the code more portable, but I am not sure why.
+
+
+2. What’s the point of using uint8_t, uint32_t, int32_t, and uint16_t in a program?
+
+    These integer types are defined in stdint.h. They all you to set the exact width of the integer in your codes. 
+    Therefore affording programmers the ability to scan over each line.
+    Programmers can then manipulate the file without accessing memory they shouldn't or did not intend.
+    Since this a programmer who did not write the program, use the file, it makes the code more portable. <--- a bit of an assumption here.
+
+
+3. How many bytes is a BYTE, a DWORD, a LONG, and a WORD, respectively?
+
+    BYTE is 8 bytes. Defined by "typedef uint8_t  BYTE;" in bmp.h
+    DWORD is 32 bytes. Defined by typedef uint32_t DWORD;
+    LONG is 32 bytes. Defined by typedef int32_t  LONG;
+    WORD is 16 bytes. Defined by typedef uint16_t WORD;
+
+
+4. What (in ASCII, decimal, or hexadecimal) must the first two bytes of any BMP file be? Leading bytes used to identify file formats (with high probability) are generally called "magic numbers."
+
+  According to the bmp.h file, the BITMAPFILEHEADER first includes "WORD bfType;", which is info about the file type. 
+  
+  Per the BITMAPFILEHEADER documentation on the https://msdn.microsoft.com/en-us/library/dd183376, the microsoft website, 
+  "The file type; must be BM."
+  
+  Each of the characters take up one byte in the computers memory. 
+  Therefore if the file is a BMP file, the first two bytes must be the characters, "BM".
+
+
+5. What’s the difference between bfSize and biSize?
+    
+    bfSize
+        The size, in bytes, of the bitmap file.
+    
+    biSize
+        The number of bytes required by the structure.
+        
+    What this means in layman's terms is the bf size is the size of everything, the entire file. 
+    Whereas, biSize is the bytes required by the structure. 
+    
+    If you want to know what "the structure" is, well, I do not know. 
+    
+
+6. What does it mean if biHeight is negative?
+    
+    "The height of the bitmap, in pixels. If biHeight is positive, the bitmap is a bottom-up DIB and its origin is the lower-left corner. 
+    If biHeight is negative, the bitmap is a top-down DIB and its origin is the upper-left corner." - https://msdn.microsoft.com/en-us/library/dd183376
+    
+    This is probalby necessary when scanning through the file to find the pixel(s) one wants to read or write to.
+    
+    
+    
+
+7. What field in BITMAPINFOHEADER specifies the BMP’s color depth (i.e., bits per pixel)?
+
+    The number of bits-per-pixel. 
+    The biBitCount member of the BITMAPINFOHEADER structure determines the number of bits that define each pixel 
+    and the maximum number of colors in the bitmap. This member must be one of the following values (1, 4, 8, 16, 24, 32)
+    
+    
+
+8. Why might fopen return NULL in lines 24 and 32 of copy.c?
+
+    It would return NULL if, 
+        inptr, or outptr, files do not exist.
+        
+    fopen on line 24 tries to open the input file.
+    
+    fopen on line 32 tries to open the output file.
+
+
+
+9. Why is the third argument to fread always 1 in our code?
+
+    We always want to return the BITMAPFILEHEADER and BITMAPINFOHEADER as one element.
+    
+    We might be able to store different numbers of elements, 
+        but it makes it easy to gather that single element to be copied (written)
+        to the output file later.
+    
+    
+    For when we read the RGB triple, we want to store the triple as a single element at the address 'triple'
+        // read RGB triple from infile
+            fread(&triple, sizeof(RGBTRIPLE), 1, inptr);
+
+    Then write that single element to the output file.
+        // write RGB triple to outfile
+            fwrite(&triple, sizeof(RGBTRIPLE), 1, outptr);
+    
+    
+
+    Helpful note to remember:
+    "
+    The syntax to get an address of variable is with &, 
+    and to go the other way and get the value at some address is with a *. 
+    (Not to be confused with declaring a pointer, which would be using char * or int * 
+    to say "I would like a new variable that stores a pointer to a char or int.")
+    "
+    
+    The fread() function returns the file header and info header to the address of bf and bi, respectively
+    
+    
+
+10. What value does line 65 of copy.c assign to padding if bi.biWidth is 3?
+    
+    // determine padding for scanlines
+    int padding =  (4 - (bi.biWidth * sizeof(RGBTRIPLE)) % 4) % 4;
+    
+    bi.biWidth * sizeof(RGBTRIPLE)) = 3
+    
+    3 % 4 = 3
+    
+    4 - 3 = 1
+    
+    1 % 4 = 1
+    
+    The answer is '1'.
+    
+    
+
+11. What does fseek do?
+
+    
+    fseek starts off by reading the stream of bytes from the input file.
+    
+    From our current position in the file, fseek offsets us by 'padding' bytes 
+        (i.e. we are offset by however many bytes of padding there are)
+
+    This way we only look at the beginning of the RGB Triple, rather than at the padding.
+    
+    
+
+
+12. What is SEEK_CUR?
+    
+    SEEK_CUR ensures our offset is relative to the current position indicator.
+    
+    "If whence is set to SEEK_SET, SEEK_CUR, or SEEK_END, the offset is
+       relative to the start of the file, the current position indicator, or end-of-file, respectively."
+    -fseek manual page
+    
+    
+    
