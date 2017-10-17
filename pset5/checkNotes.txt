@@ -1,0 +1,669 @@
+Notes
+Week: 5
+Function: check()
+Location: cictionary.c
+
+/**
+ * Returns true if word is in dictionary else false.
+ */
+bool check(const char *word)
+{
+    // TODO
+    return false;
+}
+
+
+    Q:  Which element of the hash table would the word passed to check() be in?
+    A:  The word would be found in the hashtable element which is returned by the hash function.
+
+        e.g. hashtable[hash(of a given word)]
+
+        We will want to send our the argument, const char *word, from check
+        into the hash function
+
+        // Get element of hash table where word could be found, if it is a word, spelled correctly.
+        int hash = hashit(word);
+
+        // compare the word, with each node value
+            // in the linked list
+            // located at hashtable[hash(of a given word)]
+
+
+    Q:  How do we check strings in a list of nodes for similarity?
+    A:  There is a pre-built function we can use to compare the string in each node, with our given word.
+
+        Example from CS50 walkthrough:
+        strcasecmp
+
+        **why did Zamila give us strcasecomp? That does not seem to be a function in any of our libraries.
+         *Shouldn't it be strcmp() ?
+
+         A2: http://pubs.opengroup.org/onlinepubs/009695399/functions/strcasecmp.html
+                Looks like there is a strcaseomp.
+                This function compares strings in a case-insensitive way.
+                It is included in strings.h
+                #include <strings.h> to get the function
+
+                #include <strings.h>
+
+    Q:  How do we traverse a linked list?
+    A:  The following is a code example from the walkthrough
+
+
+        Example from walkthrough
+
+        // create a pointer to the head of our list
+        node *cursor = head;
+
+        while (cursor != NULL)
+        {
+            // Check to see whether the current word from 'text'
+                // matches the word in the current node
+----
+>>>>
+----
+            strcasecmp(cursor->word, );
+
+            // move cursor to the next node in the linked list
+            cursor = cursor->next
+        }
+
+
+        Caveats to the above piece of code:
+        We do not have a head variable in the check function yet.
+
+        We can either create one
+        // Create pointer to the head of the list. Ensure we do not lose our list in memory
+        node *head = hashtable[hash];
+
+        Or we can set the cursor to the head of the linked list, without a specific head variable
+        // Set cursor to the head of our linked list
+        node *cursor = hashtable[hash];
+
+        In both these scenarios we need to get the hash, from our hash function.
+        // Run current word in 'text' through the hash function
+        int hash = hash_it(word);
+
+
+    Q:  How do we set the cursor->word to the value in the node cursor points to?
+    A:  The temporary node variable we used to creat the memory for that node no longer exists.
+        We did not need that node variable name, because we have a linked list.
+
+        However, how do we access the value at a particular node in the linked list?
+
+        If we set cursor->next to be a pointer to a particular node,
+        does that mean cursor->word is set to be the same as the node cursor's next pointer indicates?
+
+        Do we set cursor word to cursor?
+        cursor->word = cursor
+
+        This might work because cursor is a points to the value in the node we want.
+
+        Maybe we simply dereference the pointer when we do strcasecmp *cursor
+
+        or maybe we strcasecmp(word, cursor);
+            or strcasecmp(word, cursor->word);
+
+        We could probably test this with the debugger. We could look at the word value as we step through the code.
+
+
+
+    Q: Why?
+
+        dictionary.c:47:24: error: passing 'const char *' to parameter
+              of type 'char *' discards qualifiers
+              [-Werror,-Wincompatible-pointer-types-discards-qualifiers]
+            int hash = hash_it(word);
+                               ^~~~
+        dictionary.c:31:19: note: passing argument to parameter
+              'needs_hashing' here
+        int hash_it(char* needs_hashing)
+                          ^
+        1 error generated.
+        make: *** [dictionary.o] Error 1
+
+
+        Would it help if I changed the hash_it function to accept const char * type?
+
+        If yes, I would need to go back and change bufferWord to be a const char * too.
+
+        Would that work?
+
+        Should I do it?
+
+        What is the difference?
+
+
+
+    Q:  Why is node *cursor == NULL when I set it to equal hashtable[hash]?
+
+        Look in speller.c to see how the check function is called recursively for each new word in the text.
+
+        Also, the head pointer 'word' value would equal null. Maybe that is the problem.
+        Though, cursor should not equal null, because there would be a next value in the head pointer.
+
+        Need to figure out what is going on here and if I am assigning things correctly.
+
+        Check the dictionary function some more as well. Perhaps the hashtable[] is not set up correctly.
+        Then when I look for words in the hashtable, in check, there really is 'Null' values.
+
+
+    A:
+
+        Part 1:
+                When I try to find the head of the linked list in the relevant element of the hash table,
+                I accidently set the head variable to null.
+
+                // Create variable for head to ensure we do not accidently lose track of head of each list.
+                node *head = hashtable[hash];
+
+                // in the above code, head is null. It should be the 1984th element of the hash table
+                    // 1984 is the hash for 'cat'
+
+
+                Furthermore,
+                // Create variable for head to ensure we do not accidently lose track of head of each list.
+                node *head = malloc(sizeof(node));
+                head->next = hashtable[hash]->next;
+
+                When I do this code, I suffer a segmentation fault on the second lin.
+
+                This might have something to do with the next value in both of these having 'no value'.
+
+                This is probably because when I created the hashtable[2063] with 2063 elements,
+                I did not assign any values to the nodes in this table.
+
+                It makes sense the head element in the hash table would not have a next value.
+
+                The next value would initially point to NULL.
+
+                Perhaps I should point the next value to the node I crated for bufferWord.
+                    I might have to create a conditional, unless I can set up a workflow that works everytime.
+                    Though, I think the first element of a linked list will have to be a special case.
+                    The last element of the linked list will most likely have to be a special case too.
+
+        Part 2:
+
+                The hashtable array is type 'node'. It has a value and a pointer.
+                    The value can be kept null for the head. The head only requires a pointer.
+                        Pointer should point to the first node in a linked list.
+                    When we put the first item in the linked list, we want to point the head at that item.
+                        To set the 'next' pointer to the first item in a linked list,
+                        We would use bitwise notation
+
+                    For example, we could try, hashtable[hash]->next = new_node; , in our load() function.
+
+
+        Part 3:
+
+            Q: When I move the head pointer to point to the inserted node,
+                which of the following syntax do I use?
+
+                    // Move the head pointer to point to the new_node
+                    hashtable[hash]->next = new_node;
+
+                    // Move the head pointer to point to the new_node
+                    hashtable[hash]->next = &new_node;
+
+
+            A:
+                I would guess the latter, because if we set hashtable[hash]->next,
+                if it works, it would probably set both the nodes to be the same values.
+                In other words, the head would continue to point to the second object in the linked list.
+
+                Instead, if we use a pointer to the address of new_node,
+                then we would most likely point the head to the location of the new_node,
+                which is what we want.
+
+                A2: It turns out this &new_node is wrong. See below error.
+
+                    error: incompatible pointer types assigning to 'struct node *' from 'node **' (aka 'struct node **');
+                    remove & [-Werror,-Wincompatible-pointer-types]
+                    hashtable[hash]->next = &new_node;
+
+                    Error disappears when I remove the &.
+
+                Q2: Did the next pointer get assigned to the correct node though?
+                A2.1: TBD
+
+        Part 4:
+
+            Q: To check whether a linked list exists at a particular hash table element,
+                I use the conditional if (hashtable[hash]->next == NULL)
+
+                However, to check if there is any memory left
+                I use the conditionals similar to if (new_node == NULL), without a bitwise operator.
+
+                Does the latter conditional, without the bitwise operator, check to see
+                whether all of the objects in a structure are NULL?
+                Said another way, would it return something other than NULL if any one of the objects were not NULL?
+
+            A:  Not sure. Could test w/ debugger if it becomes an issue.
+
+
+        Part 5:
+
+            Q:  It appears I cannot run a conditional outside of an intial function.
+                I tried to ensure that node *hashtable[HASHTABLE_SIZE]; did not equal NULL.
+
+                However, I received an error
+
+                    error: expected identifier or '('
+                    if (hashtable == NULL)
+
+                I could do this within my load function. However, if I create the hashtable within my load function,
+                will it be out of scope for the overall spell checker program?
+
+                I believe so. It is a pointer to an array of nodes. The nodes would likely exist,
+                but the pointer would not.
+
+                This raises another question. Do I need to free(new_node) when I am done using it?
+                    No, I answered this above. the memory at location, new_node needs to be retained
+                    as part of the loaded dictionary.
+
+                    However, the pointer can be reset after each new word. Which is what happens.
+
+                The pointer to the hashtable we do not want to lose.
+                    But then how are we supposed to check to make sure the hashtable was created correctly?
+
+                    We could do it within our load function, but then we would do it well after the initial creation,
+                    which won't be a problem in our program but could be a problem if this we to get altered.
+
+                What if we do a funciton where we create a hashtable, then return a pointer to the head of it?
+
+                    hashTableHead create(void)
+
+                Then we could check to make sure there was enough memory, directly within our create function.
+
+
+                Option 2:
+
+                    Or we could create a head pointer in the beginning of our dictionary.c file.
+
+                    Then we could allocate the memory for our hashtable in the load function.
+
+                    The head pointer would always be in scope, so we would always know where our hashtable was.
+
+                    Though if we only create a pointer to the head of our hashtable, then in the latter functions,
+                    we would have to iterate through the hashtable, or something. Not sure.
+
+                    It's easier to create the hashtable and be done with it.
+
+
+
+check()
+
+        Q:  Seems like cursor->next is pointing to the same node as cursor.
+
+                cursor before: 0x603250
+
+                // move cursor to the next word in the dictionary
+                cursor = cursor->next;
+
+                cursor after: 0x603250
+
+            Why does it not either move to the next object in the linked list,
+            until it reaches the end of the linked list.
+
+        A:  I should check my load function, to make sure
+            the last element in the linked list does indeed point to NULL.
+
+            Also, I need to check that the 2nd, 3rd, etc objects stored in a linked list,
+            point to the next node in the list, not to themselves.
+                It looks like the first element might point to itself.
+
+        Q2: Moreover,
+
+            cursor->word and 'word' passed in as the first argument,
+                seem to equal each other
+
+            They are both 0x7fffffffda60 "When"
+
+            However, cursor->word is type char[46]
+            whereas, word is type const char *
+
+            Why does strcasecmp(cursor->word, word) not return 0?
+
+        A2: It could be we that we have to make the types the same.
+
+            I could try to change the word value type in my node struct,
+            but if I changed it to const char *
+            then I do not think I could store words in it.
+
+            Instead, I should probably copy the word passed to check()
+            into a new variable of type char *
+            Then I could pass both of those into strcasecmp
+
+            Before I do this, read the usage for strcasecmp
+            to ensure it does not ask for a specific type of string variable.
+            (e.g. it could ask for const char* or char* or something else)
+
+
+Accessing values information in struct node*
+
+        while (cursor->next != NULL)
+
+        For some reason the next node in cursor never seems to point to NULL.
+            Instead, perhaps I should have cursor == NULL?
+            But I think that would symbolize that the pointer does not exist, rather than the pointer points to NULL.
+            I need the latter
+
+
+
+
+load() notes again:
+
+
+    When I change
+
+        // Set head to point to new_node
+        head = new_node;
+
+    to
+        // Set head to point to new_node
+        head->next = new_node;
+
+    I get a SIGSEGV error (Segmentation Fault)
+
+    Seems like that is my problem. I should actually be setting the node *next in the head of my linked list
+    to be the new_node I created in that linked list
+
+    The fact I get a segmentation fault when I try to set the node *next,
+    means that memory is not allocated to in my hashtable.
+
+    However, why wouldn't it be? Do I need to allocate memory to the node *next in my hashtable?
+
+    Yes, I think I do.
+        See line 145 in the src code for file list1.c
+
+
+
+        // try to instantiate student
+        newptr->student = malloc(sizeof(student));
+        if (newptr->student == NULL)
+        {
+            free(newptr);
+            return;
+        }
+
+
+
+    Here is the structure for further understanding
+
+        typedef struct
+        {
+            int id;
+            char *name;
+            char *dorm;
+        }
+        student;
+
+        typedef struct node
+        {
+            student *student;
+            struct node *next;
+        }
+        node;
+
+    Looks like when a structure is within a structure, maybe I need to allocate more memory.
+
+
+    It could be why, on line 143 of list1.c they initialize the newptr->next node.
+
+        // initialize node
+        newptr->next = NULL;
+
+    This could say, "the pointer will point to NULL, but allocate memory for it, of size node"
+
+
+
+    Update:
+
+    The above idea did not work exactly, but from looking at the hashtable implementation here: https://gist.github.com/tonious/1377667
+
+    We can see there is a need to allocate memory for both the table and the nodes in each element of the table.
+
+    Though, I thought by node *hashtable[size]; I create a pointer, to an array of nodes (i.e. a hashtable).
+
+
+
+    The heart of the problem seems to be in how I have created, or allocated memory for, my hashtable.
+
+    Need to look more into this.
+
+
+
+
+Troubleshooting:
+
+    In this case
+
+        node *head = hashtable[hash];
+
+    head is NULL, which means there was not enough memory I think.
+
+    Is it possible I had a memory leak and used up all my IDE's memory?
+        It looks lik according to my IDE's workspace stats, I still have plenty of disk space and memory.
+
+    Then, why is hashtable[hash] NULL? Shouldn't there be an empty node there?
+
+
+
+
+Solution:
+
+        Segmentation Fault and Infinite Loop was resolved with the following code change.
+
+            Latest Code:
+                node *head = new_node;
+                new_node = hashtable[hash];
+                hashtable[hash] = head;
+
+
+            Original Code:
+                // Set the pointer of the new_node to the first node in the linked list
+                new_node->next = hashtable[hash];
+
+                // Move the hashtable[hash] pointer to point to the new_node
+                hashtable[hash] = new_node;
+
+
+        I see why the new code solves the issue. However, why was there an issue in the first place.
+
+        It does not seem like ->next assigns values to the node pointed to by next, in the way I thought.
+
+
+        Next Steps:
+            Research how -> works to see if I can uncover how my mental model varies from the actual functionality.
+
+            If I cannot find the answer, then post the question on cs50.stackexchange.com
+
+
+
+170931
+
+    Test Scenarios (HASHTABLE_SIZE = 3) :
+
+        (PASSED) make && ./speller dictionaries/ralph texts/ralph.txt
+
+            (FAILED 171001)
+            Deterministic Check:
+
+            "a", hash = 97 % 3 = 1
+
+            "be", hash = 493 % 3 = 1
+
+            "caterpillar", hash = 99 493 1984 8037 32230 ... 132109622 % 3 = 2
+
+            "grow", hash = 7979 % 3 = 2
+
+
+            Progess:
+
+                The hashtable is deterministic in the load function.
+
+            Trouble Shooting:
+
+                Hash Function:
+                    - (DONE) Check whether hash function is deterministic (Result: Yes, the hash function is deterministic)
+                    - (TODO) Do uppercase and lowercase letters have the same hash code? No. When = 0. when = 2.
+
+                Check Function:
+                    - (TODO) Does the check function navigate to the expected word?
+                    - (TODO) When the word aligns, does the check function recognize it found the word?
+
+                Load Function:
+                    - (TODO) Check whether new word is being added to the beginning of the linked list
+
+                Insights:
+                    - strcasecmp does not seem to locate any words with capital letters.
+                        - Is this because the hash function looks for uppercase words in a different place than the lowercase?
+                        - Or is it because strcasecmp does not compare words in a case-insensitive way?
+
+
+
+        (PASSED) make && ./speller dictionaries/small texts/ralph.txt
+
+
+
+        (PASSED) Change "When" to "when" in ralph dictionary to test case sensitivity
+
+            (FAILED 171017: returns "When" as misspelled)
+            - Fixed by using a cast, but the cast messes up the returned word. Everything is now lowercase.
+                Need to figure out how to change to lowercase without using a cast.
+                How do I create a copy of the word?
+                This way I can put the lowercase word into the hash function, rather than the  original uppercase word
+                Idea: Maybe I can write my own tolower function where I change the ascii value to be lowercase letters?...
+
+
+
+        (PASSED) make && ./speller texts/ralph.txt
+
+
+
+
+        (FAILED) make && ./speller texts/alice.txt
+
+            - does not account for apostrophes RABBIT' is marked as misspelled. I need to ignore the apostrophe.
+
+
+
+
+    Test Scenarios (HASHTABLE_SIZE = 307) :
+
+        make && ./speller dictionaries/ralph texts/ralph.txt
+
+        make && ./speller dictionaries/small texts/ralph.txt
+
+        (PASSED) make && ./speller texts/ralph.txt
+
+        make && ./speller texts/alice.txt
+
+
+    Valgrind:
+
+        strcasecmp: Access 1 byte of memory beyond bounds in strcasecmp
+
+            make && help50 valgrind --leak-check=full ./speller texts/ralph.txt
+
+                Helping with...
+
+                ==2862== Invalid read of size 1
+                ==2862==    at 0x4C2EAA4: strcasecmp (in /usr/lib/valgrind/vgpreload_memcheck-amd64-linux.so)
+                ==2862==    by 0x40138D: check (dictionary.c:93)
+                ==2862==    by 0x400DB7: main (speller.c:112)
+
+                Looks like you're trying to access 1 byte of memory that isn't yours? Did you try to index into an array beyond its
+                bounds? Take a closer look at line 93 of dictionary.c.
+
+            Not sure why strcasecmp is accessing an extra byte of memory. Is it from textWord or cursor->wordValue?
+
+                Should check to see that I am not saving a \n or \0 in my dictionary,
+                which strcmp tries to access in the textWord, but does not exist.
+
+                strcmp and strcasecmp return the correct values,
+                they could be ignoring the extra value, while still trying to access it.
+
+                Is there a way to access the source code for functions included in header files?
+                    I have already discovered that strcasecmp will not throw an error if it is given a const char *
+                    However, it will not do case insensitive comparisons either.
+
+                    What if the function deals with disrepencies in string length
+                    when the extra characters are line breaks or string termination characters
+                    but also attempts to find the extra character in a word which lacks it.
+
+                textWord definitely contains space for a \0 character, because I malloc memory for it.
+                But when I load the strings into the dictionary, do I forego the \0 character?
+
+
+                Note: Not sure my thought process is correct here.
+                    strcasecmp can't require the exact words to avoid a segmentation fault,
+                    because in most cases the words will be incorrect. W
+
+                    Then why is there 1 byte of memory being access which shouldn't on link 93?
+
+
+        cursor: Lost memory due to cursor
+
+            For some reason if I free(cursor); before the return value of my code,
+            I no longer spell check the words correctly
+
+            However, the cursor should get reallocated and reset with each new call of the check() function
+            There is no reason why freeing and reallocating the memory should cause a bug
+
+            It is because we are not allocating new memory to cursor. Cursor is only a pointer to a value,
+            which is in the hashtable.
+                Therefore do I need to malloc cursor? Probably not?
+
+
+
+        new_node: lost memory due to malloc of new_node
+
+                node *head = new_node;
+                new_node->next = hashtable[hash];
+                hashtable[hash] = head;
+
+            Maybe it is that I do not understand how this works.
+            The "passed" tests of my spell checker would indicate
+            it adds new words to the beginning of my link list.
+            However, logically it looks like
+
+            new_node->next = hashtable[hash];
+
+            Then we set hashtable[hash] to equal "head", which equals new_node
+            Then doesn't new_node->next equal head as well, and by extension new_node?
+            In other words, wouldn't new_node->next = new_node? Therefore we do not add to the list?
+
+            The results would say otherwise, but I do not understand why this does not produce poor logic.
+
+            My lack of understanding here, might be why I get a lack of understanding of my memory loss.
+
+
+        Trouble Shooting Process:
+
+            debugger insight 1:
+            hashtable[i] == NULL for every i, 0 through the size of the hashtable (307)
+
+                idea 1:
+                Maybe I am not pointing to the head of the linked list.
+                I assume head == hashtable[i].
+
+                However, perhaps hashtable[i] is not the head.
+
+                    question 1:
+                    Should hashtable[i] be the head of the linked list?
+
+                    If yes, maybe I loaded my hashtable backwards.
+                    Maybe I loaded incorrectly in some other way.
+
+                        Possible Result 1:
+                        The head of my linked list is somewhere else.
+
+                        Possible Result 2:
+                        hashtable[i] was the head of my linked list,
+                        but I accidentally free'd it or lost track of it somewhere else
+
+                    queston 2:
+                    If hashtable[i] should not be the head of my linked list
+
+                    then what is the head of my linked list?
