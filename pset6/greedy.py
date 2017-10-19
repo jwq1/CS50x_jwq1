@@ -3,7 +3,7 @@ import cs50
 def main():
 
     print ("O hai! ", end = "")
-    cents = int(getChange("How much change is owed? "))
+    cents = int(getChange("How much change is owed? \n"))
 
     # error check (DELETE LATER)
     print ("cents",cents)
