@@ -20,6 +20,9 @@ def main():
 
 
 
+# Idea for this validation inspired by Kevin
+# Kevin: https://stackoverflow.com/users/953482/kevin
+# Answer: https://stackoverflow.com/questions/23294658/asking-the-user-for-input-until-they-give-a-valid-response/23294659#23294659?s=d2f075eee8394ef69a68944d9bd32925
 def getOnlyInt(h):
     while True:
         try:
@@ -31,6 +34,7 @@ def getOnlyInt(h):
         else:
             return h
             break
+
 
 if __name__ == "__main__":
     main()
