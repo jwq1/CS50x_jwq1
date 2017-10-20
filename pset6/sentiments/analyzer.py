@@ -20,14 +20,11 @@ class Analyzer():
                 if str.startswith(line,";" or " " or "\n"):
                     # loop to next line
                     continue
-                # else this is probably a word
+                # otherwise assume we have a word
                 else:
                     # strip off the trailing whitespace and linebreak
                     word = line.rstrip("\n")
-                    # then if all that is left are alphabetic characters, assume we have a word
-                    if str.isalpha(word):
-                        # add the word to "words," the set we created earlier.
-                        words.add(word)
+                    words.add(word)
 
             # close the file
             file.close()
@@ -44,4 +41,28 @@ class Analyzer():
         """Analyze text for sentiment, returning its score."""
 
         # TODO
-        return 0
+
+        # Start with score of zero
+        score = 0
+
+        # tokenize text
+        tokenizer = nltk.tokenize.TweetTokenizer()
+        tokens = tokenizer.tokenize(text)
+
+        # iterate over tokens
+        for token in tokens:
+            # if word has a positive sentiment
+            if token in self.positives:
+                # increase score
+                score += 1
+            # if word has a negative sentiment
+            elif token in self.negatives:
+                # decrease score
+                score -= 1
+            # otherwise sentiment is neutral
+            else:
+                # do nothing
+                score = score
+
+        # return score
+        return score
