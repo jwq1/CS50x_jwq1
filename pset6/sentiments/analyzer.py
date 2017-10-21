@@ -45,9 +45,12 @@ class Analyzer():
         # Start with score of zero
         score = 0
 
+        # convert text to string. Tokenize method expects string or bytes-like object
+        text_string = str(text)
+
         # tokenize text
         tokenizer = nltk.tokenize.TweetTokenizer()
-        tokens = tokenizer.tokenize(text)
+        tokens = tokenizer.tokenize(text_string)
 
         # iterate over tokens
         for token in tokens:
