@@ -69,3 +69,29 @@ class Analyzer():
 
         # return score
         return score
+
+
+    def percent_sentiments(self, tweets):
+        """Analyze a list of tweets, returning percent +, -, and 0"""
+
+        score = 0
+        total_tweets = 0
+        number_positive = 0
+        number_negative = 0
+        number_neutral = 0
+
+        for tweet in tweets:
+            score = analyzer.analyze(tweet)
+            total_tweets += 1
+            if score > 0.0:
+                number_positive += 1
+            elif score < 0.0:
+                number_negative += 1
+            else:
+                number_neutral += 1
+
+        percent_positive = float(number_positive / total_tweets)
+        percent_negative = float(number_negative / total_tweets)
+        percent_neutral = 100 - number_postive - number_negative
+
+        return percent_positive, percent_negative, percent_neutral
