@@ -31,11 +31,11 @@ def main():
         # analyze word
         score = analyzer.analyze(tweet)
         if score > 0.0:
-            print(colored(tweet, "green"))
+            print(colored("1 {}".format(tweet), "green"))
         elif score < 0.0:
-            print(colored(tweet, "red"))
+            print(colored("-1 {}".format(tweet), "red"))
         else:
-            print(colored(tweet, "yellow"))
+            print(colored("0 {}".format(tweet), "yellow"))
 
 
 if __name__ == "__main__":
