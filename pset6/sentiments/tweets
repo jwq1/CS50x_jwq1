@@ -7,6 +7,7 @@ import sys
 
 from analyzer import Analyzer
 from termcolor import colored
+from helpers import get_user_timeline
 
 def main():
 
@@ -21,14 +22,20 @@ def main():
     # instantiate analyzer
     analyzer = Analyzer(positives, negatives)
 
-    # analyze word
-    score = analyzer.analyze(sys.argv[1])
-    if score > 0.0:
-        print(colored(":)", "green"))
-    elif score < 0.0:
-        print(colored(":(", "red"))
-    else:
-        print(colored(":|", "yellow"))
+    # store tweets from user in a list, "tweets"
+    tweets = get_user_timeline(sys.argv[1])
+
+    # assign scores to each of the tweets
+    for tweet in tweets:
+        # analyze word
+        score = analyzer.analyze(tweet)
+        if score > 0.0:
+            print(colored("1 {}".format(tweet), "green"))
+        elif score < 0.0:
+            print(colored("-1 {}".format(tweet), "red"))
+        else:
+            print(colored("-1 {}".format(tweet), "yellow"))
+
 
 if __name__ == "__main__":
     main()
