@@ -23,7 +23,10 @@ def main():
     analyzer = Analyzer(positives, negatives)
 
     # store tweets from user in a list, "tweets"
-    tweets = get_user_timeline(sys.argv[1])
+    tweets = get_user_timeline(sys.argv[1], 50)
+
+    if tweets == None:
+        sys.exit("Usage: ./tweets @username")
 
     # assign scores to each of the tweets
     for tweet in tweets:
@@ -34,7 +37,7 @@ def main():
         elif score < 0.0:
             print(colored("-1 {}".format(tweet), "red"))
         else:
-            print(colored("-1 {}".format(tweet), "yellow"))
+            print(colored("0 {}".format(tweet), "yellow"))
 
 
 if __name__ == "__main__":
