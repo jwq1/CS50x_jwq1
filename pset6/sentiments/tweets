@@ -25,6 +25,9 @@ def main():
     # store tweets from user in a list, "tweets"
     tweets = get_user_timeline(sys.argv[1])
 
+    if tweets == None:
+        sys.exit("Usage: ./tweets @username")
+
     # assign scores to each of the tweets
     for tweet in tweets:
         # analyze word
