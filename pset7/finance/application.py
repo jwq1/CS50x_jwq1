@@ -70,7 +70,7 @@ def login():
 
         # ensure username exists and password is correct
         if len(rows) != 1 or not pwd_context.verify(request.form.get("password"), rows[0]["hash"]):
-            return apology("invalid username and/or password")
+            return apology("invalid username and/or password"
 
         # remember which user has logged in
         session["user_id"] = rows[0]["id"]
@@ -96,11 +96,72 @@ def logout():
 @login_required
 def quote():
     """Get stock quote."""
+
+    # keep user logged in
+    session.get("user_id")
+
+    # if user reached route via POST (as by submitting a form via POST)
+    if request.method == "POST":
+
+        # ensure stock ticker symbol was submitted
+        if not request.form.get("stock_ticker"):
+            return apology("must provide stock ticker symbol")
+
+        # (TODO) Return error if stock ticker is invalid (i.e. if lookup == None)
+
+        # store dictionary of values into name, price, and symbol for access in quoted.html
+        quote = lookup(request.form.get("stock_ticker"))
+
+        # if symbol is invalid, return error
+        if quote == None:
+            return apology("invalid symbol")
+
+        # render the name, price, and symbol of the stock in the template, quoted.html
+        return render_template("quoted.html", stock_name=quote["name"], stock_price = quote["price"], stock_symbol = quote["symbol"])
+
+    # remember which user has logged in
+
+
+    return render_template("quote.html")
     return apology("TODO")
 
 @app.route("/register", methods=["GET", "POST"])
 def register():
     """Register user."""
+
+    # forget any user_id
+    session.clear()
+
+    # if user reached route via POST (as by submitting a form via POST)
+    if request.method == "POST":
+
+        # ensure username was submitted
+        if not request.form.get("username"):
+            return apology("must provide username")
+
+        # ensure password was submitted
+        elif not request.form.get("password"):
+            return apology("must provide password")
+
+        # ensure password_confirmation was submitted
+        elif not request.form.get("password_confirmation"):
+            return apology("passwords did not match")
+
+        # create row in database for username
+        rows = db.execute("INSERT INTO 'users' ('id','username','hash') VALUES (NULL, :username, :password)", username=request.form.get("username"), password=pwd_context.hash(request.form.get("password")))
+
+        if rows== None:
+            return apology("username already exists")
+
+        # redirect user to login page
+        return redirect(url_for("login"))
+
+    # else if user reached route via GET (as by clicking a link or via redirect)
+    else:
+        return render_template("register.html")
+
+
+
     return apology("TODO")
 
 @app.route("/sell", methods=["GET", "POST"])
