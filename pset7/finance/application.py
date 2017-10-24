@@ -107,10 +107,12 @@ def quote():
         # (TODO) Return error if stock ticker is invalid (i.e. if lookup == None)
 
         # store dictionary of values into name, price, and symbol for access in quoted.html
-        name, price, symbol = helpers.lookup(":symbol", request.form.get("stock_ticker"))
+        quote = lookup(request.form.get("stock_ticker"))
 
+        # render the name, price, and symbol of the stock in the template, quoted.html
+        return render_template("quoted.html", stock_name=quote["name"], stock_price = quote["price"], stock_symbol = quote["symbol"])
 
-    return render_template("quote.html", name, price, symbol)
+    return render_template("quote.html")
     return apology("TODO")
 
 @app.route("/register", methods=["GET", "POST"])
