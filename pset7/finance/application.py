@@ -97,6 +97,9 @@ def logout():
 def quote():
     """Get stock quote."""
 
+    # keep user logged in
+    session.get("user_id")
+
     # if user reached route via POST (as by submitting a form via POST)
     if request.method == "POST":
 
@@ -111,6 +114,9 @@ def quote():
 
         # render the name, price, and symbol of the stock in the template, quoted.html
         return render_template("quoted.html", stock_name=quote["name"], stock_price = quote["price"], stock_symbol = quote["symbol"])
+
+    # remember which user has logged in
+
 
     return render_template("quote.html")
     return apology("TODO")
