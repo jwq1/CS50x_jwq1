@@ -70,7 +70,7 @@ def login():
 
         # ensure username exists and password is correct
         if len(rows) != 1 or not pwd_context.verify(request.form.get("password"), rows[0]["hash"]):
-            return apology("invalid username and/or password")
+            return apology("invalid username and/or password"
 
         # remember which user has logged in
         session["user_id"] = rows[0]["id"]
@@ -97,15 +97,20 @@ def logout():
 def quote():
     """Get stock quote."""
 
-    # # if user reached route via POST (as by submitting a form via POST)
-    # if request.method == "POST":
+    # if user reached route via POST (as by submitting a form via POST)
+    if request.method == "POST":
 
-    #     # ensure stock ticker symbol was submitted
-    #     if not request.form.get("stock_ticker"):
-    #         return apology("must provide stock ticker symbol")
+        # ensure stock ticker symbol was submitted
+        if not request.form.get("stock_ticker"):
+            return apology("must provide stock ticker symbol")
+
+        # (TODO) Return error if stock ticker is invalid (i.e. if lookup == None)
+
+        # store dictionary of values into name, price, and symbol for access in quoted.html
+        name, price, symbol = helpers.lookup(":symbol", request.form.get("stock_ticker"))
 
 
-    # return render_template("quote.html")
+    return render_template("quote.html", name, price, symbol)
     return apology("TODO")
 
 @app.route("/register", methods=["GET", "POST"])
