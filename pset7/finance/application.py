@@ -101,6 +101,37 @@ def quote():
 @app.route("/register", methods=["GET", "POST"])
 def register():
     """Register user."""
+
+    # forget any user_id
+    session.clear()
+
+    # if user reached route via POST (as by submitting a form via POST)
+    if request.method == "POST":
+
+        # ensure username was submitted
+        if not request.form.get("username"):
+            return apology("must provide username")
+
+        # ensure password was submitted
+        elif not request.form.get("password"):
+            return apology("must provide password")
+
+        # ensure password_confirmation was submitted
+        elif not request.form.get("password_confirmation"):
+            return apology("passwords did not match")
+
+        # create row in database for username
+        db.execute("INSERT INTO 'users' ('id','username','hash') VALUES (NULL, :username, :password)", username=request.form.get("username"), password=pwd_context.hash(request.form.get("password")))
+
+        # redirect user to login page
+        return redirect(url_for("login"))
+
+    # else if user reached route via GET (as by clicking a link or via redirect)
+    else:
+        return render_template("register.html")
+
+
+
     return apology("TODO")
 
 @app.route("/sell", methods=["GET", "POST"])
