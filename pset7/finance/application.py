@@ -112,6 +112,10 @@ def quote():
         # store dictionary of values into name, price, and symbol for access in quoted.html
         quote = lookup(request.form.get("stock_ticker"))
 
+        # if symbol is invalid, return error
+        if quote == None:
+            return apology("invalid symbol")
+
         # render the name, price, and symbol of the stock in the template, quoted.html
         return render_template("quoted.html", stock_name=quote["name"], stock_price = quote["price"], stock_symbol = quote["symbol"])
 
