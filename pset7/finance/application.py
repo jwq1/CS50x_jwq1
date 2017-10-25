@@ -39,6 +39,41 @@ def index():
 @login_required
 def buy():
     """Buy shares of stock."""
+    # keep user logged in
+    session.get("user_id")
+
+    # if user reached route via POST (as by submitting a form via POST)
+    if request.method == "POST":
+
+        # if no stock was specified
+        if not request.form.get("symbol"):
+            return apology("must provide stock ticker symbol")
+        # if stock symbol is not a publicly traded company
+        elif lookup(request.form.get("symbol")) == None:
+            return apology("Requested stock not publicly traded")
+        # if no shares requested
+        elif not request.form.get("shares"):
+            return apology("please specify # of shares")
+        # if user requests less than 1 share
+        elif float(request.form.get("shares")) < 1:
+            return apology("please ask for 1 or more whole shares")
+        # if user request a fractional shares
+        elif float(request.form.get("shares")) % 1 != 0:
+            return apology("fractional shares not available")
+
+        # store dictionary of values into name, price, and symbol for access in index.html
+        quote = lookup(request.form.get("symbol"))
+
+        # create row in database for username
+        row = db.execute("INSERT INTO 'portfolio' ('id','user_id','stock','shares','purchase_price') VALUES (NULL, :user_id, :stock, :shares, :purchase_price)", user_id=session.get("user_id"), stock=quote["symbol"], shares=request.form.get("shares"), purchase_price=quote["price"]  )
+
+        # render stock purchase on screen for user (TODO)
+
+
+    # otherwise return the buy page
+    return render_template("buy.html")
+
+
     return apology("TODO")
 
 @app.route("/history")
@@ -70,7 +105,7 @@ def login():
 
         # ensure username exists and password is correct
         if len(rows) != 1 or not pwd_context.verify(request.form.get("password"), rows[0]["hash"]):
-            return apology("invalid username and/or password"
+            return apology("invalid username and/or password")
 
         # remember which user has logged in
         session["user_id"] = rows[0]["id"]
@@ -96,7 +131,6 @@ def logout():
 @login_required
 def quote():
     """Get stock quote."""
-
     # keep user logged in
     session.get("user_id")
 
