@@ -62,10 +62,10 @@ def buy():
             return apology("fractional shares not available")
 
         # store dictionary of values into name, price, and symbol for access in index.html
-        quote = lookup(request.form.get("symbol"))
+        buy = lookup(request.form.get("symbol"))
 
-        # create row in database for username
-        row = db.execute("INSERT INTO 'portfolio' ('id','user_id','stock','shares','purchase_price') VALUES (NULL, :user_id, :stock, :shares, :purchase_price)", user_id=session.get("user_id"), stock=quote["symbol"], shares=request.form.get("shares"), purchase_price=quote["price"]  )
+        # create row in db with symbol, shares, and price of stock purchased by user
+        row = db.execute("INSERT INTO 'portfolio' ('id','user_id','symbol','shares','purchase_price') VALUES (NULL, :user_id, :stock, :shares, :purchase_price)", user_id=session.get("user_id"), stock=buy["symbol"], shares=request.form.get("shares"), purchase_price=buy["price"]  )
 
         # render stock purchase on screen for user (TODO)
 
