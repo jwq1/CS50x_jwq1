@@ -64,8 +64,25 @@ def buy():
         # store dictionary of values into name, price, and symbol for access in index.html
         buy = lookup(request.form.get("symbol"))
 
+        # check whether money exist
+        money_available = db.execute("SELECT cash FROM users WHERE id = :user_id", user_id=session.get("user_id") )
+
+        # if they do not have enough money to purchase the requested shares of stock
+        if money_available[0]["cash"] < ( buy["price"] * float(request.form.get("shares") ) ):
+            # apologize
+            return apology("Looks like do not have enough money to buy this stock")
+
+        # Otherwise, subtract the cost of that many share from their account
+        money_available[0]["cash"] = money_available[0]["cash"] - ( buy["price"] * float(request.form.get("shares")) )
+
+        # Update users accounts to reflect new assets
+        subtract_stock_cost = db.execute("UPDATE users SET cash = :money WHERE id = :user_id", user_id=session.get("user_id"), money=money_available[0]["cash"])
+
+        # Add the requested stock shares to our user's portfolio
         # create row in db with symbol, shares, and price of stock purchased by user
         row = db.execute("INSERT INTO 'portfolio' ('id','user_id','symbol','shares','purchase_price') VALUES (NULL, :user_id, :stock, :shares, :purchase_price)", user_id=session.get("user_id"), stock=buy["symbol"], shares=request.form.get("shares"), purchase_price=buy["price"]  )
+
+
 
         # render stock purchase on screen for user (TODO)
 
