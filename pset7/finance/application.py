@@ -33,6 +33,54 @@ db = SQL("sqlite:///finance.db")
 @app.route("/")
 @login_required
 def index():
+
+    session.get("user_id")
+
+    # store users assets in a list of dict objects
+    # link to "execute" documentation
+        # https://docs.cs50.net/problems/finance/finance.html#hints
+    user_assets = db.execute("SELECT symbol, shares, purchase_price FROM portfolio GROUP BY symbol HAVING user_id = :user_id ORDER BY symbol DESC", user_id=session.get("user_id"))
+
+    # find out how many rows were returned by the GROUP BY query
+    # will be used to set range of for loop later on
+    count_stocks = db.execute("SELECT user_id, COUNT(*)  FROM portfolio GROUP BY user_id HAVING user_id = :user_id", user_id = session.get("user_id") )
+    # get the count
+    stock_count = count_stocks[0]["COUNT(*)"]
+
+    # (TODO) In case of error, display user friendly RuntimeError
+
+
+    # get stock's current price
+    # create an empty dict to store our stock quotes (keep in scope)
+    ownership_quote = {}
+
+    # loop through the owners stocks
+    for stock in range(unique_stocks):
+
+        # get the symbol of the current stock
+        current_symbol = user_assets[stock]["symbol"]
+
+        # store dictionary of values into name, price, and symbol
+        ownership_quote = lookup(current_symbol)
+
+        # if symbol is invalid, return error
+        if ownership_quote == None:
+            return apology("invalid symbol")
+
+        # get number of shares of current stock
+        shares = db.execute("SELECT shares FROM portfolio WHERE user_id = :user_id", user_id = session.get("user_id") )
+
+        # calculate total ownership value in the current stock
+        stock_ownership = usd(shares[stock]["shares"] * ownership_quote["price"])
+
+    # render the index template with appropriate variables, index.html
+    return render_template("index.html", stock_count = stock_count, stock_total = stock_ownership, stock_shares = shares[0]["shares"] , stock_name=ownership_quote["name"], stock_price = usd(ownership_quote["price"]), stock_symbol = ownership_quote["symbol"])
+
+
+    # display homepage
+    return render_template("index.html")
+
+    # if something broke
     return apology("TODO")
 
 @app.route("/buy", methods=["GET", "POST"])
@@ -83,8 +131,7 @@ def buy():
         row = db.execute("INSERT INTO 'portfolio' ('id','user_id','symbol','shares','purchase_price') VALUES (NULL, :user_id, :stock, :shares, :purchase_price)", user_id=session.get("user_id"), stock=buy["symbol"], shares=request.form.get("shares"), purchase_price=buy["price"]  )
 
 
-
-        # render stock purchase on screen for user (TODO)
+        # render confirmation of stock purchase on screen for user (TODO)
 
 
     # otherwise return the buy page
