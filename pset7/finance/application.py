@@ -21,6 +21,7 @@ if app.config["DEBUG"]:
 # custom filter
 app.jinja_env.filters["usd"] = usd
 
+
 # configure session to use filesystem (instead of signed cookies)
 app.config["SESSION_FILE_DIR"] = mkdtemp()
 app.config["SESSION_PERMANENT"] = False
@@ -52,30 +53,33 @@ def index():
 
     # get stock's current price
     # create an empty dict to store our stock quotes (keep in scope)
-    ownership_quote = {}
+    ownership_quote = []
+
+    # create empty stock ownership list to keep in scope for render
+    stock_ownership = []
 
     # loop through the owners stocks
-    for stock in range(unique_stocks):
+    for stock in range(stock_count):
 
-        # get the symbol of the current stock
+        # # get the symbol of the current stock
         current_symbol = user_assets[stock]["symbol"]
 
-        # store dictionary of values into name, price, and symbol
-        ownership_quote = lookup(current_symbol)
+        # store list of stock prices into name, price, and symbol
+        ownership_quote.append(lookup(current_symbol))
 
-        # if symbol is invalid, return error
-        if ownership_quote == None:
-            return apology("invalid symbol")
+        # # if symbol is invalid, return error
+        # if ownership_quote == None:
+        #     return apology("invalid symbol")
 
         # get number of shares of current stock
         shares = db.execute("SELECT shares FROM portfolio WHERE user_id = :user_id", user_id = session.get("user_id") )
 
         # calculate total ownership value in the current stock
-        stock_ownership = usd(shares[stock]["shares"] * ownership_quote["price"])
+        stock_ownership.append( usd(shares[stock]["shares"] * ownership_quote[stock]["price"]) )
 
     # render the index template with appropriate variables, index.html
-    return render_template("index.html", stock_count = stock_count, stock_total = stock_ownership, stock_shares = shares[0]["shares"] , stock_name=ownership_quote["name"], stock_price = usd(ownership_quote["price"]), stock_symbol = ownership_quote["symbol"])
-
+    # return render_template("index.html",  stock_price = usd(ownership_quote["price"]), user_assets = user_assets , stock_count = stock_count, stock_total = stock_ownership , stock_name=ownership_quote["name"], stock_symbol = ownership_quote["symbol"])
+    return render_template("index.html",  ownership_quote = ownership_quote, user_assets = user_assets , stock_count = stock_count, stock_total = stock_ownership)
 
     # display homepage
     return render_template("index.html")
