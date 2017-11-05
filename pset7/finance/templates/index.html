@@ -14,17 +14,56 @@
 
     <!--</head>-->
 
-
-
 {% endblock %}
 
 {% block main %}
 
-       <!--Working notes-->
-                <!--use SQL query to join a table in the way we want to display it,-->
-                <!--then use jinja to loop through items in the table we want to display-->
-                <!--then total up the values and display the variable at the end-->
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>Symbol</th>
+                <!--<th>Name</th>-->
+                <th>Shares</th>
+                <th>Price</th>
+                <th>TOTAL</th>
+            </tr>
+        </thead>
+        <tfoot>
+            <tr>
+                <td colspan="3"></td>
+                <td>(TODO)</td>
+            </tr>
+        </tfoot>
+        <tbody>
 
+            {% for stock in range(2) %}
+                <tr>
+                    <td>{{user_assets[stock]["symbol"]}}</td>
+                    <td>{{user_assets[stock]["shares"]}}</td>
+                    <td>${{ownership_quote[stock]["price"]}}</td>
+                    <td>${{ user_assets[stock]["shares"] * ownership_quote[stock]["price"]}}</td>
+                </tr>
+
+
+                <!--<tr>-->
+                <!--    <td>{{stock_symbol}}</td>-->
+                <!--    <td>{{stock_shares}}</td>-->
+                <!--    <td>{{stock_price}}</td>-->
+                <!--    <td>{{stock_total}}</td>-->
+                <!--</tr>-->
+            {% endfor %}
+
+            <!--{% for symbol in user_assets %}-->
+
+            <!--{% endfor %}-->
+
+
+
+
+    <!--reminder this is a test table-->
+    <!--<p>This is fake data (i.e TODO).</p>-->
+
+      <!--static test table-->
     <!--<table class="table table-striped">-->
     <!--    <thead>-->
     <!--        <tr>-->
@@ -35,81 +74,35 @@
     <!--            <th>TOTAL</th>-->
     <!--        </tr>-->
     <!--    </thead>-->
-        <!--<tfoot>-->
-        <!--    <tr>-->
-        <!--        <td colspan="4"></td>-->
-        <!--        <td>$9,889.60</td>-->
-        <!--    </tr>-->
-        <!--</tfoot>-->
+    <!--    <tfoot>-->
+    <!--        <tr>-->
+    <!--            <td colspan="4"></td>-->
+    <!--            <td>$9,889.60</td>-->
+    <!--        </tr>-->
+    <!--    </tfoot>-->
     <!--    <tbody>-->
-
-            <!--how to loop through dictionaries (which we plan to save the table in) -->
-            <!--https://docs.python.org/3.6/tutorial/datastructures.html#looping-techniques-->
-
-            <!--need to store stocks in a list, set, or dictionary-->
-    <!--        {% for id in portfolio %}-->
     <!--            <tr>-->
-                    <!--might need to grab this in variable_name[index of id]["data label"]-->
-    <!--                <td>{{portfolio.symbol}}</td>-->
-    <!--                <td>{{portfolio.name}}</td>-->
-    <!--                <td>{{portfolio.shares}}</td>-->
-    <!--                <td>{{portfolio.price}}</td>-->
-
-                    <!--probably need to calculate this in applications-->
-                    <!--then display the variable here-->
-    <!--                <td>{{portfolio.total}}</td>-->
+    <!--                <td>GOOG</td>-->
+    <!--                <td>Alphabet Inc.</td>-->
+    <!--                <td>1</td>-->
+    <!--                <td>$964.33</td>-->
+    <!--                <td>$964.33</td>-->
     <!--            </tr>-->
 
-    <!--        {% endfor %}-->
+    <!--            <tr>-->
+    <!--                <td>TSLA</td>-->
+    <!--                <td>Tesla, Inc.</td>-->
+    <!--                <td>10</td>-->
+    <!--                <td>$326.30</td>-->
+    <!--                <td>$3,263.00</td>-->
+    <!--            </tr>-->
 
-
-
-
-
-
-    <!--reminder this is a test table-->
-    <p>This is fake data (i.e TODO).</p>
-
-      <!--static test table-->
-    <table class="table table-striped">
-        <thead>
-            <tr>
-                <th>Symbol</th>
-                <th>Name</th>
-                <th>Shares</th>
-                <th>Price</th>
-                <th>TOTAL</th>
-            </tr>
-        </thead>
-        <tfoot>
-            <tr>
-                <td colspan="4"></td>
-                <td>$9,889.60</td>
-            </tr>
-        </tfoot>
-        <tbody>
-                <tr>
-                    <td>GOOG</td>
-                    <td>Alphabet Inc.</td>
-                    <td>1</td>
-                    <td>$964.33</td>
-                    <td>$964.33</td>
-                </tr>
-
-                <tr>
-                    <td>TSLA</td>
-                    <td>Tesla, Inc.</td>
-                    <td>10</td>
-                    <td>$326.30</td>
-                    <td>$3,263.00</td>
-                </tr>
-
-            <tr>
-                <td colspan="4">CASH</td>
-                <td>$5,662.27</td>
-            </tr>
-        </tbody>
-    </table>
+    <!--        <tr>-->
+    <!--            <td colspan="4">CASH</td>-->
+    <!--            <td>$5,662.27</td>-->
+    <!--        </tr>-->
+    <!--    </tbody>-->
+    <!--</table>-->
 
 
 
