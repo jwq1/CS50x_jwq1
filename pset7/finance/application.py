@@ -67,6 +67,10 @@ def index():
     # create empty stock ownership list to keep in scope for render
     stock_ownership = []
 
+    # save total assets owned by the user
+    # will render in index.html
+    total_assets = 0.0
+
     # loop through the owners stocks
     for stock in range(stock_count):
 
@@ -89,8 +93,11 @@ def index():
         # render in usd format
         stock_ownership.append( usd(user_assets[stock]["shares"] * ownership_quote[stock]["price"]) )
 
+        total_assets = total_assets + (user_assets[stock]["shares"] * ownership_quote[stock]["price"])
+
+
     # render the index template with appropriate variables, index.html
-    return render_template("index.html",  ownership_quote = ownership_quote, user_assets = user_assets , stock_count = stock_count, stock_ownership = stock_ownership)
+    return render_template("index.html",  ownership_quote = ownership_quote, user_assets = user_assets , stock_count = stock_count, stock_ownership = stock_ownership, total_assets = usd(total_assets))
 
     # display homepage
     return render_template("index.html")
