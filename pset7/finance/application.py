@@ -37,26 +37,39 @@ def index():
 
     session.get("user_id")
 
-    # store users assets in a list of dict objects
-    # link to "execute" documentation
-        # https://docs.cs50.net/problems/finance/finance.html#hints
-    user_assets = db.execute("SELECT symbol, shares, purchase_price FROM portfolio GROUP BY symbol HAVING user_id = :user_id ORDER BY symbol DESC", user_id=session.get("user_id"))
+    try:
+        # store users assets in a list of dict objects
+        # link to "execute" documentation
+            # https://docs.cs50.net/problems/finance/finance.html#hints
+        user_assets = db.execute("SELECT symbol, sum(shares) shares, purchase_price FROM portfolio GROUP BY symbol HAVING user_id = :user_id ORDER BY symbol ASC;", user_id=session.get("user_id"))
+    except RuntimeError:
+        # if error with db.execute, apologize to user
+        return apology("Error: We'll fix this. Please try again shortly.")
 
-    # find out how many rows were returned by the GROUP BY query
-    # will be used to set range of for loop later on
-    count_stocks = db.execute("SELECT user_id, COUNT(*)  FROM portfolio GROUP BY user_id HAVING user_id = :user_id", user_id = session.get("user_id") )
+
+    try:
+        # find out how many rows were returned by the GROUP BY query
+        # will be used to set range of for loop later on
+        count_stocks = db.execute("SELECT user_id, COUNT(*)  FROM portfolio GROUP BY symbol HAVING user_id = :user_id", user_id = session.get("user_id") )
+    except RuntimeError:
+        # if error with db.execute
+        return apology("Error: We'll fix this. Please try again shortly.")
+
     # get the count
     stock_count = count_stocks[0]["COUNT(*)"]
 
-    # (TODO) In case of error, display user friendly RuntimeError
 
 
     # get stock's current price
-    # create an empty dict to store our stock quotes (keep in scope)
+    # create an empty list to store our stock quotes (keep in scope)
     ownership_quote = []
 
     # create empty stock ownership list to keep in scope for render
     stock_ownership = []
+
+    # save total assets owned by the user
+    # will render in index.html
+    total_assets = 0.0
 
     # loop through the owners stocks
     for stock in range(stock_count):
@@ -64,22 +77,27 @@ def index():
         # # get the symbol of the current stock
         current_symbol = user_assets[stock]["symbol"]
 
+        # get the up-to-date stock price
         # store list of stock prices into name, price, and symbol
+        # this is used to correctly display a users current assets
         ownership_quote.append(lookup(current_symbol))
 
-        # # if symbol is invalid, return error
-        # if ownership_quote == None:
-        #     return apology("invalid symbol")
-
-        # get number of shares of current stock
-        shares = db.execute("SELECT shares FROM portfolio WHERE user_id = :user_id", user_id = session.get("user_id") )
+        try:
+            # get number of shares of current stock
+            shares = db.execute("SELECT shares FROM portfolio WHERE user_id = :user_id", user_id = session.get("user_id") )
+        except RuntimeError:
+            # if error with db.execute, apologize to user
+            return apology("Error: We'll fix this. Please try again shortly.")
 
         # calculate total ownership value in the current stock
-        stock_ownership.append( usd(shares[stock]["shares"] * ownership_quote[stock]["price"]) )
+        # render in usd format
+        stock_ownership.append( usd(user_assets[stock]["shares"] * ownership_quote[stock]["price"]) )
+
+        total_assets = total_assets + (user_assets[stock]["shares"] * ownership_quote[stock]["price"])
+
 
     # render the index template with appropriate variables, index.html
-    # return render_template("index.html",  stock_price = usd(ownership_quote["price"]), user_assets = user_assets , stock_count = stock_count, stock_total = stock_ownership , stock_name=ownership_quote["name"], stock_symbol = ownership_quote["symbol"])
-    return render_template("index.html",  ownership_quote = ownership_quote, user_assets = user_assets , stock_count = stock_count, stock_total = stock_ownership)
+    return render_template("index.html",  ownership_quote = ownership_quote, user_assets = user_assets , stock_count = stock_count, stock_ownership = stock_ownership, total_assets = usd(total_assets))
 
     # display homepage
     return render_template("index.html")
@@ -116,8 +134,12 @@ def buy():
         # store dictionary of values into name, price, and symbol for access in index.html
         buy = lookup(request.form.get("symbol"))
 
-        # check whether money exist
-        money_available = db.execute("SELECT cash FROM users WHERE id = :user_id", user_id=session.get("user_id") )
+        try:
+            # check whether money exist
+            money_available = db.execute("SELECT cash FROM users WHERE id = :user_id", user_id=session.get("user_id") )
+        except RuntimeError:
+            # if error with db.execute, apologize to user
+            return apology("Error: We'll fix this. Please try again shortly.")
 
         # if they do not have enough money to purchase the requested shares of stock
         if money_available[0]["cash"] < ( buy["price"] * float(request.form.get("shares") ) ):
@@ -127,13 +149,20 @@ def buy():
         # Otherwise, subtract the cost of that many share from their account
         money_available[0]["cash"] = money_available[0]["cash"] - ( buy["price"] * float(request.form.get("shares")) )
 
-        # Update users accounts to reflect new assets
-        subtract_stock_cost = db.execute("UPDATE users SET cash = :money WHERE id = :user_id", user_id=session.get("user_id"), money=money_available[0]["cash"])
+        try:
+            # Update users accounts to reflect new assets
+            subtract_stock_cost = db.execute("UPDATE users SET cash = :money WHERE id = :user_id", user_id=session.get("user_id"), money=money_available[0]["cash"])
+        except RuntimeError:
+            # if error with db.execute, apologize to user
+            return apology("Error: We'll fix this. Please try again shortly.")
 
-        # Add the requested stock shares to our user's portfolio
-        # create row in db with symbol, shares, and price of stock purchased by user
-        row = db.execute("INSERT INTO 'portfolio' ('id','user_id','symbol','shares','purchase_price') VALUES (NULL, :user_id, :stock, :shares, :purchase_price)", user_id=session.get("user_id"), stock=buy["symbol"], shares=request.form.get("shares"), purchase_price=buy["price"]  )
-
+        try:
+            # Add the requested stock shares to our user's portfolio
+            # create row in db with symbol, shares, and price of stock purchased by user
+            row = db.execute("INSERT INTO 'portfolio' ('id','user_id','symbol','shares','purchase_price') VALUES (NULL, :user_id, :stock, :shares, :purchase_price)", user_id=session.get("user_id"), stock=buy["symbol"], shares=request.form.get("shares"), purchase_price=buy["price"]  )
+        except RuntimeError:
+            # if error with db.execute, apologize to user
+            return apology("Error: We'll fix this. Please try again shortly.")
 
         # render confirmation of stock purchase on screen for user (TODO)
 
@@ -168,8 +197,12 @@ def login():
         elif not request.form.get("password"):
             return apology("must provide password")
 
-        # query database for username
-        rows = db.execute("SELECT * FROM users WHERE username = :username", username=request.form.get("username"))
+        try:
+            # query database for username
+            rows = db.execute("SELECT * FROM users WHERE username = :username", username=request.form.get("username"))
+        except RuntimeError:
+            # if error with db.execute, apologize to user
+            return apology("Error: We'll fix this. Please try again shortly.")
 
         # ensure username exists and password is correct
         if len(rows) != 1 or not pwd_context.verify(request.form.get("password"), rows[0]["hash"]):
@@ -249,11 +282,15 @@ def register():
         elif not request.form.get("password_confirmation"):
             return apology("passwords did not match")
 
-        # create row in database for username
-        rows = db.execute("INSERT INTO 'users' ('id','username','hash') VALUES (NULL, :username, :password)", username=request.form.get("username"), password=pwd_context.hash(request.form.get("password")))
+        try:
+            # create row in database for username
+            rows = db.execute("INSERT INTO 'users' ('id','username','hash') VALUES (NULL, :username, :password)", username=request.form.get("username"), password=pwd_context.hash(request.form.get("password")))
+            if rows== None:
+                return apology("username already exists")
+        except RuntimeError:
+            # if error with db.execute, apologize to user
+            return apology("Error: We'll fix this. Please try again shortly.")
 
-        if rows== None:
-            return apology("username already exists")
 
         # redirect user to login page
         return redirect(url_for("login"))

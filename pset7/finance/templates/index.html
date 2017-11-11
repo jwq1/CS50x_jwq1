@@ -25,23 +25,25 @@
                 <!--<th>Name</th>-->
                 <th>Shares</th>
                 <th>Price</th>
+                <!--<th>Price(currency)</th>-->
                 <th>TOTAL</th>
             </tr>
         </thead>
         <tfoot>
             <tr>
                 <td colspan="3"></td>
-                <td>(TODO)</td>
+                <td>{{total_assets}}</td>
             </tr>
         </tfoot>
         <tbody>
 
-            {% for stock in range(2) %}
+            {% for stock in range(stock_count) %}
                 <tr>
                     <td>{{user_assets[stock]["symbol"]}}</td>
                     <td>{{user_assets[stock]["shares"]}}</td>
                     <td>${{ownership_quote[stock]["price"]}}</td>
-                    <td>${{ user_assets[stock]["shares"] * ownership_quote[stock]["price"]}}</td>
+                    <!--<td>${{ user_assets[stock]["shares"] * ownership_quote[stock]["price"]}}</td>-->
+                    <td>{{ stock_ownership[stock] }}</td>
                 </tr>
 
 
