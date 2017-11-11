@@ -25,6 +25,7 @@
                 <!--<th>Name</th>-->
                 <th>Shares</th>
                 <th>Price</th>
+                <!--<th>Price(currency)</th>-->
                 <th>TOTAL</th>
             </tr>
         </thead>
@@ -41,7 +42,8 @@
                     <td>{{user_assets[stock]["symbol"]}}</td>
                     <td>{{user_assets[stock]["shares"]}}</td>
                     <td>${{ownership_quote[stock]["price"]}}</td>
-                    <td>${{ user_assets[stock]["shares"] * ownership_quote[stock]["price"]}}</td>
+                    <!--<td>${{ user_assets[stock]["shares"] * ownership_quote[stock]["price"]}}</td>-->
+                    <td>{{ stock_ownership[stock] }}</td>
                 </tr>
 
 

@@ -68,19 +68,15 @@ def index():
         # store list of stock prices into name, price, and symbol
         ownership_quote.append(lookup(current_symbol))
 
-        # # if symbol is invalid, return error
-        # if ownership_quote == None:
-        #     return apology("invalid symbol")
-
         # get number of shares of current stock
         shares = db.execute("SELECT shares FROM portfolio WHERE user_id = :user_id", user_id = session.get("user_id") )
 
         # calculate total ownership value in the current stock
-        stock_ownership.append( usd(shares[stock]["shares"] * ownership_quote[stock]["price"]) )
+        stock_ownership.append( usd(user_assets[stock]["shares"] * ownership_quote[stock]["price"]) )
 
     # render the index template with appropriate variables, index.html
     # return render_template("index.html",  stock_price = usd(ownership_quote["price"]), user_assets = user_assets , stock_count = stock_count, stock_total = stock_ownership , stock_name=ownership_quote["name"], stock_symbol = ownership_quote["symbol"])
-    return render_template("index.html",  ownership_quote = ownership_quote, user_assets = user_assets , stock_count = stock_count, stock_total = stock_ownership)
+    return render_template("index.html",  ownership_quote = ownership_quote, user_assets = user_assets , stock_count = stock_count, stock_ownership = stock_ownership)
 
     # display homepage
     return render_template("index.html")
