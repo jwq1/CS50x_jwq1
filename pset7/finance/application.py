@@ -40,8 +40,7 @@ def index():
     # store users assets in a list of dict objects
     # link to "execute" documentation
         # https://docs.cs50.net/problems/finance/finance.html#hints
-    # user_assets = db.execute("SELECT symbol, shares, purchase_price FROM portfolio GROUP BY symbol HAVING user_id = :user_id ORDER BY symbol DESC", user_id=session.get("user_id"))
-    user_assets = db.execute("SELECT symbol, sum(shares) shares, purchase_price FROM portfolio GROUP BY symbol HAVING user_id = :user_id ORDER BY symbol DESC;", user_id=session.get("user_id"))
+    user_assets = db.execute("SELECT symbol, sum(shares) shares, purchase_price FROM portfolio GROUP BY symbol HAVING user_id = :user_id ORDER BY symbol ASC;", user_id=session.get("user_id"))
 
     # find out how many rows were returned by the GROUP BY query
     # will be used to set range of for loop later on
@@ -65,17 +64,19 @@ def index():
         # # get the symbol of the current stock
         current_symbol = user_assets[stock]["symbol"]
 
+        # get the up-to-date stock price
         # store list of stock prices into name, price, and symbol
+        # this is used to correctly display a users current assets
         ownership_quote.append(lookup(current_symbol))
 
         # get number of shares of current stock
         shares = db.execute("SELECT shares FROM portfolio WHERE user_id = :user_id", user_id = session.get("user_id") )
 
         # calculate total ownership value in the current stock
+        # render in usd format
         stock_ownership.append( usd(user_assets[stock]["shares"] * ownership_quote[stock]["price"]) )
 
     # render the index template with appropriate variables, index.html
-    # return render_template("index.html",  stock_price = usd(ownership_quote["price"]), user_assets = user_assets , stock_count = stock_count, stock_total = stock_ownership , stock_name=ownership_quote["name"], stock_symbol = ownership_quote["symbol"])
     return render_template("index.html",  ownership_quote = ownership_quote, user_assets = user_assets , stock_count = stock_count, stock_ownership = stock_ownership)
 
     # display homepage
