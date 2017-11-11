@@ -40,11 +40,12 @@ def index():
     # store users assets in a list of dict objects
     # link to "execute" documentation
         # https://docs.cs50.net/problems/finance/finance.html#hints
-    user_assets = db.execute("SELECT symbol, shares, purchase_price FROM portfolio GROUP BY symbol HAVING user_id = :user_id ORDER BY symbol DESC", user_id=session.get("user_id"))
+    # user_assets = db.execute("SELECT symbol, shares, purchase_price FROM portfolio GROUP BY symbol HAVING user_id = :user_id ORDER BY symbol DESC", user_id=session.get("user_id"))
+    user_assets = db.execute("SELECT symbol, sum(shares) shares, purchase_price FROM portfolio GROUP BY symbol HAVING user_id = :user_id ORDER BY symbol DESC;", user_id=session.get("user_id"))
 
     # find out how many rows were returned by the GROUP BY query
     # will be used to set range of for loop later on
-    count_stocks = db.execute("SELECT user_id, COUNT(*)  FROM portfolio GROUP BY user_id HAVING user_id = :user_id", user_id = session.get("user_id") )
+    count_stocks = db.execute("SELECT user_id, COUNT(*)  FROM portfolio GROUP BY symbol HAVING user_id = :user_id", user_id = session.get("user_id") )
     # get the count
     stock_count = count_stocks[0]["COUNT(*)"]
 
@@ -52,7 +53,7 @@ def index():
 
 
     # get stock's current price
-    # create an empty dict to store our stock quotes (keep in scope)
+    # create an empty list to store our stock quotes (keep in scope)
     ownership_quote = []
 
     # create empty stock ownership list to keep in scope for render
