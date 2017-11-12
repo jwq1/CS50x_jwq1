@@ -35,29 +35,22 @@ db = SQL("sqlite:///finance.db")
 @login_required
 def index():
 
+    count_stock = 0
+
     session.get("user_id")
 
     try:
         # store users assets in a list of dict objects
         # link to "execute" documentation
             # https://docs.cs50.net/problems/finance/finance.html#hints
-        user_assets = db.execute("SELECT symbol, sum(shares) shares, purchase_price FROM portfolio GROUP BY symbol HAVING user_id = :user_id ORDER BY symbol ASC;", user_id=session.get("user_id"))
+        user_assets = db.execute("SELECT symbol, sum(shares) shares, purchase_price FROM portfolio GROUP BY symbol HAVING user_id = :user_id ORDER BY symbol ASC", user_id=session.get("user_id"))
     except RuntimeError:
         # if error with db.execute, apologize to user
         return apology("Error: We'll fix this. Please try again shortly.")
 
 
-    try:
-        # find out how many rows were returned by the GROUP BY query
-        # will be used to set range of for loop later on
-        count_stocks = db.execute("SELECT user_id, COUNT(*)  FROM portfolio GROUP BY symbol HAVING user_id = :user_id", user_id = session.get("user_id") )
-    except RuntimeError:
-        # if error with db.execute
-        return apology("Error: We'll fix this. Please try again shortly.")
-
-    # get the count
-    stock_count = count_stocks[0]["COUNT(*)"]
-
+    for rows in user_assets:
+        count_stock += 1;
 
 
     # get stock's current price
@@ -72,7 +65,7 @@ def index():
     total_assets = 0.0
 
     # loop through the owners stocks
-    for stock in range(stock_count):
+    for stock in range(count_stock):
 
         # # get the symbol of the current stock
         current_symbol = user_assets[stock]["symbol"]
@@ -97,7 +90,7 @@ def index():
 
 
     # render the index template with appropriate variables, index.html
-    return render_template("index.html",  ownership_quote = ownership_quote, user_assets = user_assets , stock_count = stock_count, stock_ownership = stock_ownership, total_assets = usd(total_assets))
+    return render_template("index.html",  ownership_quote = ownership_quote, user_assets = user_assets , stock_ownership = stock_ownership, total_assets = usd(total_assets), count_stock = count_stock)
 
     # display homepage
     return render_template("index.html")
@@ -307,4 +300,50 @@ def register():
 @login_required
 def sell():
     """Sell shares of stock."""
+
+    # keep user logged in
+    session.get("user_id")
+
+    try:
+
+        # store the users stocks in a list of dict objects
+        # in alphabetic order
+        user_stocks = db.execute("SELECT symbol FROM portfolio GROUP BY symbol HAVING user_id  = :user_id ORDER BY symbol ASC", user_id = session.get("user_id") )
+
+        # find out how many rows were returned by the GROUP BY query
+        # will be used to set range of for loop later on
+        count_stocks = db.execute("SELECT user_id, COUNT(*)  FROM portfolio GROUP BY symbol HAVING user_id = :user_id", user_id = session.get("user_id") )
+
+    except RuntimeError:
+        # if error with db.execute
+        # render an apology on screen
+        return apology("Error: We'll fix this. Please try again shortly.")
+
+
+    # get how many unique stocks a user owns
+    unique_stock_count = count_stocks[0]["COUNT(*)"]
+
+
+    # if user reached route via POST (as by submitting a form via POST)
+    if request.method == "POST":
+
+        # if no stock was specified
+        if not request.form.get("symbol"):
+            # tell user to choose a stock symbol
+            return apology("must choose ticker symbol to sell")
+        # if shares were not specified
+        if not request.form.get("shares"):
+            # tell user to specify shares
+            return apology("please specify shares to sell")
+        # if the user selects less than a share to sell
+        if request.form.get("shares") < 1:
+            # tell the user to select more than a share to sell
+            return apology("please select one or more shares to sell")
+
+
+
+    # Render sell html on page
+    return render_template("sell.html", user_stocks = user_stocks, unique_stock_count = unique_stock_count)
+
+    # If all else fails
     return apology("TODO")

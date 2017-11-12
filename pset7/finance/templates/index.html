@@ -37,7 +37,7 @@
         </tfoot>
         <tbody>
 
-            {% for stock in range(stock_count) %}
+            {% for stock in range(count_stock) %}
                 <tr>
                     <td>{{user_assets[stock]["symbol"]}}</td>
                     <td>{{user_assets[stock]["shares"]}}</td>
@@ -46,67 +46,7 @@
                     <td>{{ stock_ownership[stock] }}</td>
                 </tr>
 
-
-                <!--<tr>-->
-                <!--    <td>{{stock_symbol}}</td>-->
-                <!--    <td>{{stock_shares}}</td>-->
-                <!--    <td>{{stock_price}}</td>-->
-                <!--    <td>{{stock_total}}</td>-->
-                <!--</tr>-->
             {% endfor %}
-
-            <!--{% for symbol in user_assets %}-->
-
-            <!--{% endfor %}-->
-
-
-
-
-    <!--reminder this is a test table-->
-    <!--<p>This is fake data (i.e TODO).</p>-->
-
-      <!--static test table-->
-    <!--<table class="table table-striped">-->
-    <!--    <thead>-->
-    <!--        <tr>-->
-    <!--            <th>Symbol</th>-->
-    <!--            <th>Name</th>-->
-    <!--            <th>Shares</th>-->
-    <!--            <th>Price</th>-->
-    <!--            <th>TOTAL</th>-->
-    <!--        </tr>-->
-    <!--    </thead>-->
-    <!--    <tfoot>-->
-    <!--        <tr>-->
-    <!--            <td colspan="4"></td>-->
-    <!--            <td>$9,889.60</td>-->
-    <!--        </tr>-->
-    <!--    </tfoot>-->
-    <!--    <tbody>-->
-    <!--            <tr>-->
-    <!--                <td>GOOG</td>-->
-    <!--                <td>Alphabet Inc.</td>-->
-    <!--                <td>1</td>-->
-    <!--                <td>$964.33</td>-->
-    <!--                <td>$964.33</td>-->
-    <!--            </tr>-->
-
-    <!--            <tr>-->
-    <!--                <td>TSLA</td>-->
-    <!--                <td>Tesla, Inc.</td>-->
-    <!--                <td>10</td>-->
-    <!--                <td>$326.30</td>-->
-    <!--                <td>$3,263.00</td>-->
-    <!--            </tr>-->
-
-    <!--        <tr>-->
-    <!--            <td colspan="4">CASH</td>-->
-    <!--            <td>$5,662.27</td>-->
-    <!--        </tr>-->
-    <!--    </tbody>-->
-    <!--</table>-->
-
-
 
 {% endblock %}
 
