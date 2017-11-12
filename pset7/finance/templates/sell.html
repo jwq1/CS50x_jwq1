@@ -1,0 +1,36 @@
+{% extends "layout.html" %}
+
+{% block title %}
+    Homepage
+{% endblock %}
+
+{% block head %}
+
+    <!--COMMENTED OUT CODE FOR LATER: STOCK PURCHASE CONFIRMATION-->
+    <!--<head>-->
+    <!--    <div class="alert alert-info" role="alert">-->
+    <!--        Bought!-->
+    <!--    </div>-->
+
+    <!--</head>-->
+
+{% endblock %}
+
+{% block main %}
+
+    <form action="/sell" method="post">
+        <div class="form-group">
+            <select class="form-control" name="symbol">
+                <option disabled="" selected="" value="">Symbol</option>
+
+                    <option value="AMZN">AMZN</option>
+
+            </select>
+        </div>
+        <div class="form-group">
+            <input autocomplete="off" class="form-control" min="0" name="shares" placeholder="Shares" type="number">
+        </div>
+        <button class="btn btn-primary" type="submit">Sell</button>
+    </form>
+
+{% endblock %}

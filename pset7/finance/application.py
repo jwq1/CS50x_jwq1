@@ -307,4 +307,14 @@ def register():
 @login_required
 def sell():
     """Sell shares of stock."""
+
+    # keep user logged in
+    session.get("user_id")
+
+
+
+    # Render sell html on page
+    return render_template("sell.html")
+
+    # If all else fails
     return apology("TODO")
