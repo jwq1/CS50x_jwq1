@@ -330,6 +330,24 @@ def sell():
     # get how many unique stocks a user owns
     unique_stock_count = count_stocks[0]["COUNT(*)"]
 
+
+    # if user reached route via POST (as by submitting a form via POST)
+    if request.method == "POST":
+
+        # if no stock was specified
+        if not request.form.get("symbol"):
+            # tell user to choose a stock symbol
+            return apology("must choose ticker symbol to sell")
+        # if shares were not specified
+        if not request.form.get("shares"):
+            # tell user to specify shares
+            return apology("please specify shares to sell")
+        # if the user selects less than a share to sell
+        if request.form.get("shares") < 1:
+            # tell the user to select more than a share to sell
+            return apology("please select one or more shares to sell")
+
+
     # Render sell html on page
     return render_template("sell.html", user_stocks = user_stocks, unique_stock_count = unique_stock_count)
 
