@@ -18,12 +18,30 @@
 
 {% block main %}
 
+    <!--<table class="table table-striped">-->
+    <!--    <thead>-->
+    <!--        <tr>-->
+    <!--            <th>Symbol</th>-->
+    <!--        </tr>-->
+    <!--    </thead>-->
+    <!--    <tbody>-->
+
+    <!--        {% for stock in range(2) %}-->
+    <!--            <tr>-->
+    <!--                <td>{{user_stocks[stock]["symbol"]}}</td>-->
+    <!--            </tr>-->
+    <!--        {% endfor %}-->
+    <!--    </tbody>-->
+
+
     <form action="/sell" method="post">
         <div class="form-group">
             <select class="form-control" name="symbol">
                 <option disabled="" selected="" value="">Symbol</option>
 
-                    <option value="AMZN">AMZN</option>
+                    {% for stock in range(unique_stock_count) %}
+                        <option value = "{{user_stocks[stock]['symbol']}}"> {{user_stocks[stock]['symbol']}}</option>
+                    {% endfor %}
 
             </select>
         </div>

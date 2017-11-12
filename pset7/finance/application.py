@@ -311,10 +311,27 @@ def sell():
     # keep user logged in
     session.get("user_id")
 
+    try:
 
+        # store the users stocks in a list of dict objects
+        # in alphabetic order
+        user_stocks = db.execute("SELECT symbol FROM portfolio GROUP BY symbol HAVING user_id  = :user_id ORDER BY symbol ASC", user_id = session.get("user_id") )
+
+        # find out how many rows were returned by the GROUP BY query
+        # will be used to set range of for loop later on
+        count_stocks = db.execute("SELECT user_id, COUNT(*)  FROM portfolio GROUP BY symbol HAVING user_id = :user_id", user_id = session.get("user_id") )
+
+    except RuntimeError:
+        # if error with db.execute
+        # render an apology on screen
+        return apology("Error: We'll fix this. Please try again shortly.")
+
+
+    # get how many unique stocks a user owns
+    unique_stock_count = count_stocks[0]["COUNT(*)"]
 
     # Render sell html on page
-    return render_template("sell.html")
+    return render_template("sell.html", user_stocks = user_stocks, unique_stock_count = unique_stock_count)
 
     # If all else fails
     return apology("TODO")
