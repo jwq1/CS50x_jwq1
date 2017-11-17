@@ -41,9 +41,10 @@
                 <tr>
                     <td>{{user_assets[stock]["symbol"]}}</td>
                     <td>{{user_assets[stock]["shares"]}}</td>
-                    <td>${{ownership_quote[stock]["price"]}}</td>
+                    <!--<td>{{ownership_quote[stock]["price"]}}</td>-->
+                    <td>{{current_price[stock]}}</td>
                     <!--<td>${{ user_assets[stock]["shares"] * ownership_quote[stock]["price"]}}</td>-->
-                    <td>{{ stock_ownership[stock] }}</td>
+                    <td>{{stock_ownership[stock]}}</td>
                 </tr>
 
             {% endfor %}

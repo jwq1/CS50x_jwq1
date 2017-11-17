@@ -43,19 +43,24 @@ def index():
         # store users assets in a list of dict objects
         # link to "execute" documentation
             # https://docs.cs50.net/problems/finance/finance.html#hints
-        user_assets = db.execute("SELECT symbol, sum(shares) shares, purchase_price FROM portfolio GROUP BY symbol HAVING user_id = :user_id ORDER BY symbol ASC", user_id=session.get("user_id"))
+        user_assets = db.execute("SELECT symbol, SUM(shares) shares, purchase_price FROM portfolio GROUP BY symbol HAVING user_id = :user_id ORDER BY symbol ASC", user_id=session.get("user_id"))
     except RuntimeError:
         # if error with db.execute, apologize to user
         return apology("Error: We'll fix this. Please try again shortly.")
 
-
+    # count the number of stocks the user has
+    # use to create the rows in the homepage table
+    # see index.html for more
     for rows in user_assets:
         count_stock += 1;
 
 
-    # get stock's current price
+    # get stock's current quote
     # create an empty list to store our stock quotes (keep in scope)
     ownership_quote = []
+
+    # create empty list to store formated stock prices only
+    current_price = []
 
     # create empty stock ownership list to keep in scope for render
     stock_ownership = []
@@ -70,27 +75,22 @@ def index():
         # # get the symbol of the current stock
         current_symbol = user_assets[stock]["symbol"]
 
-        # get the up-to-date stock price
-        # store list of stock prices into name, price, and symbol
-        # this is used to correctly display a users current assets
+        # get the up-to-date stock quotes
+        # store quotes in a list of dict objects
         ownership_quote.append(lookup(current_symbol))
 
-        try:
-            # get number of shares of current stock
-            shares = db.execute("SELECT shares FROM portfolio WHERE user_id = :user_id", user_id = session.get("user_id") )
-        except RuntimeError:
-            # if error with db.execute, apologize to user
-            return apology("Error: We'll fix this. Please try again shortly.")
+        # store the formatted price into a variable to render in index.html
+        current_price.append(usd(ownership_quote[stock]["price"]))
 
         # calculate total ownership value in the current stock
-        # render in usd format
+        # apply usd format
         stock_ownership.append( usd(user_assets[stock]["shares"] * ownership_quote[stock]["price"]) )
 
         total_assets = total_assets + (user_assets[stock]["shares"] * ownership_quote[stock]["price"])
 
 
     # render the index template with appropriate variables, index.html
-    return render_template("index.html",  ownership_quote = ownership_quote, user_assets = user_assets , stock_ownership = stock_ownership, total_assets = usd(total_assets), count_stock = count_stock)
+    return render_template("index.html",  current_price = current_price, ownership_quote = ownership_quote, user_assets = user_assets , stock_ownership = stock_ownership, total_assets = usd(total_assets), count_stock = count_stock)
 
     # display homepage
     return render_template("index.html")
@@ -139,7 +139,7 @@ def buy():
             # apologize
             return apology("Looks like do not have enough money to buy this stock")
 
-        # Otherwise, subtract the cost of that many share from their account
+        # Otherwise, subtract the cost of that many shares from their account
         money_available[0]["cash"] = money_available[0]["cash"] - ( buy["price"] * float(request.form.get("shares")) )
 
         try:
@@ -340,6 +340,37 @@ def sell():
             # tell the user to select more than a share to sell
             return apology("please select one or more shares to sell")
 
+    # # save the shares which the user has requested to sell
+    # # shares_requested_to_sell = request.form.get("shares")
+    # shares_requested_to_sell = 0
+    # # figure out NoneType error
+    # if shares_requested_to_sell == None:
+    #     return apology("shares_requested_to_sell = None")
+
+    # # of the stock the user selects, get the number of shares they have
+    # # store in a list of dict objects
+    # shares_available_to_sell = db.execute("SELECT sum(shares) FROM portfolio WHERE user_id = :user_id AND symbol = ':symbol'", user_id = session.get("user_id"), symbol = request.form.get("symbol") )
+    # # figure out NoneType error
+    # if shares_available_to_sell == None:
+    #     return apology("shares_available_to_sell = None")
+    # # store the number of shares as an integer
+    # number_of_shares = shares_available_to_sell[0]["sum(shares)"]
+    # # figure out NoneType error
+    # if number_of_shares == None:
+    #     return apology("number_of_shares = None")
+
+    # # if the user owns fewer shares than they would like to sell
+    # if number_of_shares < shares_requested_to_sell:
+    #     # return help message
+    #     return apology("You do not have that many shares in :symbol", symbol = request.form.get("symbol") )
+
+    # # calculate the cash a user should receive when they sell the stock
+
+
+    # # otherwise, sell the shares
+
+
+    # # and update the users cash assets
 
 
     # Render sell html on page
