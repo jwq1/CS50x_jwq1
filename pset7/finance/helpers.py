@@ -107,6 +107,20 @@ def lookup(symbol):
 
     except:
         return None
+        # pass
+
+    # # return hard coded values instead, because AlphaVantage rarely works
+    # try:
+
+    #     # return stock's name (as a str), price (as a float), and (uppercased) symbol (as a str)
+    #     return {
+    #         "name": "JWQ", # for backward compatibility with Yahoo
+    #         "price": 100.0,
+    #         "symbol": "JWQ"
+    #     }
+
+    # except:
+    #     return None
 
 
 def usd(value):
