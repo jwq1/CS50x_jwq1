@@ -358,21 +358,19 @@ def sell():
 
 
     # track current row with a loop counter
-    # Problem: "row" in the for loop, appears to be a dict object,
-        # not an integer or slice, which is required
-        # when accessing list indices in 'shares_sellable'
-        # flask returns "TypeError: list indices must be integers or slices, not dict"
-    # Solution: use a counter 'ctr' of type int instead
     ctr = 0
 
-    # loop through the rows where the users stock is stored
-    for row in shares_sellable:
+    # Track shares left to sell
+    shares_left_to_sell = int(please_sell_shares)
 
-        # if the row has less than or equal to the shares to sell
-        if ( shares_sellable[ctr]["shares"] < int(please_sell_shares) ):
+    # loop through the rows where the users stock is stored
+    while shares_left_to_sell > 0:
+
+        # if the row has fewer shares than the shares we need to sell
+        if ( shares_sellable[ctr]["shares"] < shares_left_to_sell ):
 
             # decrease the number of shares we still need to sell
-            please_sell_shares = int(please_sell_shares) - shares_sellable[ctr]["shares"]
+            shares_left_to_sell = shares_left_to_sell - shares_sellable[ctr]["shares"]
 
             # identify the row to delete
             relevant_row = shares_sellable[ctr]["id"]
@@ -385,26 +383,9 @@ def sell():
                 # If the database query failed, apologize to the user.
                 return apology("Error: We'll fix this. Please try again shortly.")
 
-        # otherwise if there are more shares in this row than we need to sell
-        elif ( shares_sellable[ctr]["shares"] > int(please_sell_shares)):
-
-            # figure out how many shares will be left in the row
-            # after we remove the stocks we want to sell
-            new_share_number = shares_sellable[ctr]["shares"] - int(please_sell_shares)
-
-            # identify the row to update
-            relevant_row = shares_sellable[ctr]["id"]
-
-            try:
-                # update the row
-                update_row = db.execute("UPDATE portfolio SET shares = :new_share_number WHERE id = :id", new_share_number = new_share_number, id = relevant_row)
-
-            except RuntimeError:
-                # If the database query failed, apologize to the user.
-                return apology("Error: We'll fix this. Please try again shortly.")
 
         # otherwise if the row has the exact number of shares we need to sell
-        elif ( shares_sellable[ctr]["shares"] == int(please_sell_shares)):
+        elif ( shares_sellable[ctr]["shares"] == shares_left_to_sell):
 
             # identify the row to delete
             relevant_row = shares_sellable[ctr]["id"]
@@ -417,8 +398,33 @@ def sell():
                 # If the database query failed, apologize to the user.
                 return apology("Error: We'll fix this. Please try again shortly.")
 
+            # reduce shares left to sell to zero
+            shares_left_to_sell = 0
+
+        # otherwise if there are more shares in this row than we need to sell
+        # and we have not sold all the necessary shares
+        elif ( shares_sellable[ctr]["shares"] > shares_left_to_sell):
+
+            # figure out how many shares will be left in the row
+            # after we remove the stocks we want to sell
+            new_share_number = shares_sellable[ctr]["shares"] - shares_left_to_sell
+
+            # identify the row to update
+            relevant_row = shares_sellable[ctr]["id"]
+
+            try:
+                # update the row
+                update_row = db.execute("UPDATE portfolio SET shares = :new_share_number WHERE id = :id", new_share_number = new_share_number, id = relevant_row)
+
+            except RuntimeError:
+                # If the database query failed, apologize to the user.
+                return apology("Error: We'll fix this. Please try again shortly.")
+
+            # reduce shares left to sell to zero
+            shares_left_to_sell = 0
+
         # track current row with a loop counter
-        ctr = 0
+        ctr += 1
 
     # figure out how much each share sold for
     # sales_quote = lookup(please_sell_stock)

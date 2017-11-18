@@ -108,7 +108,7 @@ def lookup(symbol):
     except:
         return None
 
-    # # return hard coded values instead, because AlphaVantage rarely works
+    # # return hard coded values when AlphaVantage does not work
     # try:
 
     #     # return stock's name (as a str), price (as a float), and (uppercased) symbol (as a str)
