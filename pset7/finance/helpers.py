@@ -1,5 +1,6 @@
 import csv
 import urllib.request
+import random
 
 from flask import redirect, render_template, request, session
 from functools import wraps
@@ -114,7 +115,7 @@ def lookup(symbol):
     #     # return stock's name (as a str), price (as a float), and (uppercased) symbol (as a str)
     #     return {
     #         "name": "JWQ", # for backward compatibility with Yahoo
-    #         "price": 1000.0,
+    #         "price": random.randint(500, 1500),
     #         "symbol": "JWQ"
     #     }
 
@@ -125,3 +126,7 @@ def lookup(symbol):
 def usd(value):
     """Formats value as USD."""
     return f"${value:,.2f}"
+
+def usd_db(value):
+    """Formats value as USD."""
+    return f"{value:,.2f}"

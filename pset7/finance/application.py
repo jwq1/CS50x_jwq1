@@ -153,7 +153,7 @@ def buy():
         try:
             # Add the requested stock shares to our user's portfolio
             # create row in db with symbol, shares, and price of stock purchased by user
-            row = db.execute("INSERT INTO 'portfolio' ('id','user_id','symbol','shares','purchase_price') VALUES (NULL, :user_id, :stock, :shares, :purchase_price)", user_id=session.get("user_id"), stock=buy["symbol"], shares=request.form.get("shares"), purchase_price=buy["price"]  )
+            row = db.execute("INSERT INTO 'portfolio' ('id','user_id','symbol','shares','purchase_price') VALUES (NULL, :user_id, :stock, :shares, :purchase_price)", user_id=session.get("user_id"), stock=buy["symbol"], shares=request.form.get("shares"), purchase_price= usd_db(buy["price"]) )
         except RuntimeError:
             # if error with db.execute, apologize to user
             return apology("Error: We'll fix this. Please try again shortly.")
@@ -171,7 +171,13 @@ def buy():
 @login_required
 def history():
     """Show history of transactions."""
+
+
+
+    # if something broke
     return apology("TODO")
+
+
 
 @app.route("/login", methods=["GET", "POST"])
 def login():
@@ -206,7 +212,7 @@ def login():
         session["user_id"] = rows[0]["id"]
 
         # redirect user to home page
-        return redirect(url_for("index"))
+        return redirect(url_for("buy"))
 
     # else if user reached route via GET (as by clicking a link or via redirect)
     else:
@@ -367,7 +373,7 @@ def sell():
     while shares_left_to_sell > 0:
 
         # if the row has fewer shares than the shares we need to sell
-        if ( shares_sellable[ctr]["shares"] < shares_left_to_sell ):
+        if ( shares_sellable[ctr]["shares"] < shares_left_to_sell):
 
             # decrease the number of shares we still need to sell
             shares_left_to_sell = shares_left_to_sell - shares_sellable[ctr]["shares"]
