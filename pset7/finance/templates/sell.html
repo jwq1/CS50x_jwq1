@@ -18,6 +18,25 @@
 
 {% block main %}
 
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>Symbol</th>
+                <th>Shares</th>
+            </tr>
+        </thead>
+        <tbody>
+
+            {% for stock in range(unique_stock_count) %}
+                <tr>
+                    <td>{{user_stocks[stock]["symbol"]}}</td>
+                    <td>{{user_stocks[stock]["shares"]}}</td>
+                </tr>
+            {% endfor %}
+
+        </tbody>
+
+
     <form action="{{ url_for('sell') }}" method="post">
         <fieldset>
             <div class="form-group">

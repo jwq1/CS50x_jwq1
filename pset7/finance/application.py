@@ -308,7 +308,7 @@ def sell():
     try:
         # store the users stocks in a list of dict objects
         # in alphabetic order
-        user_stocks = db.execute("SELECT symbol FROM portfolio GROUP BY symbol HAVING user_id  = :user_id ORDER BY symbol ASC", user_id = session.get("user_id") )
+        user_stocks = db.execute("SELECT symbol, SUM(shares) shares FROM portfolio GROUP BY symbol HAVING user_id  = :user_id ORDER BY symbol ASC", user_id = session.get("user_id") )
 
         # find out how many rows were returned by the GROUP BY query
         # will be used to set range of for loop later on
@@ -446,51 +446,6 @@ def sell():
     except RuntimeError:
                 # If the database query failed, apologize to the user.
                 return apology("Error: We'll fix this. Please try again shortly.")
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-    # # save the shares which the user has requested to sell
-    # # shares_requested_to_sell = request.form.get("shares")
-    # shares_requested_to_sell = 0
-    # # figure out NoneType error
-    # if shares_requested_to_sell == None:
-    #     return apology("shares_requested_to_sell = None")
-
-    # # of the stock the user selects, get the number of shares they have
-    # # store in a list of dict objects
-    # shares_available_to_sell = db.execute("SELECT sum(shares) FROM portfolio WHERE user_id = :user_id AND symbol = ':symbol'", user_id = session.get("user_id"), symbol = request.form.get("symbol") )
-    # # figure out NoneType error
-    # if shares_available_to_sell == None:
-    #     return apology("shares_available_to_sell = None")
-    # # store the number of shares as an integer
-    # number_of_shares = shares_available_to_sell[0]["sum(shares)"]
-    # # figure out NoneType error
-    # if number_of_shares == None:
-    #     return apology("number_of_shares = None")
-
-    # # if the user owns fewer shares than they would like to sell
-    # if number_of_shares < shares_requested_to_sell:
-    #     # return help message
-    #     return apology("You do not have that many shares in :symbol", symbol = request.form.get("symbol") )
-
-    # # calculate the cash a user should receive when they sell the stock
-
-
-    # # otherwise, sell the shares
-
-
-    # # and update the users cash assets
 
 
     # Render sell html on page
