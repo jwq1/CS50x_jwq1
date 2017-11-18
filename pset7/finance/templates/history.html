@@ -1,0 +1,41 @@
+{% extends "layout.html" %}
+
+{% block title %}
+    History
+{% endblock %}
+
+{% block head %}
+
+    <!--COMMENTED OUT CODE FOR LATER: STOCK PURCHASE CONFIRMATION-->
+    <!--<head>-->
+    <!--    <div class="alert alert-info" role="alert">-->
+    <!--        Bought!-->
+    <!--    </div>-->
+
+    <!--</head>-->
+
+{% endblock %}
+
+{% block main %}
+
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>Symbol</th>
+                <th>Shares</th>
+                <th>Price</th>
+                <th>Transacted</th>
+            </tr>
+        </thead>
+        <tbody>
+
+            {% for stock in range(count_stock) %}
+                <tr>
+                    <td>{{user_assets[stock]["symbol"]}}</td>
+                    <td>{{user_assets[stock]["shares"]}}</td>
+                    <td>{{user_assets[stock]["purchase_price"]}}</td>
+                    <td>{{user_assets[stock]["purchase_time"]}}</td>
+                </tr>
+            {% endfor %}
+
+{% endblock %}

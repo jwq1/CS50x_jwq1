@@ -172,6 +172,28 @@ def buy():
 def history():
     """Show history of transactions."""
 
+    count_stock = 0
+
+    session.get("user_id")
+
+    try:
+        # store users assets in a list of dict objects
+        # link to "execute" documentation
+            # https://docs.cs50.net/problems/finance/finance.html#hints
+        user_assets = db.execute("SELECT symbol, shares, purchase_price, purchase_time FROM portfolio WHERE user_id = :user_id ORDER BY purchase_time DESC", user_id=session.get("user_id"))
+    except RuntimeError:
+        # if error with db.execute, apologize to user
+        return apology("Error: We'll fix this. Please try again shortly.")
+
+    # count the number of stocks the user has
+    # use to create the rows in the homepage table
+    # see index.html for more
+    for rows in user_assets:
+        count_stock += 1;
+
+
+    # render the index template with appropriate variables, index.html
+    return render_template("history.html",  user_assets = user_assets, count_stock = count_stock)
 
 
     # if something broke
