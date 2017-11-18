@@ -1,7 +1,7 @@
 {% extends "layout.html" %}
 
 {% block title %}
-    Homepage
+    History
 {% endblock %}
 
 {% block head %}
@@ -24,30 +24,18 @@
                 <th>Symbol</th>
                 <th>Shares</th>
                 <th>Price</th>
-                <th>TOTAL</th>
+                <th>Transacted</th>
             </tr>
         </thead>
-        <tfoot>
-            <tr>
-                <td colspan="3"></td>
-                <td>{{total_assets}}</td>
-            </tr>
-        </tfoot>
         <tbody>
 
             {% for stock in range(count_stock) %}
                 <tr>
                     <td>{{user_assets[stock]["symbol"]}}</td>
                     <td>{{user_assets[stock]["shares"]}}</td>
-                    <td>{{current_price[stock]}}</td>
-                    <td>{{stock_ownership[stock]}}</td>
+                    <td>{{user_assets[stock]["purchase_price"]}}</td>
+                    <td>{{user_assets[stock]["purchase_time"]}}</td>
                 </tr>
-
             {% endfor %}
 
 {% endblock %}
-
-
-
-
-

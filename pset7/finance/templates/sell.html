@@ -1,7 +1,7 @@
 {% extends "layout.html" %}
 
 {% block title %}
-    Homepage
+    Sell
 {% endblock %}
 
 {% block head %}
@@ -18,21 +18,56 @@
 
 {% block main %}
 
-    <form action="/sell" method="post">
-        <div class="form-group">
-            <select class="form-control" name="symbol">
-                <option disabled="" selected="" value="">Symbol</option>
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>Symbol</th>
+                <th>Shares</th>
+            </tr>
+        </thead>
+        <tbody>
 
-                    {% for stock in range(unique_stock_count) %}
-                        <option value = "{{user_stocks[stock]['symbol']}}"> {{user_stocks[stock]['symbol']}}</option>
-                    {% endfor %}
+            {% for stock in range(unique_stock_count) %}
+                <tr>
+                    <td>{{user_stocks[stock]["symbol"]}}</td>
+                    <td>{{user_stocks[stock]["shares"]}}</td>
+                </tr>
+            {% endfor %}
 
-            </select>
-        </div>
-        <div class="form-group">
-            <input autocomplete="off" class="form-control" min="0" name="shares" placeholder="Shares" type="number">
-        </div>
-        <button class="btn btn-primary" type="submit">Sell</button>
+        </tbody>
+
+
+    <form action="{{ url_for('sell') }}" method="post">
+        <fieldset>
+            <div class="form-group">
+                <input autocomplete="off" autofocus class="form-control" name="symbol" placeholder="Symbol" type="text"/>
+            </div>
+            <div class="form-group">
+                <input class="form-control" name="shares" placeholder="Shares" type="int"/>
+            </div>
+            <div class="form-group">
+                <button class="btn btn-default" type="buy">Sell</button>
+            </div>
+        </fieldset>
     </form>
+
+
+
+
+<!--Alternative form interface-->
+    <!--<form action="/sell" method="post">-->
+    <!--    <div class="form-group">-->
+    <!--        <select class="form-control" name="symbol">-->
+    <!--            <option disabled="" selected="" value="">Symbol</option>-->
+    <!--            {% for stock in range(unique_stock_count) %}-->
+    <!--                <option value = "{{user_stocks[stock]['symbol']}}"> {{user_stocks[stock]['symbol']}}</option>-->
+    <!--            {% endfor %}-->
+    <!--        </select>-->
+    <!--    </div>-->
+    <!--    <div class="form-group">-->
+    <!--        <input autocomplete="off" class="form-control" min="0" name="shares" placeholder="Shares" type="number">-->
+    <!--    </div>-->
+    <!--    <button class="btn btn-primary" type="submit">Sell</button>-->
+    <!--</form>-->
 
 {% endblock %}
