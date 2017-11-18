@@ -234,7 +234,7 @@ def login():
         session["user_id"] = rows[0]["id"]
 
         # redirect user to home page
-        return redirect(url_for("buy"))
+        return redirect(url_for("index"))
 
     # else if user reached route via GET (as by clicking a link or via redirect)
     else:
@@ -351,10 +351,6 @@ def sell():
     # get how many unique stocks a user owns
     unique_stock_count = count_stocks[0]["COUNT(*)"]
 
-    # remember the stock and shares to sell for fast access
-    please_sell_stock = "AAA"
-    please_sell_shares = 0.0
-
     # if user reached route via POST (as by submitting a form via POST)
     if request.method == "POST":
 
@@ -371,110 +367,51 @@ def sell():
             # tell the user to select more than a share to sell
             return apology("please select one or more shares to sell")
 
-        # remember the stock and shares to sell for fast access
-        please_sell_stock = request.form.get("symbol")
-        please_sell_shares = request.form.get("shares")
+        try:
+            # Make sure the user has enough stock to sell
+            shares_of_selected_stock = db.execute("SELECT SUM(shares) shares FROM portfolio WHERE user_id = :user_id AND symbol = :symbol", user_id = session.get("user_id"), symbol = 'TSLA')
+
+            # Check whether the user has shares to sell
+            if (shares_of_selected_stock[0]["shares"] <= 0):
+                return apology("Not enough shares to sell")
+
+        except RuntimeError:
+            # If the database query failed, apologize to the user.
+            return apology("Error: We'll fix this. Please try again shortly.")
+
+        # lookup share value at time of sale
+        sales_quote = lookup(request.form.get("symbol"))
+        # determine price
+        final_sale_price = sales_quote["price"]
 
 
-    try:
-        # Of the stock the user requested, get the number of shares they have to sell
-        shares_sellable = db.execute("SELECT id, shares FROM portfolio WHERE symbol = :symbol AND user_id = :user_id", user_id = session.get("user_id"), symbol = request.form.get("symbol") )
+        try:
+            # Insert a row with to track the sale of a user's stock ownership
+            log_of_sale = db.execute("INSERT INTO 'portfolio' ('id','user_id','symbol','shares','purchase_price') VALUES (NULL, :user_id, :symbol, :shares, :sale_price)", user_id=session.get("user_id"), symbol=request.form.get("symbol"), shares=(int(please_sell_shares) * -1), sale_price= usd_db(final_sale_price) )
 
-    except RuntimeError:
-        # If the database query failed, apologize to the user.
-        return apology("Error: We'll fix this. Please try again shortly.")
-
-
-    # track current row with a loop counter
-    ctr = 0
-
-    # Track shares left to sell
-    shares_left_to_sell = int(please_sell_shares)
-
-    # loop through the rows where the users stock is stored
-    while shares_left_to_sell > 0:
-
-        # if the row has fewer shares than the shares we need to sell
-        if ( shares_sellable[ctr]["shares"] < shares_left_to_sell):
-
-            # decrease the number of shares we still need to sell
-            shares_left_to_sell = shares_left_to_sell - shares_sellable[ctr]["shares"]
-
-            # identify the row to delete
-            relevant_row = shares_sellable[ctr]["id"]
-
-            try:
-                # delete the row
-                delete_row = db.execute("DELETE FROM portfolio WHERE id = :relevant_row", relevant_row = relevant_row)
-
-            except RuntimeError:
-                # If the database query failed, apologize to the user.
-                return apology("Error: We'll fix this. Please try again shortly.")
+        except RuntimeError:
+            # If the database query failed, apologize to the user.
+            return apology("Error: We'll fix this. Please try again shortly.")
 
 
-        # otherwise if the row has the exact number of shares we need to sell
-        elif ( shares_sellable[ctr]["shares"] == shares_left_to_sell):
+        # calculate cash received in total (all shares sold)
+        total_sale_value = float(final_sale_price) * int(request.form.get("shares"))
 
-            # identify the row to delete
-            relevant_row = shares_sellable[ctr]["id"]
+        try:
+            # find cash the user already holds
+            user_cash = db.execute("SELECT cash FROM users WHERE id = :user_id", user_id = session.get("user_id"))
 
-            try:
-                # delete the row
-                delete_row = db.execute("DELETE FROM portfolio WHERE id = :stock_id", stock_id = relevant_row)
+            cash_after_sale = user_cash[0]["cash"] + total_sale_value
 
-            except RuntimeError:
-                # If the database query failed, apologize to the user.
-                return apology("Error: We'll fix this. Please try again shortly.")
+            # give the user his or her cash from purchase
+            give_cash = db.execute("UPDATE users SET cash = :cash_after_sale WHERE id = :user_id ", user_id = session.get("user_id"), cash_after_sale = cash_after_sale )
 
-            # reduce shares left to sell to zero
-            shares_left_to_sell = 0
+        except RuntimeError:
+                    # If the database query failed, apologize to the user.
+                    return apology("Error: We'll fix this. Please try again shortly.")
 
-        # otherwise if there are more shares in this row than we need to sell
-        # and we have not sold all the necessary shares
-        elif ( shares_sellable[ctr]["shares"] > shares_left_to_sell):
-
-            # figure out how many shares will be left in the row
-            # after we remove the stocks we want to sell
-            new_share_number = shares_sellable[ctr]["shares"] - shares_left_to_sell
-
-            # identify the row to update
-            relevant_row = shares_sellable[ctr]["id"]
-
-            try:
-                # update the row
-                update_row = db.execute("UPDATE portfolio SET shares = :new_share_number WHERE id = :id", new_share_number = new_share_number, id = relevant_row)
-
-            except RuntimeError:
-                # If the database query failed, apologize to the user.
-                return apology("Error: We'll fix this. Please try again shortly.")
-
-            # reduce shares left to sell to zero
-            shares_left_to_sell = 0
-
-        # track current row with a loop counter
-        ctr += 1
-
-    # figure out how much each share sold for
-    # sales_quote = lookup(please_sell_stock)
-    sales_quote = lookup(please_sell_stock)
-    final_sale_price = sales_quote["price"]
-
-    # calculate cash received in total (all shares sold)
-    total_sale_value = float(final_sale_price) * int(please_sell_shares)
-
-    try:
-        # find cash the user already holds
-        user_cash = db.execute("SELECT cash FROM users WHERE id = :user_id", user_id = session.get("user_id"))
-
-        cash_after_sale = user_cash[0]["cash"] + total_sale_value
-
-        # give the user his or her cash from purchase
-        give_cash = db.execute("UPDATE users SET cash = :cash_after_sale WHERE id = :user_id ", user_id = session.get("user_id"), cash_after_sale = cash_after_sale )
-
-    except RuntimeError:
-                # If the database query failed, apologize to the user.
-                return apology("Error: We'll fix this. Please try again shortly.")
-
+        #Render sold template
+        return render_template("sold", shares_sold = request.form.get("shares"), stock_sold = request.form.get("symbol"), total_sale_value = total_sale_value)
 
     # Render sell html on page
     return render_template("sell.html", user_stocks = user_stocks, unique_stock_count = unique_stock_count)
