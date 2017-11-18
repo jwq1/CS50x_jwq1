@@ -385,9 +385,11 @@ def sell():
         final_sale_price = sales_quote["price"]
 
 
+
+
         try:
             # Insert a row with to track the sale of a user's stock ownership
-            log_of_sale = db.execute("INSERT INTO 'portfolio' ('id','user_id','symbol','shares','purchase_price') VALUES (NULL, :user_id, :symbol, :shares, :sale_price)", user_id=session.get("user_id"), symbol=request.form.get("symbol"), shares=(int(please_sell_shares) * -1), sale_price= usd_db(final_sale_price) )
+            log_of_sale = db.execute("INSERT INTO 'portfolio' ('id','user_id','symbol','shares','purchase_price') VALUES (NULL, :user_id, :symbol, :shares, :sale_price)", user_id=session.get("user_id"), symbol=request.form.get("symbol"), shares=(int(request.form.get("shares")) * -1), sale_price= usd_db(final_sale_price) )
 
         except RuntimeError:
             # If the database query failed, apologize to the user.
@@ -411,7 +413,7 @@ def sell():
                     return apology("Error: We'll fix this. Please try again shortly.")
 
         #Render sold template
-        return render_template("sold", shares_sold = request.form.get("shares"), stock_sold = request.form.get("symbol"), total_sale_value = total_sale_value)
+        return render_template("sold.html", shares_sold = request.form.get("shares"), stock_sold = request.form.get("symbol"), total_sale_value = total_sale_value)
 
     # Render sell html on page
     return render_template("sell.html", user_stocks = user_stocks, unique_stock_count = unique_stock_count)
