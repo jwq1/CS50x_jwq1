@@ -86,6 +86,7 @@ def index():
         # apply usd format
         stock_ownership.append( usd(user_assets[stock]["shares"] * ownership_quote[stock]["price"]) )
 
+        # calculate total ownership value across all stocks
         total_assets = total_assets + (user_assets[stock]["shares"] * ownership_quote[stock]["price"])
 
 
@@ -305,7 +306,6 @@ def sell():
     session.get("user_id")
 
     try:
-
         # store the users stocks in a list of dict objects
         # in alphabetic order
         user_stocks = db.execute("SELECT symbol FROM portfolio GROUP BY symbol HAVING user_id  = :user_id ORDER BY symbol ASC", user_id = session.get("user_id") )
@@ -323,6 +323,9 @@ def sell():
     # get how many unique stocks a user owns
     unique_stock_count = count_stocks[0]["COUNT(*)"]
 
+    # remember the stock and shares to sell for fast access
+    please_sell_stock = "AAA"
+    please_sell_shares = 0.0
 
     # if user reached route via POST (as by submitting a form via POST)
     if request.method == "POST":
@@ -332,13 +335,124 @@ def sell():
             # tell user to choose a stock symbol
             return apology("must choose ticker symbol to sell")
         # if shares were not specified
-        if not request.form.get("shares"):
+        elif not request.form.get("shares"):
             # tell user to specify shares
             return apology("please specify shares to sell")
         # if the user selects less than a share to sell
-        if request.form.get("shares") < 1:
+        elif int(request.form.get("shares")) < 1:
             # tell the user to select more than a share to sell
             return apology("please select one or more shares to sell")
+
+        # remember the stock and shares to sell for fast access
+        please_sell_stock = request.form.get("symbol")
+        please_sell_shares = request.form.get("shares")
+
+
+    try:
+        # Of the stock the user requested, get the number of shares they have to sell
+        shares_sellable = db.execute("SELECT id, shares FROM portfolio WHERE symbol = :symbol AND user_id = :user_id", user_id = session.get("user_id"), symbol = request.form.get("symbol") )
+
+    except RuntimeError:
+        # If the database query failed, apologize to the user.
+        return apology("Error: We'll fix this. Please try again shortly.")
+
+
+    # track current row with a loop counter
+    # Problem: "row" in the for loop, appears to be a dict object,
+        # not an integer or slice, which is required
+        # when accessing list indices in 'shares_sellable'
+        # flask returns "TypeError: list indices must be integers or slices, not dict"
+    # Solution: use a counter 'ctr' of type int instead
+    ctr = 0
+
+    # loop through the rows where the users stock is stored
+    for row in shares_sellable:
+
+        # if the row has less than or equal to the shares to sell
+        if ( shares_sellable[ctr]["shares"] < int(please_sell_shares) ):
+
+            # decrease the number of shares we still need to sell
+            please_sell_shares = int(please_sell_shares) - shares_sellable[ctr]["shares"]
+
+            # identify the row to delete
+            relevant_row = shares_sellable[ctr]["id"]
+
+            try:
+                # delete the row
+                delete_row = db.execute("DELETE FROM portfolio WHERE id = :relevant_row", relevant_row = relevant_row)
+
+            except RuntimeError:
+                # If the database query failed, apologize to the user.
+                return apology("Error: We'll fix this. Please try again shortly.")
+
+        # otherwise if there are more shares in this row than we need to sell
+        elif ( shares_sellable[ctr]["shares"] > int(please_sell_shares)):
+
+            # figure out how many shares will be left in the row
+            # after we remove the stocks we want to sell
+            new_share_number = shares_sellable[ctr]["shares"] - int(please_sell_shares)
+
+            # identify the row to update
+            relevant_row = shares_sellable[ctr]["id"]
+
+            try:
+                # update the row
+                update_row = db.execute("UPDATE portfolio SET shares = :new_share_number WHERE id = :id", new_share_number = new_share_number, id = relevant_row)
+
+            except RuntimeError:
+                # If the database query failed, apologize to the user.
+                return apology("Error: We'll fix this. Please try again shortly.")
+
+        # otherwise if the row has the exact number of shares we need to sell
+        elif ( shares_sellable[ctr]["shares"] == int(please_sell_shares)):
+
+            # identify the row to delete
+            relevant_row = shares_sellable[ctr]["id"]
+
+            try:
+                # delete the row
+                delete_row = db.execute("DELETE FROM portfolio WHERE id = :stock_id", stock_id = relevant_row)
+
+            except RuntimeError:
+                # If the database query failed, apologize to the user.
+                return apology("Error: We'll fix this. Please try again shortly.")
+
+        # track current row with a loop counter
+        ctr = 0
+
+    # figure out how much each share sold for
+    # sales_quote = lookup(please_sell_stock)
+    sales_quote = lookup(please_sell_stock)
+    final_sale_price = sales_quote["price"]
+
+    # calculate cash received in total (all shares sold)
+    total_sale_value = float(final_sale_price) * int(please_sell_shares)
+
+    try:
+        # find cash the user already holds
+        user_cash = db.execute("SELECT cash FROM users WHERE id = :user_id", user_id = session.get("user_id"))
+
+        cash_after_sale = user_cash[0]["cash"] + total_sale_value
+
+        # give the user his or her cash from purchase
+        give_cash = db.execute("UPDATE users SET cash = :cash_after_sale WHERE id = :user_id ", user_id = session.get("user_id"), cash_after_sale = cash_after_sale )
+
+    except RuntimeError:
+                # If the database query failed, apologize to the user.
+                return apology("Error: We'll fix this. Please try again shortly.")
+
+
+
+
+
+
+
+
+
+
+
+
+
 
     # # save the shares which the user has requested to sell
     # # shares_requested_to_sell = request.form.get("shares")
@@ -378,3 +492,5 @@ def sell():
 
     # If all else fails
     return apology("TODO")
+
+
