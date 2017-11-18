@@ -76,51 +76,51 @@ def lookup(symbol):
     except:
         pass
 
-    # query Alpha Vantage for quote instead
-    # https://www.alphavantage.co/documentation/
+    # # query Alpha Vantage for quote instead
+    # # https://www.alphavantage.co/documentation/
+    # try:
+
+    #     # GET CSV
+    #     url = f"https://www.alphavantage.co/query?apikey=NAJXWIA8D6VN6A3K&datatype=csv&function=TIME_SERIES_INTRADAY&interval=1min&symbol={symbol}"
+    #     webpage = urllib.request.urlopen(url)
+
+    #     # parse CSV
+    #     datareader = csv.reader(webpage.read().decode("utf-8").splitlines())
+
+    #     # ignore first row
+    #     next(datareader)
+
+    #     # parse second row
+    #     row = next(datareader)
+
+    #     # ensure stock exists
+    #     try:
+    #         price = float(row[4])
+    #     except:
+    #         return None
+
+    #     # return stock's name (as a str), price (as a float), and (uppercased) symbol (as a str)
+    #     return {
+    #         "name": symbol.upper(), # for backward compatibility with Yahoo
+    #         "price": price,
+    #         "symbol": symbol.upper()
+    #     }
+
+    # except:
+    #     return None
+
+    # return hard coded values when AlphaVantage does not work
     try:
-
-        # GET CSV
-        url = f"https://www.alphavantage.co/query?apikey=NAJXWIA8D6VN6A3K&datatype=csv&function=TIME_SERIES_INTRADAY&interval=1min&symbol={symbol}"
-        webpage = urllib.request.urlopen(url)
-
-        # parse CSV
-        datareader = csv.reader(webpage.read().decode("utf-8").splitlines())
-
-        # ignore first row
-        next(datareader)
-
-        # parse second row
-        row = next(datareader)
-
-        # ensure stock exists
-        try:
-            price = float(row[4])
-        except:
-            return None
 
         # return stock's name (as a str), price (as a float), and (uppercased) symbol (as a str)
         return {
             "name": symbol.upper(), # for backward compatibility with Yahoo
-            "price": price,
+            "price": random.randrange(500.00, 1500.00),
             "symbol": symbol.upper()
         }
 
     except:
         return None
-
-    # # return hard coded values when AlphaVantage does not work
-    # try:
-
-    #     # return stock's name (as a str), price (as a float), and (uppercased) symbol (as a str)
-    #     return {
-    #         "name": "JWQ", # for backward compatibility with Yahoo
-    #         "price": random.randint(500, 1500),
-    #         "symbol": "JWQ"
-    #     }
-
-    # except:
-    #     return None
 
 
 def usd(value):
