@@ -240,6 +240,52 @@ def login():
     else:
         return render_template("login.html")
 
+
+@app.route("/password", methods=["GET", "POST"])
+def password():
+    """Change users password"""
+
+    # remember which user we are changing the password for
+    session.get("user_id")
+
+    # retrieve the users current password
+    users_current_password = db.execute("SELECT hash FROM users WHERE id = :user_id", user_id = session.get("user_id") )
+
+    # if user reached route via POST (as by submitting a form via POST)
+    if request.method == "POST":
+
+        # ensure current_password was submitted
+        if not request.form.get("current_password"):
+            return apology("must provide current password")
+        # ensure username exists and password is correct
+        elif not pwd_context.verify(request.form.get("current_password"), users_current_password[0]["hash"]):
+            return apology("invalid current password")
+        # ensure new password was submitted
+        elif not request.form.get("new_password"):
+            return apology("must provide new password")
+        # ensure the user confirms the password they want
+        elif not request.form.get("confirm_new_password"):
+            return apology("Please confirm your new password")
+        # ensure new passwords match
+        elif request.form.get("new_password") != request.form.get("confirm_new_password"):
+            return apology("The new passwords did not match")
+
+        try:
+            # update the password in the database
+            updated_row = db.execute("UPDATE users SET hash = :new_password WHERE id = :user_id", user_id = session.get("user_id"), new_password = pwd_context.hash(request.form.get("new_password")) )
+            if updated_row == None:
+                return apology("New password has to be different than current")
+        except RuntimeError:
+            # if error with db.execute, apologize to user
+            return apology("500 Error: We'll fix this. Please try again shortly.")
+
+        # redirect user to login page
+        return redirect(url_for("index"))
+
+    # else if user reached route via GET (as by clicking a link or via redirect)
+    else:
+        return render_template("resetPassword.html")
+
 @app.route("/logout")
 def logout():
     """Log user out."""
@@ -275,8 +321,6 @@ def quote():
 
         # render the name, price, and symbol of the stock in the template, quoted.html
         return render_template("quoted.html", stock_name=quote["name"], stock_price = quote["price"], stock_symbol = quote["symbol"])
-
-    # remember which user has logged in
 
 
     return render_template("quote.html")
@@ -321,9 +365,8 @@ def register():
     else:
         return render_template("register.html")
 
-
-
     return apology("TODO")
+
 
 @app.route("/sell", methods=["GET", "POST"])
 @login_required
@@ -420,5 +463,4 @@ def sell():
 
     # If all else fails
     return apology("TODO")
-
 
