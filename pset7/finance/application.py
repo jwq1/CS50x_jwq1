@@ -35,7 +35,7 @@ db = SQL("sqlite:///finance.db")
 @login_required
 def index():
 
-    # CS50 Spec (TODO)
+    # CS50 Spec (DONE)
     # Complete the implementation of index
     # in such a way that it displays an HTML table summarizing,
     # for the user currently logged in,
@@ -45,9 +45,7 @@ def index():
     # the total value of each holding
     # (i.e., shares times price).
 
-    # (TODO)
     # Also display the user’s current cash balance along with a grand total
-    #
     # (i.e., stocks' total value plus cash).
 
 
@@ -408,6 +406,13 @@ def register():
 def sell():
     """Sell shares of stock."""
 
+    # CS50 Spec (DONE)
+    # Complete the implementation of sell in such a way that
+    # it enables a user to sell shares of a stock (that he or she owns).
+    # Check for and render apologies for any possible errors.
+
+
+
     # keep user logged in
     session.get("user_id")
 
@@ -451,7 +456,7 @@ def sell():
 
             # Check whether the user has shares to sell
             if (shares_of_selected_stock[0]["shares"] <= 0):
-                return apology("Not enough shares to sell")
+                return apology("Not enough shares to sell, or invalid symbol.")
 
         except RuntimeError:
             # If the database query failed, apologize to the user.
@@ -459,6 +464,7 @@ def sell():
 
         # lookup share value at time of sale
         sales_quote = lookup(request.form.get("symbol"))
+
         # determine price
         final_sale_price = sales_quote["price"]
 
