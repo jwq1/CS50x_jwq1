@@ -35,6 +35,20 @@ db = SQL("sqlite:///finance.db")
 @login_required
 def index():
 
+    # CS50 Spec (DONE)
+    # Complete the implementation of index
+    # in such a way that it displays an HTML table summarizing,
+    # for the user currently logged in,
+    # which stocks the user owns,
+    # the numbers of shares owned,
+    # the current price of each stock,
+    # the total value of each holding
+    # (i.e., shares times price).
+
+    # Also display the user’s current cash balance along with a grand total
+    # (i.e., stocks' total value plus cash).
+
+
     count_stock = 0
 
     session.get("user_id")
@@ -43,10 +57,31 @@ def index():
         # store users assets in a list of dict objects
         # link to "execute" documentation
             # https://docs.cs50.net/problems/finance/finance.html#hints
-        user_assets = db.execute("SELECT symbol, SUM(shares) shares, purchase_price FROM portfolio GROUP BY symbol HAVING user_id = :user_id ORDER BY symbol ASC", user_id=session.get("user_id"))
+        user_assets_history = db.execute("SELECT symbol, SUM(shares) shares, purchase_price FROM portfolio GROUP BY symbol HAVING user_id = :user_id ORDER BY symbol ASC", user_id=session.get("user_id"))
     except RuntimeError:
         # if error with db.execute, apologize to user
         return apology("Error: We'll fix this. Please try again shortly.")
+
+
+    # create a list to only store user's current stock holdings
+    user_assets = []
+
+    # create integer counter for the upcoming loop
+    ctr = 0
+
+    # for each stock part of the users portfolio (or former portfolio)
+    for stock in user_assets_history:
+
+        # if the user still owns the stock, then keep track of it
+        if user_assets_history[ctr]["shares"] > 0:
+
+            # store this stock in our current stock holding list
+            user_assets.append(user_assets_history[ctr])
+
+        # increase current stock counter by 1
+        ctr += 1
+        # ignore stocks in our portfolio with negative shares
+
 
     # count the number of stocks the user has
     # use to create the rows in the homepage table
@@ -90,8 +125,12 @@ def index():
         total_assets = total_assets + (user_assets[stock]["shares"] * ownership_quote[stock]["price"])
 
 
+    # Get users current cash
+    cash_holdings = db.execute("SELECT cash FROM users WHERE id = :user_id", user_id = session.get("user_id") )
+
+
     # render the index template with appropriate variables, index.html
-    return render_template("index.html",  current_price = current_price, ownership_quote = ownership_quote, user_assets = user_assets , stock_ownership = stock_ownership, total_assets = usd(total_assets), count_stock = count_stock)
+    return render_template("index.html",  current_price = current_price, ownership_quote = ownership_quote, user_assets = user_assets , stock_ownership = stock_ownership, total_assets = usd(total_assets + cash_holdings[0]["cash"]), count_stock = count_stock, cash_holdings = usd(cash_holdings[0]["cash"]) )
 
     # display homepage
     return render_template("index.html")
@@ -108,6 +147,12 @@ def buy():
 
     # if user reached route via POST (as by submitting a form via POST)
     if request.method == "POST":
+
+        # CS50 Spec (DONE)
+        # Require that a user input a stock’s symbol.
+        # Render an apology if the input is blank.
+        # Require that a user input a number of shares.
+        # Render an apology if the input is not a positive integer
 
         # if no stock was specified
         if not request.form.get("symbol"):
@@ -128,6 +173,11 @@ def buy():
         # store dictionary of values into name, price, and symbol for access in index.html
         buy = lookup(request.form.get("symbol"))
 
+        # Render an apology if the symbol does not exist (as per the return value of lookup).
+        if (buy == None):
+            # otherwise, return an apology
+            return apology("Please provide a valid stock symbol")
+
         try:
             # check whether money exist
             money_available = db.execute("SELECT cash FROM users WHERE id = :user_id", user_id=session.get("user_id") )
@@ -135,10 +185,14 @@ def buy():
             # if error with db.execute, apologize to user
             return apology("Error: We'll fix this. Please try again shortly.")
 
+        # CS50 Spec (DONE)
+        # Render an apology, without completing a purchase,
+        # if the user cannot afford the number of shares at the current price.
+
         # if they do not have enough money to purchase the requested shares of stock
         if money_available[0]["cash"] < ( buy["price"] * float(request.form.get("shares") ) ):
             # apologize
-            return apology("Looks like do not have enough money to buy this stock")
+            return apology("Looks like do not have enough money")
 
         # Otherwise, subtract the cost of that many shares from their account
         money_available[0]["cash"] = money_available[0]["cash"] - ( buy["price"] * float(request.form.get("shares")) )
@@ -171,6 +225,17 @@ def buy():
 @login_required
 def history():
     """Show history of transactions."""
+
+    # CS50 Spec
+    # Complete the implementation of history in such a way that it displays
+    # an HTML table summarizing all of a user’s transactions ever,
+    # listing row by row each and every buy and every sell.
+    # For each row, make clear whether a stock was bought or sold
+    # and include the stock’s symbol,
+    # the (purchase or sale) price,
+    # the number of shares bought or sold,
+    # and the date and time at which the transaction occurred.
+
 
     count_stock = 0
 
@@ -373,17 +438,25 @@ def register():
 def sell():
     """Sell shares of stock."""
 
+    # CS50 Spec (DONE)
+    # Complete the implementation of sell in such a way that
+    # it enables a user to sell shares of a stock (that he or she owns).
+    # Check for and render apologies for any possible errors.
+
+
+
     # keep user logged in
     session.get("user_id")
 
     try:
         # store the users stocks in a list of dict objects
         # in alphabetic order
-        user_stocks = db.execute("SELECT symbol, SUM(shares) shares FROM portfolio GROUP BY symbol HAVING user_id  = :user_id ORDER BY symbol ASC", user_id = session.get("user_id") )
+        user_stocks_history = db.execute("SELECT symbol, SUM(shares) shares FROM portfolio GROUP BY symbol HAVING user_id  = :user_id ORDER BY symbol ASC", user_id = session.get("user_id") )
 
-        # find out how many rows were returned by the GROUP BY query
-        # will be used to set range of for loop later on
-        count_stocks = db.execute("SELECT user_id, COUNT(*)  FROM portfolio GROUP BY symbol HAVING user_id = :user_id", user_id = session.get("user_id") )
+        # DUPLICATIVE <-- delete this after tests
+        # # find out how many rows were returned by the GROUP BY query
+        # # will be used to set range of for loop later on
+        # count_stocks = db.execute("SELECT symbol, SUM(shares) shares FROM portfolio GROUP BY symbol HAVING user_id = :user_id", user_id = session.get("user_id") )
 
     except RuntimeError:
         # if error with db.execute
@@ -391,8 +464,36 @@ def sell():
         return apology("Error: We'll fix this. Please try again shortly.")
 
 
+
+    # Clear out stocks with 0 or fewer shares (lines 446 - 465)
+
+    # create a list to only store user's current stock holdings
+    user_stocks = []
+
+    # create integer counter for the upcoming loop
+    ctr = 0
+
+    # for each stock part of the users portfolio (or former portfolio)
+    for stock in user_stocks_history:
+
+        # if the user still owns the stock, then keep track of it
+        if user_stocks_history[ctr]["shares"] > 0:
+
+            # store this stock in our current stock holding list
+            user_stocks.append(user_stocks_history[ctr])
+
+        # increase current stock counter by 1
+        ctr += 1
+
+        # ignore stocks in our portfolio with negative shares
+
+
     # get how many unique stocks a user owns
-    unique_stock_count = count_stocks[0]["COUNT(*)"]
+    unique_stock_count = 0
+    # for each row returned by the db query, add 1 to my stock cound
+    # used to generate the table in sell.html
+    for row in user_stocks:
+        unique_stock_count += 1
 
     # if user reached route via POST (as by submitting a form via POST)
     if request.method == "POST":
@@ -409,14 +510,18 @@ def sell():
         elif int(request.form.get("shares")) < 1:
             # tell the user to select more than a share to sell
             return apology("please select one or more shares to sell")
+        # if user request a fractional shares
+        elif float(request.form.get("shares")) % 1 != 0:
+            return apology("fractional shares not available")
+
 
         try:
             # Make sure the user has enough stock to sell
-            shares_of_selected_stock = db.execute("SELECT SUM(shares) shares FROM portfolio WHERE user_id = :user_id AND symbol = :symbol", user_id = session.get("user_id"), symbol = 'TSLA')
+            shares_of_selected_stock = db.execute("SELECT SUM(shares) shares FROM portfolio WHERE user_id = :user_id AND symbol = :symbol", user_id = session.get("user_id"), symbol = request.form.get("symbol") )
 
             # Check whether the user has shares to sell
-            if (shares_of_selected_stock[0]["shares"] <= 0):
-                return apology("Not enough shares to sell")
+            if (shares_of_selected_stock[0]["shares"] <= int(request.form.get("shares")) ):
+                return apology("Not enough shares to sell.")
 
         except RuntimeError:
             # If the database query failed, apologize to the user.
@@ -424,6 +529,11 @@ def sell():
 
         # lookup share value at time of sale
         sales_quote = lookup(request.form.get("symbol"))
+
+        # if invalid symbol
+        if (sales_quote == None) :
+            return apology("Requested stock not publicly traded.")
+
         # determine price
         final_sale_price = sales_quote["price"]
 
@@ -452,8 +562,8 @@ def sell():
             give_cash = db.execute("UPDATE users SET cash = :cash_after_sale WHERE id = :user_id ", user_id = session.get("user_id"), cash_after_sale = cash_after_sale )
 
         except RuntimeError:
-                    # If the database query failed, apologize to the user.
-                    return apology("Error: We'll fix this. Please try again shortly.")
+            # If the database query failed, apologize to the user.
+            return apology("Error: We'll fix this. Please try again shortly.")
 
         #Render sold template
         return render_template("sold.html", shares_sold = request.form.get("shares"), stock_sold = request.form.get("symbol"), total_sale_value = total_sale_value)
