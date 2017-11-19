@@ -119,6 +119,7 @@ def lookup(symbol):
             "symbol": symbol.upper()
         }
 
+
     except:
         return None
 

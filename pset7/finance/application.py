@@ -35,6 +35,22 @@ db = SQL("sqlite:///finance.db")
 @login_required
 def index():
 
+    # CS50 Spec (TODO)
+    # Complete the implementation of index
+    # in such a way that it displays an HTML table summarizing,
+    # for the user currently logged in,
+    # which stocks the user owns,
+    # the numbers of shares owned,
+    # the current price of each stock,
+    # the total value of each holding
+    # (i.e., shares times price).
+
+    # (TODO)
+    # Also display the user’s current cash balance along with a grand total
+    #
+    # (i.e., stocks' total value plus cash).
+
+
     count_stock = 0
 
     session.get("user_id")
@@ -109,6 +125,12 @@ def buy():
     # if user reached route via POST (as by submitting a form via POST)
     if request.method == "POST":
 
+        # CS50 Spec (DONE)
+        # Require that a user input a stock’s symbol.
+        # Render an apology if the input is blank.
+        # Require that a user input a number of shares.
+        # Render an apology if the input is not a positive integer
+
         # if no stock was specified
         if not request.form.get("symbol"):
             return apology("must provide stock ticker symbol")
@@ -128,6 +150,11 @@ def buy():
         # store dictionary of values into name, price, and symbol for access in index.html
         buy = lookup(request.form.get("symbol"))
 
+        # Render an apology if the symbol does not exist (as per the return value of lookup).
+        if (buy == None):
+            # otherwise, return an apology
+            return apology("Please provide a valid stock symbol")
+
         try:
             # check whether money exist
             money_available = db.execute("SELECT cash FROM users WHERE id = :user_id", user_id=session.get("user_id") )
@@ -135,10 +162,14 @@ def buy():
             # if error with db.execute, apologize to user
             return apology("Error: We'll fix this. Please try again shortly.")
 
+        # CS50 Spec (DONE)
+        # Render an apology, without completing a purchase,
+        # if the user cannot afford the number of shares at the current price.
+
         # if they do not have enough money to purchase the requested shares of stock
         if money_available[0]["cash"] < ( buy["price"] * float(request.form.get("shares") ) ):
             # apologize
-            return apology("Looks like do not have enough money to buy this stock")
+            return apology("Looks like do not have enough money")
 
         # Otherwise, subtract the cost of that many shares from their account
         money_available[0]["cash"] = money_available[0]["cash"] - ( buy["price"] * float(request.form.get("shares")) )
@@ -412,7 +443,7 @@ def sell():
 
         try:
             # Make sure the user has enough stock to sell
-            shares_of_selected_stock = db.execute("SELECT SUM(shares) shares FROM portfolio WHERE user_id = :user_id AND symbol = :symbol", user_id = session.get("user_id"), symbol = 'TSLA')
+            shares_of_selected_stock = db.execute("SELECT SUM(shares) shares FROM portfolio WHERE user_id = :user_id AND symbol = :symbol", user_id = session.get("user_id"), symbol = request.form.get("symbol") )
 
             # Check whether the user has shares to sell
             if (shares_of_selected_stock[0]["shares"] <= 0):
