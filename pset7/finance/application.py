@@ -106,8 +106,12 @@ def index():
         total_assets = total_assets + (user_assets[stock]["shares"] * ownership_quote[stock]["price"])
 
 
+    # Get users current cash
+    cash_holdings = db.execute("SELECT cash FROM users WHERE id = :user_id", user_id = session.get("user_id") )
+
+
     # render the index template with appropriate variables, index.html
-    return render_template("index.html",  current_price = current_price, ownership_quote = ownership_quote, user_assets = user_assets , stock_ownership = stock_ownership, total_assets = usd(total_assets), count_stock = count_stock)
+    return render_template("index.html",  current_price = current_price, ownership_quote = ownership_quote, user_assets = user_assets , stock_ownership = stock_ownership, total_assets = usd(total_assets + cash_holdings[0]["cash"]), count_stock = count_stock, cash_holdings = usd(cash_holdings[0]["cash"]) )
 
     # display homepage
     return render_template("index.html")
