@@ -449,6 +449,10 @@ def sell():
         elif int(request.form.get("shares")) < 1:
             # tell the user to select more than a share to sell
             return apology("please select one or more shares to sell")
+        # if user request a fractional shares
+        elif float(request.form.get("shares")) % 1 != 0:
+            return apology("fractional shares not available")
+
 
         try:
             # Make sure the user has enough stock to sell
@@ -464,6 +468,10 @@ def sell():
 
         # lookup share value at time of sale
         sales_quote = lookup(request.form.get("symbol"))
+
+        # if invalid symbol
+        if (sales_quote == None) :
+            return apology("Requested stock not publicly traded")
 
         # determine price
         final_sale_price = sales_quote["price"]
@@ -493,8 +501,8 @@ def sell():
             give_cash = db.execute("UPDATE users SET cash = :cash_after_sale WHERE id = :user_id ", user_id = session.get("user_id"), cash_after_sale = cash_after_sale )
 
         except RuntimeError:
-                    # If the database query failed, apologize to the user.
-                    return apology("Error: We'll fix this. Please try again shortly.")
+            # If the database query failed, apologize to the user.
+            return apology("Error: We'll fix this. Please try again shortly.")
 
         #Render sold template
         return render_template("sold.html", shares_sold = request.form.get("shares"), stock_sold = request.form.get("symbol"), total_sale_value = total_sale_value)
