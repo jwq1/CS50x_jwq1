@@ -61,7 +61,7 @@ def search():
     q = request.args.get("q") + "%"
 
     # find matches for the location in search
-    location_searched = db.execute("SELECT * FROM places WHERE postal_code LIKE :q", q=q)
+    location_searched = db.execute("SELECT * FROM places WHERE place_name LIKE :q OR postal_code LIKE :q LIMIT 10", q=q)
 
     # return JSON array of objects
     return jsonify([location_searched])
