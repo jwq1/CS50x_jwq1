@@ -29,18 +29,37 @@ def index():
         raise RuntimeError("API_KEY not set")
     return render_template("index.html", key=os.environ.get("API_KEY"))
 
-@app.route("/articles")
+@app.route("/articles", methods=["GET"])
 def articles():
     """Look up articles for geo."""
 
-    # TODO
-    return jsonify([])
+    # DONE
+    # output a JSON array of objects,
+    # each of which represents an article for geo,
+    # whereby geo is passed into /articles as a GET parameter.
+
+    # ERROR HANDLERS
+    # Ensure we get a valid geo
+    # if request.method == "GET":
+    #     if not request.form.get("geo"):
+
+    # Lookup a list of articles
+    articles = lookup(request.args.get("geo"))
+
+
+    return jsonify([articles])
 
 @app.route("/search")
 def search():
     """Search for places that match query."""
 
     # TODO
+    # output a JSON array of objects,
+    # each of which represents a row from places that somehow matches the value of q.
+
+
+
+
     return jsonify([])
 
 @app.route("/update")
