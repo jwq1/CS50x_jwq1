@@ -57,10 +57,14 @@ def search():
     # output a JSON array of objects,
     # each of which represents a row from places that somehow matches the value of q.
 
+    # get name of place (postal code or city/town name accepted)
+    q = request.args.get("q") + "%"
 
+    # find matches for the location in search
+    location_searched = db.execute("SELECT * FROM places WHERE postal_code LIKE :q", q=q)
 
-
-    return jsonify([])
+    # return JSON array of objects
+    return jsonify([location_searched])
 
 @app.route("/update")
 def update():
