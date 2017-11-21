@@ -47,7 +47,7 @@ def articles():
     articles = lookup(request.args.get("geo"))
 
 
-    return jsonify([articles])
+    return jsonify(articles)
 
 @app.route("/search")
 def search():
@@ -64,7 +64,7 @@ def search():
     location_searched = db.execute("SELECT * FROM places WHERE place_name LIKE :q OR postal_code LIKE :q LIMIT 10", q=q)
 
     # return JSON array of objects
-    return jsonify([location_searched])
+    return jsonify(location_searched)
 
 @app.route("/update")
 def update():
