@@ -88,6 +88,7 @@ function configure()
     });
 
     // configure typeahead
+    // Reference CS50 Stack Exchange: https://cs50.stackexchange.com/questions/25201/pset-8-search-and-configure-functions/25202#25202
     $("#q").typeahead({
         highlight: false,
         minLength: 1
@@ -99,7 +100,7 @@ function configure()
         templates: {
             suggestion: Handlebars.compile(
                 "<div>" +
-                "TODO" +
+                "{{place_name}}, {{admin_name1}}, {{postal_code}}" +
                 "</div>"
             )
         }
