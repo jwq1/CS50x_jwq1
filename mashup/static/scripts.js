@@ -83,31 +83,51 @@ function addMarker(place)
        label: labels[labelIndex++ % labels.length]
     });
 
+    // Test Info Window Content 1
+    var contentString = '<div id = articleList>' +
+        '<ul>' +
+        '<li><a href=http://www.johnwilliamquinn.com>John Quinn\'s Website</a></li>' +
+        '</ul>' +
+        '</div>';
+
+    // // show info
+    // var infoWindow = showInfo(marker, contentString);
 
 
-    // var contentString = 'Cambridge Massachusetts is home to Harvard and MIT'
-    var contentString = '<div id="content">'+
-            '<div id="siteNotice">'+
-            '</div>'+
-            '<h1 id="firstHeading" class="firstHeading">Cambridge, Massachusetts</h1>'+
-            '<div id="bodyContent">'+
-            '<p><b>Cambridge</b>, is a city in Middlesex County, Massachusetts,' +
-            'and part of the Boston metropolitan area.' +
-            'Situated directly north of Boston, across the Charles River,' +
-            'it was named in honor of the University of Cambridge in the United Kingdom, ' +
-            'an important center of the Puritan theology embraced by the town\'s founders.' +
-            '</p>'+
-            '<p>Attribution: <a href="https://en.wikipedia.org/wiki/Cambridge,_Massachusetts">Cambridge, Massachusetts</a></p>'+
-            '</div>'+
-            '</div>';
+    // // Test Info Window Content 1
+    // var contentString = '<div id="content">'+
+    //         '<div id="siteNotice">'+
+    //         '</div>'+
+    //         '<h1 id="firstHeading" class="firstHeading">Cambridge, Massachusetts</h1>'+
+    //         '<div id="bodyContent">'+
+    //         '<p><b>Cambridge</b>, is a city in Middlesex County, Massachusetts,' +
+    //         'and part of the Boston metropolitan area.' +
+    //         'Situated directly north of Boston, across the Charles River,' +
+    //         'it was named in honor of the University of Cambridge in the United Kingdom, ' +
+    //         'an important center of the Puritan theology embraced by the town\'s founders.' +
+    //         '</p>'+
+    //         '<p>Attribution: <a href="https://en.wikipedia.org/wiki/Cambridge,_Massachusetts">Cambridge, Massachusetts</a></p>'+
+    //         '</div>'+
+    //         '</div>';
 
-    var infowindow = new google.maps.InfoWindow({
-      content: contentString
-    });
+    // // Create info window with contentString
+    // var infowindow = new google.maps.InfoWindow({
+    //   content: contentString
+    // });
 
+    // // Open info window when marker is clicked
+    // marker.addListener('click', function() {
+    //   infowindow.open(map, marker);
+    // });
+
+    // Open info window when marker is clicked
     marker.addListener('click', function() {
-      infowindow.open(map, marker);
+      showInfo(marker, contentString)
     });
+
+    // // Remove marker when new search is run
+    // marker.setMap(null);
+
 }
 
 /**
@@ -238,6 +258,7 @@ function showInfo(marker, content)
 
     // open info window (if not already open)
     info.open(map, marker);
+
 }
 
 /**
