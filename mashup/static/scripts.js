@@ -34,10 +34,13 @@ $(function() {
 
     ];
 
+    // Make a variable for place
+    map_placement_LatLng = {lat: 42.3770, lng: -71.1256}
+
     // options for map
     // https://developers.google.com/maps/documentation/javascript/reference#MapOptions
     var options = {
-        center: {lat: 37.4236, lng: -122.1619}, // Stanford, California
+        center: map_placement_LatLng, // Cambridge, Massachusetts
         disableDefaultUI: true,
         mapTypeId: google.maps.MapTypeId.ROADMAP,
         maxZoom: 14,
@@ -56,6 +59,9 @@ $(function() {
     // configure UI once Google Map is idle (i.e., loaded)
     google.maps.event.addListenerOnce(map, "idle", configure);
 
+    // Add marker to map
+    var marker = addMarker(map_placement_LatLng);
+
 });
 
 /**
@@ -64,6 +70,49 @@ $(function() {
 function addMarker(place)
 {
     // TODO
+
+    var marker = new google.maps.Marker({
+       position: place,
+       map: map,
+       title: 'Cambridge, MA, 02138'
+    });
+
+
+
+
+    // var contentString = '<div id="content">'+
+    //         '<div id="siteNotice">'+
+    //         '</div>'+
+    //         '<h1 id="firstHeading" class="firstHeading">{{place_name}}</h1>'+
+    //         '<div id="bodyContent">'+
+    //         '<p><b>{{place_name}}</b>, also referred to as <b>Ayers Rock</b>, is a large ' +
+    //         'sandstone rock formation in the southern part of the '+
+    //         'Northern Territory, central Australia. It lies 335&#160;km (208&#160;mi) '+
+    //         'south west of the nearest large town, Alice Springs; 450&#160;km '+
+    //         '(280&#160;mi) by road. Kata Tjuta and Uluru are the two major '+
+    //         'features of the Uluru - Kata Tjuta National Park. Uluru is '+
+    //         'sacred to the Pitjantjatjara and Yankunytjatjara, the '+
+    //         'Aboriginal people of the area. It has many springs, waterholes, '+
+    //         'rock caves and ancient paintings. Uluru is listed as a World '+
+    //         'Heritage Site.</p>'+
+    //         '<p>Attribution: Uluru, <a href="https://en.wikipedia.org/wiki/Cambridge,_Massachusetts"></p>'+
+    //         '</div>'+
+    //         '</div>';
+
+    //     var infowindow = new google.maps.InfoWindow({
+    //       content: contentString
+    //     });
+
+        // var marker = new google.maps.Marker({
+        //   position:  {lat: 42.3770, lng: -71.1256};
+        //   map: map,
+        //   title: '{{place_name}}, {{admin_name1}}',
+        //   draggable: false,
+        //   animation: google.maps.Animation.DROP
+        // });
+    //     marker.addListener('click', function() {
+    //       infowindow.open(map, marker);
+    //     });
 }
 
 /**
@@ -88,6 +137,7 @@ function configure()
     });
 
     // configure typeahead
+    // Reference CS50 Stack Exchange: https://cs50.stackexchange.com/questions/25201/pset-8-search-and-configure-functions/25202#25202
     $("#q").typeahead({
         highlight: false,
         minLength: 1
@@ -99,7 +149,7 @@ function configure()
         templates: {
             suggestion: Handlebars.compile(
                 "<div>" +
-                "TODO" +
+                "{{place_name}}, {{admin_name1}}, {{postal_code}}" +
                 "</div>"
             )
         }
@@ -123,8 +173,8 @@ function configure()
     // re-enable ctrl- and right-clicking (and thus Inspect Element) on Google Map
     // https://chrome.google.com/webstore/detail/allow-right-click/hompjdfbfmmmgflfjdlnkohcplmboaeo?hl=en
     document.addEventListener("contextmenu", function(event) {
-        event.returnValue = true; 
-        event.stopPropagation && event.stopPropagation(); 
+        event.returnValue = true;
+        event.stopPropagation && event.stopPropagation();
         event.cancelBubble && event.cancelBubble();
     }, true);
 
@@ -154,7 +204,7 @@ function search(query, syncResults, asyncResults)
     };
     $.getJSON(Flask.url_for("search"), parameters)
     .done(function(data, textStatus, jqXHR) {
-     
+
         // call typeahead's callback with search results (i.e., places)
         asyncResults(data);
     })
@@ -198,7 +248,7 @@ function showInfo(marker, content)
 /**
  * Updates UI's markers.
  */
-function update() 
+function update()
 {
     // get map's bounds
     var bounds = map.getBounds();
