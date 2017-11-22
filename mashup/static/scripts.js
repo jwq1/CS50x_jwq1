@@ -4,8 +4,13 @@ var map;
 // markers for map
 var markers = [];
 
+// marker labels
+var labels = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+var labelIndex = 0;
+
 // info window
 var info = new google.maps.InfoWindow();
+
 
 // execute when the DOM is fully loaded
 $(function() {
@@ -74,9 +79,9 @@ function addMarker(place)
     var marker = new google.maps.Marker({
        position: place,
        map: map,
-       title: 'Cambridge, MA, 02138'
+       title: 'Cambridge, MA, 02138',
+       label: labels[labelIndex++ % labels.length]
     });
-
 
 
 
