@@ -110,42 +110,64 @@ $(function() {
             // which is encapsulated later in this file
     google.maps.event.addListenerOnce(map, "idle", configure);
 
-    // Add marker to map
-        // add marker is a function encapsulated later in this file
-    addMarker(map_placement_LatLng);
+    // // Add marker to map
+    //     // add marker is a function encapsulated later in this file
+    //     // take-in the place argument from map_placement_LatLng
+    // addMarker(map_placement_LatLng);
+    update();
 
 });
 
 /**
  * Adds marker for place to map.
  */
+// The update() function later in the program
+// calls this addMarker function 10 times.
+// this only needs to add one marker to the map
 function addMarker(place)
 {
     // TODO
 
-    var marker = new google.maps.Marker({
-       position: place,
-       map: map,
-       title: 'Cambridge, MA, 02138',
-       label: labels[labelIndex++ % labels.length]
-    });
+    // // set parameters for Flask url_for
+    // var parameters = {
+    //     q: query
+    // };
 
-    // Test Info Window Content 1
-    var contentString = '<div id = articleList>' +
-        '<ul>' +
-        '<li><a href=http://www.johnwilliamquinn.com>John Quinn\'s Website</a></li>' +
-        '</ul>' +
-        '</div>';
-
-    // marker.addListener('search', function() {
+    // // get ten cities pseudorandomly from update function.
+    // $.getJSON(Flask.url_for("update"), parameters)
+    // .done(function(data, textStatus, jqXHR) {
+    //     // TODOs need to add markers
+    // })
+    // .fail(function(jqXHR, textStatus, errorThrown) {
+    //     console.log(errorThrown.toString());
     // });
 
+    position_LatLng = {lat: parseFloat(place.latitude), lng: parseFloat(place.longitude)}
 
-    // Open info window when marker is clicked
-    marker.addListener('click', function() {
-      showInfo(marker, contentString)
+
+    var marker = new google.maps.Marker({
+      position: position_LatLng,
+      map: map,
+      title: 'place.place_name',
+    //   label: labels[labelIndex++ % labels.length]
     });
 
+    // // Test Info Window Content 1
+    // var contentString = '<div id = articleList>' +
+    //     '<ul>' +
+    //     '<li><a href=http://www.johnwilliamquinn.com>John Quinn\'s Website</a></li>' +
+    //     '</ul>' +
+    //     '</div>';
+
+    // // marker.addListener('search', function() {
+    // // });
+
+    // // Open info window when marker is clicked
+    // marker.addListener('click', function() {
+    //   showInfo(marker, contentString)
+    // });
+
+    return(marker)
 
 }
 
@@ -415,6 +437,7 @@ function update()
        for (var i = 0; i < data.length; i++)
        {
            addMarker(data[i]);
+           console.log(data[i]);
        }
     })
     .fail(function(jqXHR, textStatus, errorThrown) {
