@@ -140,42 +140,43 @@ function addMarker(place)
 
     markers.push(marker);
 
-    marker.addListener('click', function() {
-        showInfo(marker, 'TODO');
+
+
+
+    // get list of articles
+    var parameters = {
+        geo: place.postal_code
+
+    };
+
+
+    var contentJSON = $.getJSON(Flask.url_for("articles"), parameters)
+    .done(function(data, textStatus, jqXHR) {
+
+        // // Get content
+        // contentString =
+        // '<p> <a href='+String(articles.link)+'>' +
+        // String(articles.title) + '</a>' +
+        // '</p>'
+
+        contentString = '<p>' + jqXHR.responseJSON[0].link  + '</p>'
+        // console.log(jqXHR);
+        // console.log(data);
+        // console.log(textStatus);
+        for (var i = 0; i < jqXHR.responseJSON.length; i++) {
+            console.log(jqXHR.responseJSON[i].link);
+        }
+    })
+    .fail(function(jqXHR, textStatus, errorThrown) {
+
+        // log error to browser's console
+        console.log(errorThrown.toString());
     });
 
+    marker.addListener('click', function() {
+        showInfo(marker, contentString);
+    });
 
-
-    // // get list of articles
-    // var parameters = {
-    //     q: query
-    // }
-
-    // $.getJSON(Flask.url_for("articles"), parameters)
-    // .done(function(data, textStatus, jqXHR) {
-
-    //     // Get content
-    //     contentString =
-    //     '<p> <a href='+String(articles.link)+'>' +
-    //     String(articles.title) + '</a>' +
-    //     '</p>'
-
-    //     // give infoWindow to marker
-    //     var infoWindow = new google.maps.infoWindow({
-    //         content: contentString
-    //     })
-
-    // })
-    // .fail(function(jqXHR, textStatus, errorThrown) {
-
-    //     // log error to browser's console
-    //     console.log(errorThrown.toString());
-    // });
-
-    // marker.addListener('click', function() {
-    //         // infowindow.open(map, marker);
-    //         showInfo(marker, contentString)
-    // });
 
 }
 
