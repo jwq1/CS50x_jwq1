@@ -148,7 +148,7 @@ function addMarker(place)
     var marker = new google.maps.Marker({
       position: position_LatLng,
       map: map,
-      title: 'place.place_name',
+      title: String(place.place_name),
     //   label: labels[labelIndex++ % labels.length]
     });
 
