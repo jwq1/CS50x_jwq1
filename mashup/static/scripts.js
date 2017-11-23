@@ -149,7 +149,7 @@ function addMarker(place)
       position: position_LatLng,
       map: map,
       title: String(place.place_name),
-    //   label: labels[labelIndex++ % labels.length]
+      label: labels[labelIndex++ % labels.length]
     });
 
     markers.push(marker);
@@ -410,6 +410,9 @@ function showInfo(marker, content)
  */
 function update()
 {
+    // reset label index for new markers
+    labelIndex = 0;
+
     // get map's bounds
     var bounds = map.getBounds();
     var ne = bounds.getNorthEast();
