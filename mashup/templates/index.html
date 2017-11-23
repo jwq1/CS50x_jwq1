@@ -48,7 +48,15 @@
             <!-- http://getbootstrap.com/css/#forms -->
             <form id="form">
                 <div class="form-group">
+                    <!--"label" is a tag which comes with HTML5 to label input fields-->
+                    <!--class="sr-only" is to help with screen readers-->
+                    <!--for="q" means this label is for the input with id="q"-->
                     <label class="sr-only" for="q">City, State, Postal Code</label>
+                    <!--input is a tag which can create standard input elements in the document-->
+                    <!--class="form-control" automatically receives some global styling from Bootstrap -->
+                    <!--id, names the input, which enables us to get it from javascript files-->
+                    <!--placeholder, puts text inside the input to help users-->
+                    <!--type, specifies the type of input the form will take (i.e. text)-->
                     <input class="form-control" id="q" placeholder="City, State, Postal Code" type="text"/>
                 </div>
             </form>
