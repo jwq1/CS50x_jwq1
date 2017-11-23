@@ -161,7 +161,7 @@ function addMarker(place)
 
         contentString = '<ul>';
         for (var i = 0; i < 10; i++) {
-            contentString += '<li><a href=' + jqXHR.responseJSON[i].link + '>' + jqXHR.responseJSON[i].title + '</a></li>';
+            contentString += '<li><a href=' + data[i].link + '>' + data[i].title + '</a></li>';
         }
         contentString += '</ul>';
 
