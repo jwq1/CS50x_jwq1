@@ -123,20 +123,6 @@ function addMarker(place)
 {
     // TODO
 
-    // // set parameters for Flask url_for
-    // var parameters = {
-    //     q: query
-    // };
-
-    // // get ten cities pseudorandomly from update function.
-    // $.getJSON(Flask.url_for("update"), parameters)
-    // .done(function(data, textStatus, jqXHR) {
-    //     // TODOs need to add markers
-    // })
-    // .fail(function(jqXHR, textStatus, errorThrown) {
-    //     console.log(errorThrown.toString());
-    // });
-
     // Place is an object from the database.
     // Parse our each object's latitude and longitude.
     // Turn the latitude and longitude values into a Float.
@@ -153,6 +139,43 @@ function addMarker(place)
     });
 
     markers.push(marker);
+
+    marker.addListener('click', function() {
+        showInfo(marker, 'TODO');
+    });
+
+
+
+    // // get list of articles
+    // var parameters = {
+    //     q: query
+    // }
+
+    // $.getJSON(Flask.url_for("articles"), parameters)
+    // .done(function(data, textStatus, jqXHR) {
+
+    //     // Get content
+    //     contentString =
+    //     '<p> <a href='+String(articles.link)+'>' +
+    //     String(articles.title) + '</a>' +
+    //     '</p>'
+
+    //     // give infoWindow to marker
+    //     var infoWindow = new google.maps.infoWindow({
+    //         content: contentString
+    //     })
+
+    // })
+    // .fail(function(jqXHR, textStatus, errorThrown) {
+
+    //     // log error to browser's console
+    //     console.log(errorThrown.toString());
+    // });
+
+    // marker.addListener('click', function() {
+    //         // infowindow.open(map, marker);
+    //         showInfo(marker, contentString)
+    // });
 
 }
 
@@ -310,8 +333,8 @@ function configure()
 function removeMarkers()
 {
     // TODO
-    console.log(markers)
-    console.log(markers.length);
+    // console.log(markers)
+    // console.log(markers.length);
 
     for (var i = 0; i < markers.length; i++) {
         markers[i].setMap(null);
