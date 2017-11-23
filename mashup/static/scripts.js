@@ -159,13 +159,18 @@ function addMarker(place)
         // String(articles.title) + '</a>' +
         // '</p>'
 
-        contentString = '<p>' + jqXHR.responseJSON[0].link  + '</p>'
-        // console.log(jqXHR);
-        // console.log(data);
-        // console.log(textStatus);
-        for (var i = 0; i < jqXHR.responseJSON.length; i++) {
-            console.log(jqXHR.responseJSON[i].link);
+        contentString = '<ul>';
+        for (var i = 0; i < 10; i++) {
+            contentString += '<li><a href=' + jqXHR.responseJSON[i].link + '>' + jqXHR.responseJSON[i].title + '</a></li>';
         }
+        contentString += '</ul>';
+
+        // console.log(jqXHR);
+        console.log(data[0].link);
+        // console.log(textStatus);
+        // for (var i = 0; i < jqXHR.responseJSON.length; i++) {
+        //     console.log(jqXHR.responseJSON[i].link);
+        // }
     })
     .fail(function(jqXHR, textStatus, errorThrown) {
 
