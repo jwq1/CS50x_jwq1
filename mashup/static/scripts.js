@@ -241,6 +241,7 @@ function addMarker(place)
         info.setContent('<div><img alt=\'loading\' src=\'/static/ajax-loader.gif\'/></div>');
 
 
+
         // This function will be called when the callback
             // in our .getJSON method is called.
             // This code design ensures we only ask for the content
@@ -258,7 +259,12 @@ function addMarker(place)
             // References:
             // http://recurial.com/programming/understanding-callback-functions-in-javascript/
         getArticles(parameters, function(content) {
-            info.setContent(content);
+            if (typeof(content) == "undefined") {
+                info.setContent('no articles for this location');
+            } else {
+                info.setContent(content);
+            }
+
         });
 
        info.open(map, marker);
