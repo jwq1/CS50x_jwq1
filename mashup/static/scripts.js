@@ -139,17 +139,39 @@ function addMarker(place)
     var contentJSON = $.getJSON(Flask.url_for("articles"), parameters)
     .done(function(data, textStatus, jqXHR) {
 
-        contentString = '<div>'
-        contentString += '<ul>';
-        for (var i = 0; i < 10; i++) {
-            contentString += '<li><a href=' + data[i].link + '>' + data[i].title + '</a></li>';
-        }
-        contentString += '</ul></div>';
+        // var contentString = '<div>'
+        // contentString += '<ul>';
+        // for (var i = 0; i < 10; i++) {
+        //     contentString += '<li><a href=' + data[i].link + '>' + data[i].title + '</a></li>';
+        // }
+        // contentString += '</ul></div>';
 
-        infoWindowContent.push(contentString);
+        // infoWindowContent.push(contentString);
 
         // info.setContent(contentString);
         // info.setContent(infoWindowContent[markersIndex]);
+
+        var contentString = '<div>'
+        contentString += '<ul>';
+        $.each(data, function (index, object) {
+            $.each(data[index], function (key, value)  {
+                if (key == "link") {
+                    contentString += '<li><a href=' + value + '>';
+                } else if (key == "title") {
+                    contentString += value + '</a></li>';
+                }
+            });
+        });
+        contentString += '</ul></div>';
+
+        console.log(contentString);
+
+
+        infoWindowContent.push(contentString);
+
+
+
+
 
         // console.log(jqXHR);
 
