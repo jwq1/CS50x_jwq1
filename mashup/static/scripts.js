@@ -13,9 +13,15 @@ var labels = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
 // it enables the system to label each marker alphabetically
 var labelIndex = 0;
 
+// count which marker we are on
+var markersIndex = 0;
+
 // info window
 // a reference to an "info window" in which we’ll ultimately display links to articles.
 var info = new google.maps.InfoWindow();
+
+// info's content
+var infoWindowContent = [];
 
 
 // execute when the DOM is fully loaded
@@ -131,15 +137,34 @@ function addMarker(place)
     // LatLngLiteral Object Specification: https://developers.google.com/maps/documentation/javascript/reference
     position_LatLng = {lat: parseFloat(place.latitude), lng: parseFloat(place.longitude)}
 
+    // var marker = new google.maps.Marker({
+    //   position: position_LatLng,
+    //   map: map,
+    //   title: String(place.place_name),
+    //   label: labels[labelIndex++ % labels.length],
+    // //   draggable: true
+    // });
+
+    // markers.push(marker);
+
+    // marker = null;
+
+    info.setContent('test');
+
     var marker = new google.maps.Marker({
       position: position_LatLng,
       map: map,
       title: String(place.place_name),
-      label: labels[labelIndex++ % labels.length]
+      label: labels[labelIndex++ % labels.length],
+    //   draggable: true
     });
 
-    markers.push(marker);
+    // markers.push(marker);
 
+
+    marker.addListener('click', function() {
+       info.open(map, marker);
+    });
 
 
 
@@ -165,12 +190,28 @@ function addMarker(place)
         }
         contentString += '</ul>';
 
+        infoWindowContent.push(contentString);
+
         // console.log(jqXHR);
-        console.log(data[0].link);
-        // console.log(textStatus);
-        // for (var i = 0; i < jqXHR.responseJSON.length; i++) {
-        //     console.log(jqXHR.responseJSON[i].link);
+
+        // // Check data output
+        // for (var i = 0; i < 1; i++) {
+        //     console.log('data[', i, ']');
+        //     console.log(data[i]);
         // }
+
+        // // Check textStatus output
+        // console.log(textStatus);
+
+        // // Check jqXHR.responseJSON output
+        // for (var i = 0; i < 1; i++) {
+        //     console.log('jqXHR.responseJSON[', i, ']');
+        //     console.log(jqXHR.responseJSON[i]);
+        // }
+
+        // showInfo(markers[markersIndex], contentString);
+        // info = {content: contentString, position: markers[markersIndex]}
+
     })
     .fail(function(jqXHR, textStatus, errorThrown) {
 
@@ -178,10 +219,24 @@ function addMarker(place)
         console.log(errorThrown.toString());
     });
 
-    marker.addListener('click', function() {
-        showInfo(marker, contentString);
-    });
+    // markers[].addListener('click', function() {
+    //     showInfo(markers[markersIndex], contentString);
+    // });
 
+    // for (var i = 0; i < markers.length; i++) {
+    //     markers[i].addListener('click', function() {
+    //       showInfo(markers[i], infoWindowContent[i] )
+    //     });
+    // }
+
+
+        // console.log(markers);
+        // console.log(infoWindowContent);
+        // console.log(marker);
+        // console.log(markersIndex);
+
+    // count which marker we are on
+    markersIndex += 1;
 
 }
 
@@ -347,6 +402,12 @@ function removeMarkers()
     }
 
     markers = [];
+
+    // reset marker index
+    markersIndex = 0;
+
+    // reset info window content array
+    infoWindowContent = [];
 
 }
 
