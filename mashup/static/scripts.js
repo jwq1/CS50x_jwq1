@@ -200,7 +200,7 @@ function addMarker(place)
     //   draggable: true
     });
 
-    // markers.push(marker);
+    markers.push(marker);
 
     // showInfo(marker, contentString);
 
