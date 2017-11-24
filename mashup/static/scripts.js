@@ -244,9 +244,9 @@ function addMarker(place)
     // info.setContent('test ' + markersIndex + ' iteration');
     // console.log(info);
 
-    // var info = new google.maps.InfoWindow({
-    //     content: 'test '+ markersIndex + ' iteration'
-    // })
+    var info = new google.maps.InfoWindow({
+        content: 'test '+ markersIndex + ' iteration'
+    })
 
     // Place is an object from the database.
     // Parse our each object's latitude and longitude.
