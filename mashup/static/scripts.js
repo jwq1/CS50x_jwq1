@@ -135,69 +135,91 @@ function addMarker(place)
 
     };
 
+    function getArticles(parameters, callback) {
+        $.getJSON(Flask.url_for("articles"), parameters)
+        .done(function(data, textStatus, jqXHR) {
 
-    var contentJSON = $.getJSON(Flask.url_for("articles"), parameters)
-    .done(function(data, textStatus, jqXHR) {
+            // var contentString = '<div>'
+            // contentString += '<ul>';
+            // for (var i = 0; i < 10; i++) {
+            //     contentString += '<li><a href=' + data[i].link + '>' + data[i].title + '</a></li>';
+            // }
+            // contentString += '</ul></div>';
 
-        // var contentString = '<div>'
-        // contentString += '<ul>';
-        // for (var i = 0; i < 10; i++) {
-        //     contentString += '<li><a href=' + data[i].link + '>' + data[i].title + '</a></li>';
-        // }
-        // contentString += '</ul></div>';
+            // infoWindowContent.push(contentString);
 
-        // infoWindowContent.push(contentString);
+            // info.setContent(contentString);
+            // info.setContent(infoWindowContent[markersIndex]);
 
-        // info.setContent(contentString);
-        // info.setContent(infoWindowContent[markersIndex]);
 
-        var contentString = '<div>'
-        contentString += '<ul>';
-        $.each(data, function (index, object) {
-            $.each(data[index], function (key, value)  {
-                if (key == "link") {
-                    contentString += '<li><a href=' + value + '>';
-                } else if (key == "title") {
-                    contentString += value + '</a></li>';
-                }
+            // Variable used to store content for info window.
+            // Content for the info window must come in the form of an html div
+            var contentString = '<div>'
+            // Within the div begin an unordered list.
+            // The list will hold our list of articles.
+            contentString += '<ul>';
+            // .each is a method in jQuery to loop through arrays and objects
+            // The method takes two arguments, the array/object
+            // and a function indicating the index/object, or the key/value.
+            $.each(data, function (index, object) {
+                $.each(data[index], function (key, value)  {
+                    if (key == "link") {
+                        contentString += '<li><a href=' + value + '>';
+                    } else if (key == "title") {
+                        contentString += value + '</a></li>';
+                    }
+                });
             });
+            contentString += '</ul></div>';
+
+            // We put the .getJSON method into another function.
+            // This function contains a callback as one of it's arguments
+            // Call the callback here.
+            // To undestand callbacks, click the following guide.
+            // http://recurial.com/programming/understanding-callback-functions-in-javascript/
+            callback(contentString);
+
+            // DELETE: Irrelevant, to be deleted.
+            infoWindowContent.push(contentString);
+
+
+
+            // Logs to understand the .getJSON method
+
+            // console.log(jqXHR);
+
+            // // Check data output
+            // for (var i = 0; i < 1; i++) {
+            //     console.log('data[', i, ']');
+            //     console.log(data[i]);
+            // }
+
+            // // Check textStatus output
+            // console.log(textStatus);
+
+            // // Check jqXHR.responseJSON output
+            // for (var i = 0; i < 1; i++) {
+            //     console.log('jqXHR.responseJSON[', i, ']');
+            //     console.log(jqXHR.responseJSON[i]);
+            // }
+
+
+        })
+        .fail(function(jqXHR, textStatus, errorThrown) {
+
+            // log error to browser's console
+            console.log(errorThrown.toString());
         });
-        contentString += '</ul></div>';
+    }
 
-        console.log(contentString);
+    getArticles(parameters, function(content) {
+        infoWindowArticles = content;
+        // console.log(content);
+        // console.log(markersIndex + ' ' + infoWindowArticles);
 
+        info.setContent(content);
 
-        infoWindowContent.push(contentString);
-
-
-
-
-
-        // console.log(jqXHR);
-
-        // // Check data output
-        // for (var i = 0; i < 1; i++) {
-        //     console.log('data[', i, ']');
-        //     console.log(data[i]);
-        // }
-
-        // // Check textStatus output
-        // console.log(textStatus);
-
-        // // Check jqXHR.responseJSON output
-        // for (var i = 0; i < 1; i++) {
-        //     console.log('jqXHR.responseJSON[', i, ']');
-        //     console.log(jqXHR.responseJSON[i]);
-        // }
-
-
-    })
-    .fail(function(jqXHR, textStatus, errorThrown) {
-
-        // log error to browser's console
-        console.log(errorThrown.toString());
     });
-
 
     // info.setContent('test ' + markersIndex + ' iteration');
     // console.log(info);
