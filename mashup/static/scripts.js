@@ -129,45 +129,6 @@ function addMarker(place)
 {
     // TODO
 
-    // Place is an object from the database.
-    // Parse our each object's latitude and longitude.
-    // Turn the latitude and longitude values into a Float.
-    // They start out as TEXT affinities in the database.
-    // .Marker(position: ) requires a LatLngLiteral object
-    // LatLngLiteral Object Specification: https://developers.google.com/maps/documentation/javascript/reference
-    position_LatLng = {lat: parseFloat(place.latitude), lng: parseFloat(place.longitude)}
-
-    // var marker = new google.maps.Marker({
-    //   position: position_LatLng,
-    //   map: map,
-    //   title: String(place.place_name),
-    //   label: labels[labelIndex++ % labels.length],
-    // //   draggable: true
-    // });
-
-    // markers.push(marker);
-
-    // marker = null;
-
-    info.setContent('test');
-
-    var marker = new google.maps.Marker({
-      position: position_LatLng,
-      map: map,
-      title: String(place.place_name),
-      label: labels[labelIndex++ % labels.length],
-    //   draggable: true
-    });
-
-    // markers.push(marker);
-
-
-    marker.addListener('click', function() {
-       info.open(map, marker);
-    });
-
-
-
     // get list of articles
     var parameters = {
         geo: place.postal_code
@@ -178,19 +139,17 @@ function addMarker(place)
     var contentJSON = $.getJSON(Flask.url_for("articles"), parameters)
     .done(function(data, textStatus, jqXHR) {
 
-        // // Get content
-        // contentString =
-        // '<p> <a href='+String(articles.link)+'>' +
-        // String(articles.title) + '</a>' +
-        // '</p>'
-
-        contentString = '<ul>';
+        contentString = '<div>'
+        contentString += '<ul>';
         for (var i = 0; i < 10; i++) {
             contentString += '<li><a href=' + data[i].link + '>' + data[i].title + '</a></li>';
         }
-        contentString += '</ul>';
+        contentString += '</ul></div>';
 
         infoWindowContent.push(contentString);
+
+        // info.setContent(contentString);
+        // info.setContent(infoWindowContent[markersIndex]);
 
         // console.log(jqXHR);
 
@@ -209,8 +168,6 @@ function addMarker(place)
         //     console.log(jqXHR.responseJSON[i]);
         // }
 
-        // showInfo(markers[markersIndex], contentString);
-        // info = {content: contentString, position: markers[markersIndex]}
 
     })
     .fail(function(jqXHR, textStatus, errorThrown) {
@@ -219,21 +176,37 @@ function addMarker(place)
         console.log(errorThrown.toString());
     });
 
-    // markers[].addListener('click', function() {
-    //     showInfo(markers[markersIndex], contentString);
-    // });
 
-    // for (var i = 0; i < markers.length; i++) {
-    //     markers[i].addListener('click', function() {
-    //       showInfo(markers[i], infoWindowContent[i] )
-    //     });
-    // }
+    // info.setContent('test ' + markersIndex + ' iteration');
+    // console.log(info);
 
+    var info = new google.maps.InfoWindow({
+        content: 'test '+ markersIndex + ' iteration'
+    })
 
-        // console.log(markers);
-        // console.log(infoWindowContent);
-        // console.log(marker);
-        // console.log(markersIndex);
+    // Place is an object from the database.
+    // Parse our each object's latitude and longitude.
+    // Turn the latitude and longitude values into a Float.
+    // They start out as TEXT affinities in the database.
+    // .Marker(position: ) requires a LatLngLiteral object
+    // LatLngLiteral Object Specification: https://developers.google.com/maps/documentation/javascript/reference
+    position_LatLng = {lat: parseFloat(place.latitude), lng: parseFloat(place.longitude)}
+
+    var marker = new google.maps.Marker({
+      position: position_LatLng,
+      map: map,
+      title: String(place.place_name),
+      label: labels[labelIndex++ % labels.length],
+    //   draggable: true
+    });
+
+    // markers.push(marker);
+
+    // showInfo(marker, contentString);
+
+    marker.addListener('click', function() {
+       info.open(map, marker);
+    });
 
     // count which marker we are on
     markersIndex += 1;
@@ -490,8 +463,8 @@ function showInfo(marker, content)
     // set info window's content
     info.setContent(div);
 
-    // open info window (if not already open)
-    info.open(map, marker);
+    // // open info window (if not already open)
+    // info.open(map, marker);
 
 }
 
