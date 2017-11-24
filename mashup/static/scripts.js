@@ -150,7 +150,7 @@ function addMarker(place)
             // and a function indicating the index/object, or the key/value.
             $.each(data, function (index, object) {
                 // only open 10 articles
-                if (index < 10) {
+                if (index < 5) {
                     $.each(data[index], function (key, value)  {
                         if (key == "link") {
                             contentString += '<li><a href=' + value + '>';
