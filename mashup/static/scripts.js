@@ -260,10 +260,18 @@ function addMarker(place)
       title: String(place.place_name),
       label: String(place.place_name),
       icon: {
-          path: google.maps.SymbolPath.BACKWARD_OPEN_ARROW,
-        //   path: '{{map_marker.png}}',
-          scale: 5,
-          labelOrigin: new google.maps.Point(0,3)
+
+          url: 'https://maps.gstatic.com/mapfiles/api-3/images/spotlight-poi-dotless_hdpi.png',
+          labelOrigin: new google.maps.Point(22,95),
+          // This marker is 20 pixels wide by 32 pixels high.
+          size: new google.maps.Size(44, 88),
+          // The origin for this image is (0, 0).
+          origin: new google.maps.Point(0, 0),
+          // The anchor for this image is the base of the flagpole at (0, 32).
+          anchor: new google.maps.Point(22, 79)
+
+        //   path: google.maps.SymbolPath.CIRCLE,
+
       }
     //   label: labels[labelIndex++ % labels.length]
     //   draggable: true
