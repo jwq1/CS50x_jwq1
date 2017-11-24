@@ -262,7 +262,7 @@ function addMarker(place)
       icon: {
 
           url: 'https://maps.gstatic.com/mapfiles/api-3/images/spotlight-poi-dotless_hdpi.png',
-          labelOrigin: new google.maps.Point(22,95),
+          labelOrigin: new google.maps.Point(21,95),
           // This marker is 20 pixels wide by 32 pixels high.
           size: new google.maps.Size(44, 88),
           // The origin for this image is (0, 0).
