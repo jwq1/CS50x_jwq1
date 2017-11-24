@@ -162,13 +162,19 @@ function addMarker(place)
             // The method takes two arguments, the array/object
             // and a function indicating the index/object, or the key/value.
             $.each(data, function (index, object) {
-                $.each(data[index], function (key, value)  {
-                    if (key == "link") {
-                        contentString += '<li><a href=' + value + '>';
-                    } else if (key == "title") {
-                        contentString += value + '</a></li>';
-                    }
-                });
+                // only open 10 articles
+                if (index < 10) {
+                    $.each(data[index], function (key, value)  {
+                        if (key == "link") {
+                            contentString += '<li><a href=' + value + '>';
+                        } else if (key == "title") {
+                            contentString += value + '</a></li>';
+                        }
+                    });
+                } else {
+                    // exit .each loop
+                    return false;
+                }
             });
             contentString += '</ul></div>';
 
