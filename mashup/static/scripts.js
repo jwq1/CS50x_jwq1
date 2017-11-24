@@ -234,19 +234,17 @@ function addMarker(place)
     // only after it is ready.
     // References:
     // http://recurial.com/programming/understanding-callback-functions-in-javascript/
-    getArticles(parameters, function(content) {
-        infoWindowArticles = content;
-        // console.log(content);
-        // console.log(markersIndex + ' ' + infoWindowArticles);
-        info.setContent(content);
-    });
+    // getArticles(parameters, function(content) {
+    //     infoWindowArticles = content;
+    //     // console.log(content);
+    //     // console.log(markersIndex + ' ' + infoWindowArticles);
+    //     info.setContent(content);
+    // });
 
     // info.setContent('test ' + markersIndex + ' iteration');
     // console.log(info);
 
-    var info = new google.maps.InfoWindow({
-        content: 'test '+ markersIndex + ' iteration'
-    })
+    // var info = new google.maps.InfoWindow()
 
     // Place is an object from the database.
     // Parse our each object's latitude and longitude.
@@ -260,7 +258,14 @@ function addMarker(place)
       position: position_LatLng,
       map: map,
       title: String(place.place_name),
-      label: labels[labelIndex++ % labels.length],
+      label: String(place.place_name),
+      icon: {
+          path: google.maps.SymbolPath.BACKWARD_OPEN_ARROW,
+        //   path: '{{map_marker.png}}',
+          scale: 5,
+          labelOrigin: new google.maps.Point(0,3)
+      }
+    //   label: labels[labelIndex++ % labels.length]
     //   draggable: true
     });
 
@@ -269,7 +274,16 @@ function addMarker(place)
     // showInfo(marker, contentString);
 
     marker.addListener('click', function() {
+
+        info.setContent('<div><img alt=\'loading\' src=\'/static/ajax-loader.gif\'/></div>');
+
+        getArticles(parameters, function(content) {
+            info.setContent(content);
+        });
+
        info.open(map, marker);
+       console.log(info);
+
     });
 
     // count which marker we are on
