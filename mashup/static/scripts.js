@@ -110,40 +110,76 @@ $(function() {
             // which is encapsulated later in this file
     google.maps.event.addListenerOnce(map, "idle", configure);
 
-    // Add marker to map
-        // add marker is a function encapsulated later in this file
-    addMarker(map_placement_LatLng);
 
 });
 
 /**
  * Adds marker for place to map.
  */
+// The update() function later in the program
+// calls this addMarker function 10 times.
+// this only needs to add one marker to the map
 function addMarker(place)
 {
     // TODO
 
+    // Place is an object from the database.
+    // Parse our each object's latitude and longitude.
+    // Turn the latitude and longitude values into a Float.
+    // They start out as TEXT affinities in the database.
+    // .Marker(position: ) requires a LatLngLiteral object
+    // LatLngLiteral Object Specification: https://developers.google.com/maps/documentation/javascript/reference
+    position_LatLng = {lat: parseFloat(place.latitude), lng: parseFloat(place.longitude)}
+
     var marker = new google.maps.Marker({
-       position: place,
-       map: map,
-       title: 'Cambridge, MA, 02138',
-       label: labels[labelIndex++ % labels.length]
+      position: position_LatLng,
+      map: map,
+      title: String(place.place_name),
+      label: labels[labelIndex++ % labels.length]
     });
 
-    // Test Info Window Content 1
-    var contentString = '<div id = articleList>' +
-        '<ul>' +
-        '<li><a href=http://www.johnwilliamquinn.com>John Quinn\'s Website</a></li>' +
-        '</ul>' +
-        '</div>';
-
-    // marker.addListener('search', function() {
-    // });
+    markers.push(marker);
 
 
-    // Open info window when marker is clicked
+
+
+    // get list of articles
+    var parameters = {
+        geo: place.postal_code
+
+    };
+
+
+    var contentJSON = $.getJSON(Flask.url_for("articles"), parameters)
+    .done(function(data, textStatus, jqXHR) {
+
+        // // Get content
+        // contentString =
+        // '<p> <a href='+String(articles.link)+'>' +
+        // String(articles.title) + '</a>' +
+        // '</p>'
+
+        contentString = '<ul>';
+        for (var i = 0; i < 10; i++) {
+            contentString += '<li><a href=' + data[i].link + '>' + data[i].title + '</a></li>';
+        }
+        contentString += '</ul>';
+
+        // console.log(jqXHR);
+        console.log(data[0].link);
+        // console.log(textStatus);
+        // for (var i = 0; i < jqXHR.responseJSON.length; i++) {
+        //     console.log(jqXHR.responseJSON[i].link);
+        // }
+    })
+    .fail(function(jqXHR, textStatus, errorThrown) {
+
+        // log error to browser's console
+        console.log(errorThrown.toString());
+    });
+
     marker.addListener('click', function() {
-      showInfo(marker, contentString)
+        showInfo(marker, contentString);
     });
 
 
@@ -303,6 +339,15 @@ function configure()
 function removeMarkers()
 {
     // TODO
+    // console.log(markers)
+    // console.log(markers.length);
+
+    for (var i = 0; i < markers.length; i++) {
+        markers[i].setMap(null);
+    }
+
+    markers = [];
+
 }
 
 /**
@@ -394,6 +439,9 @@ function showInfo(marker, content)
  */
 function update()
 {
+    // reset label index for new markers
+    labelIndex = 0;
+
     // get map's bounds
     var bounds = map.getBounds();
     var ne = bounds.getNorthEast();
@@ -415,6 +463,7 @@ function update()
        for (var i = 0; i < data.length; i++)
        {
            addMarker(data[i]);
+        //   console.log(data[i]);
        }
     })
     .fail(function(jqXHR, textStatus, errorThrown) {
