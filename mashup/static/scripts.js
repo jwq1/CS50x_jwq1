@@ -139,19 +139,6 @@ function addMarker(place)
         $.getJSON(Flask.url_for("articles"), parameters)
         .done(function(data, textStatus, jqXHR) {
 
-            // var contentString = '<div>'
-            // contentString += '<ul>';
-            // for (var i = 0; i < 10; i++) {
-            //     contentString += '<li><a href=' + data[i].link + '>' + data[i].title + '</a></li>';
-            // }
-            // contentString += '</ul></div>';
-
-            // infoWindowContent.push(contentString);
-
-            // info.setContent(contentString);
-            // info.setContent(infoWindowContent[markersIndex]);
-
-
             // Variable used to store content for info window.
             // Content for the info window must come in the form of an html div
             var contentString = '<div>'
@@ -218,33 +205,6 @@ function addMarker(place)
         });
     }
 
-    // This function will be called when the callback
-    // in our .getJSON method is called.
-    // This code design ensures we only ask for the content
-    // when it is ready.
-    // Note:
-    // .getJSON is asyncroneous.
-    // If to access the .getJSON data,
-    // we stored the data in a global variable.
-    // there would be no guarantee
-    // the variable would assigned it's .getJSON content
-    // when we needed it.
-    // Conclusion:
-    // This function ensures we use the .getJSON data,
-    // only after it is ready.
-    // References:
-    // http://recurial.com/programming/understanding-callback-functions-in-javascript/
-    // getArticles(parameters, function(content) {
-    //     infoWindowArticles = content;
-    //     // console.log(content);
-    //     // console.log(markersIndex + ' ' + infoWindowArticles);
-    //     info.setContent(content);
-    // });
-
-    // info.setContent('test ' + markersIndex + ' iteration');
-    // console.log(info);
-
-    // var info = new google.maps.InfoWindow()
 
     // Place is an object from the database.
     // Parse our each object's latitude and longitude.
@@ -270,21 +230,33 @@ function addMarker(place)
           // The anchor for this image is the base of the flagpole at (0, 32).
           anchor: new google.maps.Point(22, 79)
 
-        //   path: google.maps.SymbolPath.CIRCLE,
 
       }
-    //   label: labels[labelIndex++ % labels.length]
-    //   draggable: true
     });
 
     markers.push(marker);
-
-    // showInfo(marker, contentString);
 
     marker.addListener('click', function() {
 
         info.setContent('<div><img alt=\'loading\' src=\'/static/ajax-loader.gif\'/></div>');
 
+
+        // This function will be called when the callback
+            // in our .getJSON method is called.
+            // This code design ensures we only ask for the content
+            // when it is ready.
+            // Note:
+            // .getJSON is asyncroneous.
+            // If to access the .getJSON data,
+            // we stored the data in a global variable.
+            // there would be no guarantee
+            // the variable would assigned it's .getJSON content
+            // when we needed it.
+            // Conclusion:
+            // This function ensures we use the .getJSON data,
+            // only after it is ready.
+            // References:
+            // http://recurial.com/programming/understanding-callback-functions-in-javascript/
         getArticles(parameters, function(content) {
             info.setContent(content);
         });
@@ -453,8 +425,6 @@ function configure()
 function removeMarkers()
 {
     // TODO
-    // console.log(markers)
-    // console.log(markers.length);
 
     for (var i = 0; i < markers.length; i++) {
         markers[i].setMap(null);

@@ -21,6 +21,8 @@ if app.config["DEBUG"]:
 
 # configure CS50 Library to use SQLite database
 db = SQL("sqlite:///mashup.db")
+# Query used to create places table
+# CREATE TABLE places (country_code TEXT, postal_code TEXT, place_name TEXT, admin_name1 TEXT, admin_code1 TEXT, admin_name2 TEXT, admin_code2 TEXT, admin_name3 TEXT, admin_code3 TEXT, latitude NUMERIC, longitude NUMERIC, accuracy INTEGER)
 
 @app.route("/")
 def index():
@@ -54,6 +56,10 @@ def search():
     """Search for places that match query."""
 
     # TODO
+
+    # Query used to create places table
+    # CREATE TABLE places (country_code TEXT, postal_code TEXT, place_name TEXT, admin_name1 TEXT, admin_code1 TEXT, admin_name2 TEXT, admin_code2 TEXT, admin_name3 TEXT, admin_code3 TEXT, latitude NUMERIC, longitude NUMERIC, accuracy INTEGER)
+
     # output a JSON array of objects,
     # each of which represents a row from places that somehow matches the value of q.
 
@@ -63,9 +69,6 @@ def search():
     # find matches for the location in search
     location_searched = db.execute("SELECT * FROM places WHERE place_name LIKE :q OR postal_code LIKE :q OR admin_name1 LIKE :q LIMIT 10", q=q)
 
-    # postal_code_search = db.execute("SELECT * FROM places WHERE postal_code LIKE :q LIMIT 10", q=q)
-
-    # location_searched.append()
 
     # return JSON array of objects
     return jsonify(location_searched)
