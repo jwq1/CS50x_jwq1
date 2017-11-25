@@ -61,6 +61,12 @@
         var marker = new google.maps.Marker({
           position: uluru,
           map: map,
+          label: 'Uluru',
+          icon: {
+            path: google.maps.SymbolPath.DEFAULT,
+            scale: 10,
+            labelOrigin: (2,2)
+          },
           title: 'Uluru (Ayers Rock)',
           draggable: false,
           animation: google.maps.Animation.DROP

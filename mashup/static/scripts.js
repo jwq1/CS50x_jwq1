@@ -13,9 +13,15 @@ var labels = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
 // it enables the system to label each marker alphabetically
 var labelIndex = 0;
 
+// count which marker we are on
+var markersIndex = 0;
+
 // info window
 // a reference to an "info window" in which we’ll ultimately display links to articles.
 var info = new google.maps.InfoWindow();
+
+// info's content
+var infoWindowContent = [];
 
 
 // execute when the DOM is fully loaded
@@ -123,6 +129,83 @@ function addMarker(place)
 {
     // TODO
 
+    // get list of articles
+    var parameters = {
+        geo: place.postal_code
+
+    };
+
+    function getArticles(parameters, callback) {
+        $.getJSON(Flask.url_for("articles"), parameters)
+        .done(function(data, textStatus, jqXHR) {
+
+            // Variable used to store content for info window.
+            // Content for the info window must come in the form of an html div
+            var contentString = '<div>'
+            // Within the div begin an unordered list.
+            // The list will hold our list of articles.
+            contentString += '<ul>';
+            // .each is a method in jQuery to loop through arrays and objects
+            // The method takes two arguments, the array/object
+            // and a function indicating the index/object, or the key/value.
+            $.each(data, function (index, object) {
+                // only open 10 articles
+                if (index < 5) {
+                    $.each(data[index], function (key, value)  {
+                        if (key == "link") {
+                            contentString += '<li><a href=' + value + '>';
+                        } else if (key == "title") {
+                            contentString += value + '</a></li>';
+                        }
+                    });
+                } else {
+                    // exit .each loop
+                    return false;
+                }
+            });
+            contentString += '</ul></div>';
+
+            // We put the .getJSON method into another function.
+            // This function contains a callback as one of it's arguments
+            // Call the callback here.
+            // To undestand callbacks, click the following guide.
+            // http://recurial.com/programming/understanding-callback-functions-in-javascript/
+            callback(contentString);
+
+            // DELETE: Irrelevant, to be deleted.
+            infoWindowContent.push(contentString);
+
+
+
+            // Logs to understand the .getJSON method
+
+            // console.log(jqXHR);
+
+            // // Check data output
+            // for (var i = 0; i < 1; i++) {
+            //     console.log('data[', i, ']');
+            //     console.log(data[i]);
+            // }
+
+            // // Check textStatus output
+            // console.log(textStatus);
+
+            // // Check jqXHR.responseJSON output
+            // for (var i = 0; i < 1; i++) {
+            //     console.log('jqXHR.responseJSON[', i, ']');
+            //     console.log(jqXHR.responseJSON[i]);
+            // }
+
+
+        })
+        .fail(function(jqXHR, textStatus, errorThrown) {
+
+            // log error to browser's console
+            console.log(errorThrown.toString());
+        });
+    }
+
+
     // Place is an object from the database.
     // Parse our each object's latitude and longitude.
     // Turn the latitude and longitude values into a Float.
@@ -135,53 +218,62 @@ function addMarker(place)
       position: position_LatLng,
       map: map,
       title: String(place.place_name),
-      label: labels[labelIndex++ % labels.length]
+      label: String(place.place_name),
+      icon: {
+
+          url: 'https://maps.gstatic.com/mapfiles/api-3/images/spotlight-poi-dotless_hdpi.png',
+          labelOrigin: new google.maps.Point(21,95),
+          // This marker is 20 pixels wide by 32 pixels high.
+          size: new google.maps.Size(44, 88),
+          // The origin for this image is (0, 0).
+          origin: new google.maps.Point(0, 0),
+          // The anchor for this image is the base of the flagpole at (0, 32).
+          anchor: new google.maps.Point(22, 79)
+
+
+      }
     });
 
     markers.push(marker);
 
-
-
-
-    // get list of articles
-    var parameters = {
-        geo: place.postal_code
-
-    };
-
-
-    var contentJSON = $.getJSON(Flask.url_for("articles"), parameters)
-    .done(function(data, textStatus, jqXHR) {
-
-        // // Get content
-        // contentString =
-        // '<p> <a href='+String(articles.link)+'>' +
-        // String(articles.title) + '</a>' +
-        // '</p>'
-
-        contentString = '<ul>';
-        for (var i = 0; i < 10; i++) {
-            contentString += '<li><a href=' + data[i].link + '>' + data[i].title + '</a></li>';
-        }
-        contentString += '</ul>';
-
-        // console.log(jqXHR);
-        console.log(data[0].link);
-        // console.log(textStatus);
-        // for (var i = 0; i < jqXHR.responseJSON.length; i++) {
-        //     console.log(jqXHR.responseJSON[i].link);
-        // }
-    })
-    .fail(function(jqXHR, textStatus, errorThrown) {
-
-        // log error to browser's console
-        console.log(errorThrown.toString());
-    });
-
     marker.addListener('click', function() {
-        showInfo(marker, contentString);
+
+        info.setContent('<div><img alt=\'loading\' src=\'/static/ajax-loader.gif\'/></div>');
+
+
+
+        // This function will be called when the callback
+            // in our .getJSON method is called.
+            // This code design ensures we only ask for the content
+            // when it is ready.
+            // Note:
+            // .getJSON is asyncroneous.
+            // If to access the .getJSON data,
+            // we stored the data in a global variable.
+            // there would be no guarantee
+            // the variable would assigned it's .getJSON content
+            // when we needed it.
+            // Conclusion:
+            // This function ensures we use the .getJSON data,
+            // only after it is ready.
+            // References:
+            // http://recurial.com/programming/understanding-callback-functions-in-javascript/
+        getArticles(parameters, function(content) {
+            if (typeof(content) == "undefined") {
+                info.setContent('no articles for this location');
+            } else {
+                info.setContent(content);
+            }
+
+        });
+
+       info.open(map, marker);
+       console.log(info);
+
     });
 
+    // count which marker we are on
+    markersIndex += 1;
 
 }
 
@@ -339,14 +431,18 @@ function configure()
 function removeMarkers()
 {
     // TODO
-    // console.log(markers)
-    // console.log(markers.length);
 
     for (var i = 0; i < markers.length; i++) {
         markers[i].setMap(null);
     }
 
     markers = [];
+
+    // reset marker index
+    markersIndex = 0;
+
+    // reset info window content array
+    infoWindowContent = [];
 
 }
 
@@ -429,8 +525,8 @@ function showInfo(marker, content)
     // set info window's content
     info.setContent(div);
 
-    // open info window (if not already open)
-    info.open(map, marker);
+    // // open info window (if not already open)
+    // info.open(map, marker);
 
 }
 
