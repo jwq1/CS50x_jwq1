@@ -60,7 +60,7 @@ def login():
 
         # ensure username was submitted
         if not request.form.get("username"):
-            return apology("must provide username")
+            return apology("must provide username or email")
 
         # ensure password was submitted
         elif not request.form.get("password"):
@@ -75,7 +75,7 @@ def login():
 
         # ensure username exists and password is correct
         if len(rows) != 1 or not pwd_context.verify(request.form.get("password"), rows[0]["hash"]):
-            return apology("invalid username and/or password")
+            return apology("invalid username/email or password")
 
         # remember which user has logged in
         session["user_id"] = rows[0]["id"]
@@ -163,6 +163,9 @@ def register():
 
         # ensure password_confirmation was submitted
         elif not request.form.get("password_confirmation"):
+            return apology("passwords did not match")
+
+        elif request.form.get("password") != request.form.get("password_confirmation"):
             return apology("passwords did not match")
 
         try:
