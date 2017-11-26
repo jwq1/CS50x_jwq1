@@ -1,0 +1,62 @@
+<!--Final Project | index | (jwq1)-->
+
+{% extends "layout.html" %}
+
+{% block title %}
+    Homepage
+{% endblock %}
+
+{% block head %}
+
+    <!--COMMENTED OUT CODE FOR LATER: STOCK PURCHASE CONFIRMATION-->
+    <!--<head>-->
+    <!--    <div class="alert alert-info" role="alert">-->
+    <!--        Bought!-->
+    <!--    </div>-->
+
+    <!--</head>-->
+
+{% endblock %}
+
+{% block main %}
+
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>Symbol</th>
+                <th>Shares</th>
+                <th>Price</th>
+                <th>TOTAL</th>
+            </tr>
+        </thead>
+        <tfoot>
+            <tr>
+                <td colspan="3"></td>
+                <td>{{total_assets}}</td>
+            </tr>
+        </tfoot>
+        <tbody>
+
+            {% for stock in range(count_stock) %}
+                <tr>
+                    <td>{{user_assets[stock]["symbol"]}}</td>
+                    <td>{{user_assets[stock]["shares"]}}</td>
+                    <td>{{current_price[stock]}}</td>
+                    <td>{{stock_ownership[stock]}}</td>
+                </tr>
+
+            {% endfor %}
+
+            <tr>
+                <td>CASH</td>
+                <td></td>
+                <td></td>
+                <td>{{cash_holdings}}</td>
+            </tr>
+
+{% endblock %}
+
+
+
+
+
