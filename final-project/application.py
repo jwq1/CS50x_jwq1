@@ -44,10 +44,27 @@ def index():
     # keep user logged in
     session.get("user_id")
 
-    """Render map."""
-    if not os.environ.get("API_KEY"):
-        raise RuntimeError("API_KEY not set")
-    return render_template("index.html", key=os.environ.get("API_KEY"))
+    return apology("TODO")
+
+
+@app.route("/categories")
+@login_required
+def categories():
+
+    # keep user logged in
+    session.get("user_id")
+
+    return apology("TODO")
+
+@app.route("/products")
+@login_required
+def products():
+
+    # keep user logged in
+    session.get("user_id")
+
+    return apology("TODO")
+
 
 
 @app.route("/login", methods=["GET", "POST"])
