@@ -34,6 +34,9 @@ Session(app)
 # configure CS50 Library to use SQLite database
 db = SQL("sqlite:///final.db")
 
+# users table
+# CREATE TABLE users (id INTEGER PRIMARY KEY NOT NULL, username TEXT UNIQUE NOT NULL, email TEXT UNIQUE NOT NULL, hash TEXT NOT NULL, first TEXT, last TEXT);
+
 @app.route("/")
 @login_required
 def index():
@@ -46,7 +49,6 @@ def index():
         raise RuntimeError("API_KEY not set")
     return render_template("index.html", key=os.environ.get("API_KEY"))
 
-# @app.route("/articles", methods=["GET", "POST"])
 
 @app.route("/login", methods=["GET", "POST"])
 def login():
@@ -170,8 +172,8 @@ def register():
 
         try:
             # create row in database for username
-            rows = db.execute("INSERT INTO 'users' ('id','username','hash') VALUES (NULL, :username, :password)", username=request.form.get("username"), password=pwd_context.hash(request.form.get("password")))
-            if rows== None:
+            rows = db.execute("INSERT INTO users (email, username, hash) VALUES (:email, :username, :password)", username=request.form.get("username"), password=pwd_context.hash(request.form.get("password")), email=request.form.get("email"))
+            if rows == None:
                 return apology("username already exists")
         except RuntimeError:
             # if error with db.execute, apologize to user
