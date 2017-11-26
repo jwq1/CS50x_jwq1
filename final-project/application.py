@@ -68,7 +68,7 @@ def login():
 
         try:
             # query database for username
-            rows = db.execute("SELECT * FROM users WHERE username = :username", username=request.form.get("username"))
+            rows = db.execute("SELECT * FROM users WHERE username = :username OR email = :username", username=request.form.get("username"))
         except RuntimeError:
             # if error with db.execute, apologize to user
             return apology("Error: We'll fix this. Please try again shortly.")
