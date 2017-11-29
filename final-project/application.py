@@ -108,6 +108,7 @@ def login():
 
 
 @app.route("/password", methods=["GET", "POST"])
+@login_required
 def password():
     """Change users password"""
 
