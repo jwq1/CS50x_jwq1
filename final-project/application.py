@@ -56,13 +56,21 @@ def categories():
 
     return apology("TODO")
 
-@app.route("/products")
+@app.route("/product", methods=["GET", "POST"])
 @login_required
-def products():
+def product():
 
     # keep user logged in
     session.get("user_id")
 
+    # TODO: Handle product request (POST Method)
+
+    # TODO: Handle product request (GET Method)
+
+    # TODO: Get Product Name, Image, Description, Plastic Free, Ethically Made from the database
+
+    # TODO: Send data to product template
+    return render_template("product.html")
     return apology("TODO")
 
 
