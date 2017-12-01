@@ -81,7 +81,7 @@ def product():
         return apology("No products named " + request.args.get("product"))
 
     #Send data to product template
-    return render_template("product.html", product_name = product_info[0]["product_name"], image = product_info[0]["image"], link = product_info[0]["link"], description = product_info[0]["description"], brand = product_info[0]["brand"], price = product_info[0]["price"])
+    return render_template("product.html", product_name = product_info[0]["product_name"], image = product_info[0]["image"], link = product_info[0]["link"], description = product_info[0]["description"], brand = product_info[0]["brand"], price = usd(product_info[0]["price"]))
     return apology("TODO")
 
 
