@@ -65,7 +65,9 @@ def product():
 
     # TODO: Handle product request (POST Method)
 
+
     # TODO: Handle product request (GET Method)
+
 
     # TODO: Get Product Name, Image, Description, Plastic Free, Ethically Made from the database
 
