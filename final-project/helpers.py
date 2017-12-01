@@ -10,6 +10,11 @@ from functools import wraps
 import feedparser
 import urllib.parse
 
+from cs50 import SQL
+
+# configure CS50 Library to use SQLite database
+db = SQL("sqlite:///final.db")
+
 
 def apology(message, code=400):
     """Renders message as an apology to user."""
@@ -47,3 +52,6 @@ def usd(value):
 def usd_db(value):
     """Formats value as USD."""
     return f"{value:,.2f}"
+
+def add_test_product():
+    row = db.execute("INSERT INTO products (id, category_id, product_name, link, description, image, brand, price) VALUES (NULL, 1, 'long sleeve henley tee', 'https://wearpact.com/men/apparel/tops%20&%20shirts/long%20sleeve%20henley%20tee?id=wa1-mhe-chh', 'Made with 100% organic cotton', 'https://static.wearpact.com/img/product/men/mhe-chh-3-1505335935.jpg', 'PACT Apparel', 35)")

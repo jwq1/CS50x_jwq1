@@ -34,6 +34,9 @@ Session(app)
 # configure CS50 Library to use SQLite database
 db = SQL("sqlite:///final.db")
 
+# users table
+# CREATE TABLE users (id INTEGER PRIMARY KEY NOT NULL, username TEXT UNIQUE NOT NULL, email TEXT UNIQUE NOT NULL, hash TEXT NOT NULL, first TEXT, last TEXT);
+
 @app.route("/")
 @login_required
 def index():
@@ -41,12 +44,84 @@ def index():
     # keep user logged in
     session.get("user_id")
 
-    """Render map."""
-    if not os.environ.get("API_KEY"):
-        raise RuntimeError("API_KEY not set")
-    return render_template("index.html", key=os.environ.get("API_KEY"))
+    return apology("TODO")
 
-# @app.route("/articles", methods=["GET", "POST"])
+
+@app.route("/categories")
+@login_required
+def categories():
+
+    # keep user logged in
+    session.get("user_id")
+
+    return apology("TODO")
+
+@app.route("/product")
+# @login_required
+def product():
+
+    # keep user logged in
+    session.get("user_id")
+
+    # get name of product
+    product = "%" + request.args.get("product") + "%"
+
+    try:
+        #Get product from the database
+        product_info = db.execute("SELECT * FROM products WHERE product_name LIKE :product", product = product)
+        # Check whether products were found
+        product_check = product_info[0]
+
+    except RuntimeError:
+        # If problem with db.execute
+        return apology("Error: We'll fix this. Please try again shortly.")
+
+    except IndexError:
+        # If no products were found
+        return apology("No products named " + request.args.get("product"))
+
+    #Send data to product template
+    return render_template("product.html", product_name = product_info[0]["product_name"], image = product_info[0]["image"], link = product_info[0]["link"], description = product_info[0]["description"], brand = product_info[0]["brand"], price = usd(product_info[0]["price"]))
+    return apology("TODO")
+
+
+@app.route("/new")
+def new():
+    """Add new product"""
+
+    # remember user
+    session.get("user_id")
+
+    if request.method == "POST":
+
+        try:
+            # Add new product
+            # TODO: add request.form.get() to get parameters
+            new_product_row = db.execute("INSERT INTO products (id, category_id, product_name, link, description, image, brand, price) VALUES (NULL, 1, :product_name, :link, :description, :image, :brand, :price)", product_name = request.form.get("product_name"), link = request.form.get("link"), description = request.form.get("description"), image = request.form.get("image"), brand = request.form.get("brand"), price = request.form.get("price"))
+
+            # If a table constraint was violated
+            if new_product_row == None:
+                # render an apology
+                return apology("Something went wrong. Please try again later.")
+
+        except RuntimeError:
+            # If db.execute broke
+            return apology("Oops! We'll fix this. Please try again later.")
+
+        # TODO: create parameters to append the product page URL
+        parameters = (
+            # Set parameter to be product=[the newly created product]
+            "product=" + request.form.get("product_name")
+        )
+
+        # redirect to product page of the newly created product
+        return redirect(url_for("product"), parameters)
+
+    # else method GET
+    return render_template("new.html")
+
+    # catch all
+    return apology("TODO")
 
 @app.route("/login", methods=["GET", "POST"])
 def login():
@@ -60,7 +135,7 @@ def login():
 
         # ensure username was submitted
         if not request.form.get("username"):
-            return apology("must provide username")
+            return apology("must provide username or email")
 
         # ensure password was submitted
         elif not request.form.get("password"):
@@ -68,14 +143,14 @@ def login():
 
         try:
             # query database for username
-            rows = db.execute("SELECT * FROM users WHERE username = :username", username=request.form.get("username"))
+            rows = db.execute("SELECT * FROM users WHERE username = :username OR email = :username", username=request.form.get("username"))
         except RuntimeError:
             # if error with db.execute, apologize to user
             return apology("Error: We'll fix this. Please try again shortly.")
 
         # ensure username exists and password is correct
         if len(rows) != 1 or not pwd_context.verify(request.form.get("password"), rows[0]["hash"]):
-            return apology("invalid username and/or password")
+            return apology("invalid username/email or password")
 
         # remember which user has logged in
         session["user_id"] = rows[0]["id"]
@@ -89,6 +164,7 @@ def login():
 
 
 @app.route("/password", methods=["GET", "POST"])
+@login_required
 def password():
     """Change users password"""
 
@@ -165,10 +241,13 @@ def register():
         elif not request.form.get("password_confirmation"):
             return apology("passwords did not match")
 
+        elif request.form.get("password") != request.form.get("password_confirmation"):
+            return apology("passwords did not match")
+
         try:
             # create row in database for username
-            rows = db.execute("INSERT INTO 'users' ('id','username','hash') VALUES (NULL, :username, :password)", username=request.form.get("username"), password=pwd_context.hash(request.form.get("password")))
-            if rows== None:
+            rows = db.execute("INSERT INTO users (email, username, hash) VALUES (:email, :username, :password)", username=request.form.get("username"), password=pwd_context.hash(request.form.get("password")), email=request.form.get("email"))
+            if rows == None:
                 return apology("username already exists")
         except RuntimeError:
             # if error with db.execute, apologize to user
@@ -190,7 +269,6 @@ def register():
 def search():
     """Search for products that match query."""
 
-    # Query used to create places table
     # TODO
 
     # get name of place (postal code or city/town name accepted)

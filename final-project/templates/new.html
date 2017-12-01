@@ -1,0 +1,35 @@
+<!--Final Project | product | (jwq1)-->
+
+{% extends "layout.html" %}
+
+{% block title %}
+    Add Product
+{% endblock %}
+
+{% block main %}
+    <header>
+        <h1>Add Product</h1>
+    </header>
+    <div>
+        <form action="/new">
+            <fieldset>
+                <legend>Product Information</legend>
+                    Product name:<br>
+                    <input type="text" name="product_name" placeholder="e.g. Macbook"><br><br>
+                    Brand:<br>
+                    <input type="text" name="brand" placeholder="e.g. Apple"><br><br>
+                    Website Link:<br>
+                    <input type="url" name="link" placeholder="Link to product"><br>
+                    Image Link:<br>
+                    <input type="url" name="image" placeholder="Enter image link"><br><br>
+                    Price:<br>
+                    <input type="numeric" name="price" placeholder="e.g. $1.00"><br><br>
+                    Category:<br>
+                    <input type="text" name="category"><br>
+
+                    <input type="submit" value="Submit">
+            </fieldset>
+        </form>
+    </div>
+
+{% endblock %}

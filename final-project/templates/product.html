@@ -1,0 +1,29 @@
+<!--Final Project | product | (jwq1)-->
+
+{% extends "layout.html" %}
+
+{% block title %}
+    {{product_name}}
+{% endblock %}
+
+{% block main %}
+    <header>
+        <h1>{{product_name}}</h1><h5>{{brand}}</h5>
+    </header>
+    <img src="{{image}}" alt="Picture of {{product_name}}" height=350>
+    <div>
+        <h4>{{price}}</h4>
+    </div>
+
+    <h1>Description</h1>
+    <p>{{description}}</p>
+
+    <h2>Characteristics</h2>
+    <div>
+        <ul class = unformat>
+            <li>Plastic Free = Yes</li>
+            <li>Ethically Made = Yes</li>
+        </ul>
+    </div>
+
+{% endblock %}
