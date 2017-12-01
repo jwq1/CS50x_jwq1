@@ -85,6 +85,43 @@ def product():
     return apology("TODO")
 
 
+@app.route("/new")
+def new():
+    """Add new product"""
+
+    # remember user
+    session.get("user_id")
+
+    if request.method == "POST":
+
+        try:
+            # Add new product
+            # TODO: add request.form.get() to get parameters
+            new_product_row = db.execute("INSERT INTO products (id, category_id, product_name, link, description, image, brand, price) VALUES (NULL, 1, :product_name, :link, :description, :image, :brand, :price)", product_name = request.form.get("product_name"), link = request.form.get("link"), description = request.form.get("description"), image = request.form.get("image"), brand = request.form.get("brand"), price = request.form.get("price"))
+
+            # If a table constraint was violated
+            if new_product_row == None:
+                # render an apology
+                return apology("Something went wrong. Please try again later.")
+
+        except RuntimeError:
+            # If db.execute broke
+            return apology("Oops! We'll fix this. Please try again later.")
+
+        # TODO: create parameters to append the product page URL
+        parameters = (
+            # Set parameter to be product=[the newly created product]
+            "product=" + request.form.get("product_name")
+        )
+
+        # redirect to product page of the newly created product
+        return redirect(url_for("product"), parameters)
+
+    # else method GET
+    return render_template("new.html")
+
+    # catch all
+    return apology("TODO")
 
 @app.route("/login", methods=["GET", "POST"])
 def login():
