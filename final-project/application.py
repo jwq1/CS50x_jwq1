@@ -56,23 +56,32 @@ def categories():
 
     return apology("TODO")
 
-@app.route("/product", methods=["GET", "POST"])
-@login_required
+@app.route("/product")
+# @login_required
 def product():
 
     # keep user logged in
     session.get("user_id")
 
-    # TODO: Handle product request (POST Method)
+    # get name of product
+    product = "%" + request.args.get("product") + "%"
 
+    try:
+        #Get product from the database
+        product_info = db.execute("SELECT * FROM products WHERE product_name LIKE :product", product = product)
+        # Check whether products were found
+        product_check = product_info[0]
 
-    # TODO: Handle product request (GET Method)
+    except RuntimeError:
+        # If problem with db.execute
+        return apology("Error: We'll fix this. Please try again shortly.")
 
+    except IndexError:
+        # If no products were found
+        return apology("No products named " + request.args.get("product"))
 
-    # TODO: Get Product Name, Image, Description, Plastic Free, Ethically Made from the database
-
-    # TODO: Send data to product template
-    return render_template("product.html")
+    #Send data to product template
+    return render_template("product.html", product_name = product_info[0]["product_name"], image = product_info[0]["image"], link = product_info[0]["link"], description = product_info[0]["description"], brand = product_info[0]["brand"], price = product_info[0]["price"])
     return apology("TODO")
 
 
@@ -223,7 +232,6 @@ def register():
 def search():
     """Search for products that match query."""
 
-    # Query used to create places table
     # TODO
 
     # get name of place (postal code or city/town name accepted)
