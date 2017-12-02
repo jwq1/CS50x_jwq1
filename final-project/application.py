@@ -129,50 +129,67 @@ def new():
     # remember user
     session.get("user_id")
 
+    # Assign local variables
+    product_name=request.form.get("product_name")
+    link=request.form.get("link")
+    description=request.form.get("description")
+    image=request.form.get("image")
+    brand=request.form.get("brand")
+    price=request.form.get("price")
+
     # If user submits data for a new product, insert it into our table
     if request.method == "POST":
 
-        try:
-            # Save the new product in our products table.
-            new_product_row = db.execute(
-                    "INSERT INTO products"
-                    + " (id, category_id, product_name,"
-                    + " link, description, image, brand,"
-                    + " price)"
-                    + " VALUES (NULL, 1, :product_name,"
-                    + " :link, :description, :image,"
-                    + " :brand, :price)",
-                    product_name=request.form.get("product_name"),
-                    link=request.form.get("link"),
-                    description=request.form.get("description"),
-                    image=request.form.get("image"),
-                    brand=request.form.get("brand"),
-                    price=request.form.get("price"))
+        def save_products():
+            try:
+                # Save the new product in our products table.
+                new_product_row = db.execute(
+                        "INSERT INTO products"
+                        + " (id, category_id, product_name,"
+                        + " link, description, image, brand,"
+                        + " price)"
+                        + " VALUES (NULL, 1, :product_name,"
+                        + " :link, :description, :image,"
+                        + " :brand, :price)",
+                        product_name=product_name,
+                        link=link,
+                        description=description,
+                        image=image,
+                        brand=brand,
+                        price=price)
 
-        except RuntimeError:
-            # If db.execute broke, then return helpful error message.
-            return apology("Oops! We'll fix this. Please try again later.")
+            except RuntimeError:
+                # If db.execute broke, then return helpful error message.
+                return apology("Oops! We'll fix this. Please try again later.")
 
-        # If a table constraint was violated, render an apology.
-        if new_product_row == None:
-            return apology("Something went wrong. Please try again later.")
+            # If a table constraint was violated, render an apology.
+            if new_product_row == None:
+                return apology("Something went wrong. Please try again later.")
 
-        # TODO: Test this code to create parameters,
-        # which append the product's name to the end of the product page URL.
-        parameters = (
-            # Set parameter to be product=[the newly created product]
-            "product=" + request.form.get("product_name")
-        )
+        # Put input, in the form of a URL query parameter.
+        def make_parameter(query_input):
+            # Format the parameters to serve as query.
+            # TODO: Test why this does not work.
+            parameters = (
+                # Make "product=[parameter]" format
+                # to append after ? in URL
+                "product=" + query_input
+            )
+
+            # Return the parameters in a url query format.
+            return parameters
+
 
         # Redirect to product page of the newly created product.
         # Parameters will append to the url for "product",
         # after the ? (e.g. http://the_url/product?product=_____)
-        return redirect(url_for("product"), parameters)
+        return redirect(url_for("product"), make_parameter(product_name) )
 
     # Otherwise, render the input form for a new product.
     # The user most likely arrived to the page via GET.
     else:
         return render_template("new.html")
+
 
 
 @app.route("/login", methods=["GET", "POST"])
