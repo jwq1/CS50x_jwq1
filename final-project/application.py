@@ -66,8 +66,20 @@ def product():
     # Keep the user logged in.
     user_id = session.get("user_id")
 
-    # Get the name of the requested product.
-    product_name = "%" + request.args.get("product") + "%"
+    # Get product the user wants.
+    def get_product_query():
+
+        # Get the name of the requested product.
+        # TODO: Figure out why we never receive this,
+        # from the new.html form.
+        product_name = request.args.get("product")
+
+        # Create a parameter to search our database for similar products.
+        sql_query_parameter = "%" + product_name + "%"
+
+        # Send query parameter.
+        return sql_query_parameter
+
 
     try:
         #Search the database for the requested product.
@@ -76,7 +88,7 @@ def product():
             + "WHERE product_name "
             + "LIKE :product"
             + "LIMIT 1",
-            product_name = product_name)
+            product_name = get_product_query())
 
     except RuntimeError:
         # If problem with db.execute, then apologize.
