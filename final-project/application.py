@@ -69,14 +69,13 @@ def product():
     try:
         #Get product from the database
         product_info = db.execute("SELECT * FROM products WHERE product_name LIKE :product", product = product)
-        # Check whether products were found
-        product_check = product_info[0]
 
     except RuntimeError:
         # If problem with db.execute
         return apology("Error: We'll fix this. Please try again shortly.")
 
-    except IndexError:
+    # Make sure we found a product
+    if not product_info:
         # If no products were found
         return apology("No products named " + request.args.get("product"))
 
