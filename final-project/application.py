@@ -180,11 +180,15 @@ def new():
             return parameters
 
 
-        # Redirect to product page of the newly created product.
+        # Call the save_products method to save our products
+        save_products()
+
+        # TODO: Redirect to product page of the newly created product.
         # Parameters will append to the url for "product",
         # after the ? (e.g. http://the_url/product?product=_____)
-        # return redirect(url_for("product"), make_parameter(product_name) )
-        return redirect(url_for("product"), product_name)
+
+        # Placeholder: Redirect to the index page
+        return redirect(url_for("index"))
 
     # Otherwise, render the input form for a new product.
     # The user most likely arrived to the page via GET.
