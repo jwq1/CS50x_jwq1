@@ -129,16 +129,16 @@ def new():
     # remember user
     session.get("user_id")
 
-    # Assign local variables
-    product_name=request.form.get("product_name")
-    link=request.form.get("link")
-    description=request.form.get("description")
-    image=request.form.get("image")
-    brand=request.form.get("brand")
-    price=request.form.get("price")
-
     # If user submits data for a new product, insert it into our table
     if request.method == "POST":
+
+        # Assign local variables
+        product_name=request.form.get("product_name")
+        link=request.form.get("link")
+        description=request.form.get("description")
+        image=request.form.get("image")
+        brand=request.form.get("brand")
+        price=request.form.get("price")
 
         def save_products():
             try:
@@ -183,7 +183,8 @@ def new():
         # Redirect to product page of the newly created product.
         # Parameters will append to the url for "product",
         # after the ? (e.g. http://the_url/product?product=_____)
-        return redirect(url_for("product"), make_parameter(product_name) )
+        # return redirect(url_for("product"), make_parameter(product_name) )
+        return redirect(url_for("product"), product_name)
 
     # Otherwise, render the input form for a new product.
     # The user most likely arrived to the page via GET.
