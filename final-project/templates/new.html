@@ -11,7 +11,7 @@
         <h1>Add Product</h1>
     </header>
     <div>
-        <form action="/new">
+        <form action="{{ url_for('new') }}" method="post">
             <fieldset>
                 <legend>Product Information</legend>
                     Product name:<br>
@@ -26,8 +26,9 @@
                     <input type="numeric" name="price" placeholder="e.g. $1.00"><br><br>
                     Category:<br>
                     <input type="text" name="category"><br>
-
-                    <input type="submit" value="Submit">
+                <div class="form-group">
+                    <button class="btn btn-default" type="submit">Submit</button>
+                </div>
             </fieldset>
         </form>
     </div>
