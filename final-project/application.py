@@ -66,40 +66,54 @@ def product():
     # Keep the user logged in.
     user_id = session.get("user_id")
 
-    # Get product the user wants.
-    def get_product_query():
+    # Request product name from user.
+    def request_product():
 
-        # Get the name of the requested product.
         # TODO: Figure out why we never receive this,
         # from the new.html form.
-        product_name = request.args.get("product")
+        requested_product = request.args.get("product")
+
+        # return product name
+        return requested_product
+
+    # Create flexible query parameters.
+    def make_parameters_flexible(query_input):
 
         # Create a parameter to search our database for similar products.
-        sql_query_parameter = "%" + product_name + "%"
+        sql_query_parameter = "%" + query_input + "%"
 
         # Send query parameter.
         return sql_query_parameter
 
+    def search_product_database(product_name_parameter):
+        try:
+            #Search the database for the requested product.
+            product_data = db.execute("SELECT *"
+                + " FROM products"
+                + " WHERE product_name"
+                + " LIKE :product"
+                + " LIMIT 1",
+                product = product_name_parameter)
 
-    try:
-        #Search the database for the requested product.
-        product_info = db.execute("SELECT * "
-            + "FROM products "
-            + "WHERE product_name "
-            + "LIKE :product"
-            + "LIMIT 1",
-            product_name = get_product_query())
+        except RuntimeError:
+            # If problem with db.execute, then apologize.
+            return apology("Error: We'll fix this. Please try again shortly.")
 
-    except RuntimeError:
-        # If problem with db.execute, then apologize.
-        return apology("Error: We'll fix this. Please try again shortly.")
+        # Make sure we found a product.
+        if not product_data:
+            # If no products were found, then tell the user.
+            return apology("We do not have any products named "
+                + request_product() )
 
-    # Make sure we found a product.
-    if not product_info:
-        # If no products were found, then tell the user.
-        return apology("No products named " + request.args.get("product"))
+        # Otherwise, return information about the requested product.
+        return product_data
+
 
     # Assign local variables.
+    product_info = (
+        search_product_database(
+        make_parameters_flexible(
+        request_product() ) ) )
     product_name = product_info[0]["product_name"]
     image = product_info[0]["image"]
     link = product_info[0]["link"]
@@ -131,12 +145,12 @@ def new():
             # Save the new product in our products table.
             new_product_row = db.execute(
                     "INSERT INTO products"
-                    + "(id, category_id, product_name,"
-                    + "link, description, image, brand,"
-                    + "price)"
-                    + "VALUES (NULL, 1, :product_name,"
-                    + ":link, :description, :image,"
-                    + ":brand, :price)",
+                    + " (id, category_id, product_name,"
+                    + " link, description, image, brand,"
+                    + " price)"
+                    + " VALUES (NULL, 1, :product_name,"
+                    + " :link, :description, :image,"
+                    + " :brand, :price)",
                     product_name=request.form.get("product_name"),
                     link=request.form.get("link"),
                     description=request.form.get("description"),
@@ -197,9 +211,9 @@ def login():
             # Query database for username.
             rows = db.execute(
                     "SELECT * FROM users"
-                    + "WHERE username = :username"
-                    + "OR email = :username",
-                    username=request.form.get("username"))
+                    + " WHERE username = :username"
+                    + " OR email = :username",
+                    username=request.form.get("username") )
 
         except RuntimeError:
             # If error with db.execute, apologize to user.
@@ -234,7 +248,7 @@ def password():
     # retrieve the users current password
     users_current_password = db.execute(
             "SELECT hash FROM users"
-            + "WHERE id = :user_id",
+            + " WHERE id = :user_id",
             user_id = session.get("user_id") )
 
     # if user reached route via POST (as by submitting a form via POST)
@@ -269,7 +283,7 @@ def password():
             # Update the password in the database.
             updated_row = db.execute(
                 "UPDATE users SET hash = :password_hash"
-                + "WHERE id = :user_id",
+                + " WHERE id = :user_id",
                 user_id=user_id,
                 password_hash=password_hash)
 
