@@ -76,15 +76,6 @@ def product():
         # return product name
         return requested_product
 
-    # Create flexible query parameters.
-    def make_parameters_flexible(query_input):
-
-        # Create a parameter to search our database for similar products.
-        sql_query_parameter = "%" + query_input + "%"
-
-        # Send query parameter.
-        return sql_query_parameter
-
     def search_product_database(product_name_parameter):
         try:
             #Search the database for the requested product.

@@ -55,3 +55,12 @@ def usd_db(value):
 
 def add_test_product():
     row = db.execute("INSERT INTO products (id, category_id, product_name, link, description, image, brand, price) VALUES (NULL, 1, 'long sleeve henley tee', 'https://wearpact.com/men/apparel/tops%20&%20shirts/long%20sleeve%20henley%20tee?id=wa1-mhe-chh', 'Made with 100% organic cotton', 'https://static.wearpact.com/img/product/men/mhe-chh-3-1505335935.jpg', 'PACT Apparel', 35)")
+
+# Create flexible query parameters.
+def make_parameters_flexible(query_input):
+
+    # Create a parameter to search our database for similar products.
+    sql_query_parameter = "%" + query_input + "%"
+
+    # Send query parameter.
+    return sql_query_parameter
