@@ -7,55 +7,28 @@
 {% endblock %}
 
 {% block head %}
-
-    <!--COMMENTED OUT CODE FOR LATER: STOCK PURCHASE CONFIRMATION-->
-    <!--<head>-->
-    <!--    <div class="alert alert-info" role="alert">-->
-    <!--        Bought!-->
-    <!--    </div>-->
-
-    <!--</head>-->
-
+    HOMEPAGE
 {% endblock %}
 
 {% block main %}
 
-    <table class="table table-striped">
-        <thead>
-            <tr>
-                <th>Symbol</th>
-                <th>Shares</th>
-                <th>Price</th>
-                <th>TOTAL</th>
-            </tr>
-        </thead>
-        <tfoot>
-            <tr>
-                <td colspan="3"></td>
-                <td>{{total_assets}}</td>
-            </tr>
-        </tfoot>
-        <tbody>
+    <div id=welcome>
+        <header>
+            <h1>Welcome back {{this_username}}!</h1>
+        </header>
+    </div>
 
-            {% for stock in range(count_stock) %}
-                <tr>
-                    <td>{{user_assets[stock]["symbol"]}}</td>
-                    <td>{{user_assets[stock]["shares"]}}</td>
-                    <td>{{current_price[stock]}}</td>
-                    <td>{{stock_ownership[stock]}}</td>
-                </tr>
-
-            {% endfor %}
-
-            <tr>
-                <td>CASH</td>
-                <td></td>
-                <td></td>
-                <td>{{cash_holdings}}</td>
-            </tr>
+    <div id=recently_added_products>
+        <h3>Recent Products</h3>
+        {% for product in range(product_count) %}
+            <img src={{recent_products[product]["image"]}} height=250>
+            <div id=product_name>
+                {{recent_products[product]["product_name"]}}
+            </div>
+        {% endfor %}
+    </div>
 
 {% endblock %}
-
 
 
 
