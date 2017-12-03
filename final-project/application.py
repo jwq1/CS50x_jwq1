@@ -132,6 +132,21 @@ def new():
     # If user submits data for a new product, insert it into our table
     if request.method == "POST":
 
+        # Ensure form was submitted
+        if not request.form.get("product_name"):
+            return apology("No product name")
+        elif not request.form.get("link"):
+            return apology("No link")
+        elif not request.form.get("description"):
+            return apology("No description")
+        elif not request.form.get("image"):
+            return apology("No image")
+        elif not request.form.get("brand"):
+            return apology("No brand")
+        elif not request.form.get("price"):
+            return apology("No price")
+
+
         # Assign local variables
         product_name=request.form.get("product_name")
         link=request.form.get("link")
@@ -140,6 +155,7 @@ def new():
         brand=request.form.get("brand")
         price=request.form.get("price")
 
+        # Save this product to the database.
         def save_products():
             try:
                 # Save the new product in our products table.
@@ -159,17 +175,18 @@ def new():
                         price=price)
 
             except RuntimeError:
-                # If db.execute broke, then return helpful error message.
+                # If db.execute raises an error, return a help message.
                 return apology("Oops! We'll fix this. Please try again later.")
 
-            # If a table constraint was violated, render an apology.
+            # If the product was not saved to the table, render an apology.
             if new_product_row == None:
                 return apology("Something went wrong. Please try again later.")
 
+
+        # TODO: Test to see if this correctly formats the query
         # Put input, in the form of a URL query parameter.
         def make_parameter(query_input):
             # Format the parameters to serve as query.
-            # TODO: Test why this does not work.
             parameters = (
                 # Make "product=[parameter]" format
                 # to append after ? in URL
