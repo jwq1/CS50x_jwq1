@@ -155,6 +155,7 @@ def new():
         brand=request.form.get("brand")
         price=request.form.get("price")
 
+
         # Save this product to the database.
         def save_products():
             try:
