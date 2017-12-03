@@ -355,9 +355,17 @@ def register():
                 != request.form.get("password_confirmation") ):
             return apology("passwords did not match")
 
+        # Set local variables
+        username=request.form.get("username")
+        password=pwd_context.hash(request.form.get("password"))
+        email=request.form.get("email")
+
         try:
             # Create a row in database for the new user.
-            rows = db.execute("INSERT INTO users (email, username, hash) VALUES (:email, :username, :password)", username=request.form.get("username"), password=pwd_context.hash(request.form.get("password")), email=request.form.get("email"))
+            rows = db.execute(
+                "INSERT INTO users (email, username, hash)"
+                + " VALUES (:email, :username, :password)",
+                username=username, password=password, email=email)
             # If the username already exists, then help the user.
             if rows == None:
                 return apology("username already exists")
