@@ -69,9 +69,14 @@ def product():
     # Request product name from user.
     def request_product():
 
-        # TODO: Figure out why we never receive this,
-        # from the new.html form.
-        requested_product = request.args.get("product")
+        if not request.args.get("product"):
+            return apology("Please choose a product")
+        elif request.args.get("product") == None:
+            return apology("Please choose a product")
+        else:
+            # TODO: Figure out why we never receive this,
+            # from the new.html form.
+            requested_product = request.args.get("product")
 
         # return product name
         return requested_product
@@ -157,7 +162,17 @@ def new():
 
 
         # Save this product to the database.
-        def save_products():
+        def save_product():
+
+            product_exists = db.execute(
+                    "SELECT product_name FROM products"
+                    + " WHERE product_name = :product_name",
+                    product_name=product_name)
+
+            # If the product already exists, apologize to the user.
+            if len(product_exists) > 0:
+                return apology("Product with this name already exists.")
+
             try:
                 # Save the new product in our products table.
                 new_product_row = db.execute(
@@ -184,7 +199,9 @@ def new():
                 return apology("Something went wrong. Please try again later.")
 
 
-        # TODO: Test to see if this correctly formats the query
+        # TODO: Append these parameters to the end of
+        # Actual: ide50-jwq11.cs50.io:8080/product
+        # Expected: ide50-jwq11.cs50.io:8080/product?product=crew sweatshirt
         # Put input, in the form of a URL query parameter.
         def make_parameter(query_input):
             # Format the parameters to serve as query.
@@ -198,13 +215,10 @@ def new():
             return parameters
 
 
-        # Call the save_products method to save our products
-        save_products()
+        # Call the save_product method to save our products
+        save_product()
 
         # TODO: Redirect to product page of the newly created product.
-        # Parameters will append to the url for "product",
-        # after the ? (e.g. http://the_url/product?product=_____)
-
         # Placeholder: Redirect to the index page
         return redirect(url_for("index"))
 
