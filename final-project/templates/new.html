@@ -11,23 +11,32 @@
         <h1>Add Product</h1>
     </header>
     <div>
-        <form action="/new">
+        <form action="{{ url_for('new') }}" method="post">
             <fieldset>
-                <legend>Product Information</legend>
-                    Product name:<br>
-                    <input type="text" name="product_name" placeholder="e.g. Macbook"><br><br>
-                    Brand:<br>
-                    <input type="text" name="brand" placeholder="e.g. Apple"><br><br>
-                    Website Link:<br>
-                    <input type="url" name="link" placeholder="Link to product"><br>
-                    Image Link:<br>
-                    <input type="url" name="image" placeholder="Enter image link"><br><br>
-                    Price:<br>
-                    <input type="numeric" name="price" placeholder="e.g. $1.00"><br><br>
-                    Category:<br>
-                    <input type="text" name="category"><br>
-
-                    <input type="submit" value="Submit">
+                <div class="form-group">
+                    <input autocomplete="off" autofocus class="form-control" name="product_name" placeholder="e.g. Macbook" type="text"/>
+                </div>
+                <div class="form-group">
+                    <input autocomplete="off" autofocus class="form-control" name="brand" placeholder="e.g. Apple" type="text"/>
+                </div>
+                <div class="form-group">
+                    <input autocomplete="off" autofocus class="form-control" name="link" placeholder="e.g. apple.com/macbook" type="text"/>
+                </div>
+                <div class="form-group">
+                    <input autocomplete="off" autofocus class="form-control" name="image" placeholder="apple.com/mackbook.jpg" type="text"/>
+                </div>
+                <div class="form-group">
+                    <input autocomplete="off" autofocus class="form-control" name="price" placeholder="e.g. $1.00" type="text"/>
+                </div>
+                <div class="form-group">
+                    <input autocomplete="off" autofocus class="form-control" name="description" placeholder="e.g. Laptop with features" type="text"/>
+                </div>
+                <div class="form-group">
+                    <input autocomplete="off" autofocus class="form-control" name="category" placeholder="e.g. apparel" type="text"/>
+                </div>
+                <div class="form-group">
+                    <button class="btn btn-default" type="submit">Submit</button>
+                </div>
             </fieldset>
         </form>
     </div>
