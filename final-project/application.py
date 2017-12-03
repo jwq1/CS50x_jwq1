@@ -41,10 +41,43 @@ def index():
     """Homepage"""
 
     # Keep the user logged in
-    session.get("user_id")
+    user_id = session.get("user_id")
 
-    # TODO
-    return apology("TODO")
+    # TODO: Get the username
+    user_info = db.execute(
+            "SELECT username FROM users WHERE id = :user_id"
+            + " LIMIT 1",
+            user_id=user_id)
+
+    # Ensure user was found
+    if user_info == None:
+        return apology("You were not found in our database. Please login.")
+
+    # Get username of the current user
+    username = user_info[0]['username']
+
+    # Get the most recently added products. Limit to 2.
+    recent_products = db.execute(
+            "SELECT product_name, image"
+            + " FROM products"
+            + " ORDER BY id DESC"
+            + " LIMIT 2")
+
+    # Ensure recent products were found.
+    if recent_products == None:
+        return apology("No recent products")
+
+    # Count products returned
+    product_count = 0
+    for rows in recent_products:
+        product_count += 1
+
+    # Render the home page with the most recent products.
+    return render_template(
+            "index.html",
+            recent_products=recent_products,
+            product_count=product_count,
+            this_username=username)
 
 
 @app.route("/categories")
