@@ -80,13 +80,35 @@ def index():
             this_username=username)
 
 
-@app.route("/categories")
+@app.route("/category")
 @login_required
-def categories():
+def category():
     """Page of categories to choose from"""
 
     # keep user logged in
     session.get("user_id")
+
+    # Select list of categories from the database
+    try:
+        category_rows = db.execute("SELECT category FROM categories;")
+    except RuntimeError:
+        return apology("500 Error: Oops something went wrong.")
+
+    # Create empty list to store categories
+    category_list = []
+
+    # Get number of categories
+    number_of_categories = len(category_rows)
+
+    # Store the list categories
+    for row in range(number_of_categories):
+        category_list.append(category_rows[row]["category"])
+
+    # Render category page
+    return render_template(
+            "category.html",
+            category_list=category_list,
+            number_of_categories=number_of_categories)
 
     # TODO
     return apology("TODO")
