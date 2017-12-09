@@ -53,23 +53,44 @@ def usd_db(value):
     """Formats value as USD."""
     return f"{value:,.2f}"
 
-# Return a list of all categories
+# Return a list of all categories.
 def all_categories():
 
-    # Select list of categories from the database
+    # Select a list of categories from the database.
     category_rows = db.execute("SELECT category FROM categories;")
 
-    # Create empty list to store categories
+    # Create an empty list to store each category.
     list_of_categories = []
 
-    # Get number of categories
+    # Get the number of categories.
     category_list_length = len(category_rows)
 
-    # Store the list categories
+    # Store the list categories.
     for row in range(category_list_length):
         list_of_categories.append(category_rows[row]["category"])
 
+    # Return the list of categories.
     return list_of_categories
+
+# Find all the products in a specific category.
+def search_by_category(selected_category):
+
+    # Get the category information for the selected category.
+    category_row = db.execute("""
+            SELECT category FROM categories
+            WHERE category=:selected_category"""
+            , selected_category=selected_category)
+
+    # Save the category id.
+    category_id = category_row[0]["id"]
+
+    # Search for products with the same category id.
+    product_rows = db.execute("""
+            SELECT * FROM products WHERE category_id=:category_id"""
+            , category_id=category_id)
+
+    return product_rows
+
 
 def add_test_product():
     row = db.execute("INSERT INTO products (id, category_id, product_name, link, description, image, brand, price) VALUES (NULL, 1, 'long sleeve henley tee', 'https://wearpact.com/men/apparel/tops%20&%20shirts/long%20sleeve%20henley%20tee?id=wa1-mhe-chh', 'Made with 100% organic cotton', 'https://static.wearpact.com/img/product/men/mhe-chh-3-1505335935.jpg', 'PACT Apparel', 35)")

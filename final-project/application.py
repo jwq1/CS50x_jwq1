@@ -103,6 +103,7 @@ def category():
     # TODO
     return apology("TODO")
 
+
 @app.route("/product")
 # @login_required
 def product():
