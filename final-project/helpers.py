@@ -64,3 +64,48 @@ def make_parameters_flexible(query_input):
 
     # Send query parameter.
     return sql_query_parameter
+
+# Populate the category database (if deleted)
+def populate_categories_in_database():
+
+    db.execute("""
+        INSERT INTO 'categories'
+        ('category') VALUES
+        ('Appliances')
+        , ('Apps & Games')
+        , ('Arts, Crafts & Sewing')
+        , ('Automotive Parts & Accessories')
+        , ('Baby')
+        , ('Beauty & Personal Care')
+        , ('Books')
+        , ('Cell Phones & Accessories')
+        , ('Clothing, Shoes & Jewelry')
+        , ('Collectibles & Fine Art')
+        , ('Computers')
+        , ('Courses')
+        , ('Credit and Payment Cards')
+        , ('Digital Music')
+        , ('Electronics')
+        , ('Garden & Outdoor')
+        , ('Gift Cards')
+        , ('Grocery & Gourmet Food')
+        , ('Handmade')
+        , ('Health, Household & Baby Care')
+        , ('Home & Business Services')
+        , ('Home & Kitchen')
+        , ('Industrial & Scientific')
+        , ('Luggage & Travel Gear')
+        , ('Luxury Beauty')
+        , ('Magazine Subscriptions')
+        , ('Movies & TV')
+        , ('Musical Instruments')
+        , ('Office Products')
+        , ('Pet Supplies')
+        , ('Software')
+        , ('Sports & Outdoors')
+        , ('Tools & Home Improvement')
+        , ('Toys & Games')
+        , ('Vehicles')
+        , ('Video Games')
+        , ('Wine')
+        """)
