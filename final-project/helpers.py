@@ -67,45 +67,64 @@ def make_parameters_flexible(query_input):
 
 # Populate the category database (if deleted)
 def populate_categories_in_database():
+    row_ids = db.execute("""
+                        INSERT INTO 'categories'
+                        ('category') VALUES
+                        ('Appliances')
+                        , ('Apps & Games')
+                        , ('Arts, Crafts & Sewing')
+                        , ('Automotive Parts & Accessories')
+                        , ('Baby')
+                        , ('Beauty & Personal Care')
+                        , ('Books')
+                        , ('Cell Phones & Accessories')
+                        , ('Clothing, Shoes & Jewelry')
+                        , ('Collectibles & Fine Art')
+                        , ('Computers')
+                        , ('Courses')
+                        , ('Credit and Payment Cards')
+                        , ('Digital Music')
+                        , ('Electronics')
+                        , ('Garden & Outdoor')
+                        , ('Gift Cards')
+                        , ('Grocery & Gourmet Food')
+                        , ('Handmade')
+                        , ('Health, Household & Baby Care')
+                        , ('Home & Business Services')
+                        , ('Home & Kitchen')
+                        , ('Industrial & Scientific')
+                        , ('Luggage & Travel Gear')
+                        , ('Luxury Beauty')
+                        , ('Magazine Subscriptions')
+                        , ('Movies & TV')
+                        , ('Musical Instruments')
+                        , ('Office Products')
+                        , ('Pet Supplies')
+                        , ('Software')
+                        , ('Sports & Outdoors')
+                        , ('Tools & Home Improvement')
+                        , ('Toys & Games')
+                        , ('Vehicles')
+                        , ('Video Games')
+                        , ('Wine')
+                        """)
 
-    db.execute("""
-        INSERT INTO 'categories'
-        ('category') VALUES
-        ('Appliances')
-        , ('Apps & Games')
-        , ('Arts, Crafts & Sewing')
-        , ('Automotive Parts & Accessories')
-        , ('Baby')
-        , ('Beauty & Personal Care')
-        , ('Books')
-        , ('Cell Phones & Accessories')
-        , ('Clothing, Shoes & Jewelry')
-        , ('Collectibles & Fine Art')
-        , ('Computers')
-        , ('Courses')
-        , ('Credit and Payment Cards')
-        , ('Digital Music')
-        , ('Electronics')
-        , ('Garden & Outdoor')
-        , ('Gift Cards')
-        , ('Grocery & Gourmet Food')
-        , ('Handmade')
-        , ('Health, Household & Baby Care')
-        , ('Home & Business Services')
-        , ('Home & Kitchen')
-        , ('Industrial & Scientific')
-        , ('Luggage & Travel Gear')
-        , ('Luxury Beauty')
-        , ('Magazine Subscriptions')
-        , ('Movies & TV')
-        , ('Musical Instruments')
-        , ('Office Products')
-        , ('Pet Supplies')
-        , ('Software')
-        , ('Sports & Outdoors')
-        , ('Tools & Home Improvement')
-        , ('Toys & Games')
-        , ('Vehicles')
-        , ('Video Games')
-        , ('Wine')
-        """)
+    return row_ids
+
+# Return a list of all categories
+def all_categories():
+
+    # Select list of categories from the database
+    category_rows = db.execute("SELECT category FROM categories;")
+
+    # Create empty list to store categories
+    list_of_categories = []
+
+    # Get number of categories
+    number_of_categories = len(category_rows)
+
+    # Store the list categories
+    for row in range(number_of_categories):
+        list_of_categories.append(category_rows[row]["category"])
+
+    return list_of_categories
