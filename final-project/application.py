@@ -67,10 +67,8 @@ def index():
     if recent_products == None:
         return apology("No recent products")
 
-    # Count products returned
-    product_count = 0
-    for rows in recent_products:
-        product_count += 1
+    # Get product count
+    product_count = len(recent_products)
 
     # Render the home page with the most recent products.
     return render_template(
