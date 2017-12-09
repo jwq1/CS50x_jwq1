@@ -53,6 +53,24 @@ def usd_db(value):
     """Formats value as USD."""
     return f"{value:,.2f}"
 
+# Return a list of all categories
+def all_categories():
+
+    # Select list of categories from the database
+    category_rows = db.execute("SELECT category FROM categories;")
+
+    # Create empty list to store categories
+    list_of_categories = []
+
+    # Get number of categories
+    category_list_length = len(category_rows)
+
+    # Store the list categories
+    for row in range(category_list_length):
+        list_of_categories.append(category_rows[row]["category"])
+
+    return list_of_categories
+
 def add_test_product():
     row = db.execute("INSERT INTO products (id, category_id, product_name, link, description, image, brand, price) VALUES (NULL, 1, 'long sleeve henley tee', 'https://wearpact.com/men/apparel/tops%20&%20shirts/long%20sleeve%20henley%20tee?id=wa1-mhe-chh', 'Made with 100% organic cotton', 'https://static.wearpact.com/img/product/men/mhe-chh-3-1505335935.jpg', 'PACT Apparel', 35)")
 
@@ -110,21 +128,3 @@ def populate_categories_in_database():
                         """)
 
     return row_ids
-
-# Return a list of all categories
-def all_categories():
-
-    # Select list of categories from the database
-    category_rows = db.execute("SELECT category FROM categories;")
-
-    # Create empty list to store categories
-    list_of_categories = []
-
-    # Get number of categories
-    number_of_categories = len(category_rows)
-
-    # Store the list categories
-    for row in range(number_of_categories):
-        list_of_categories.append(category_rows[row]["category"])
-
-    return list_of_categories

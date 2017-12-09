@@ -91,6 +91,9 @@ def category():
     # Get a list of categories a user can choose from
     category_list = all_categories()
 
+    # Get number of categories
+    number_of_categories = len(category_list)
+
     # Render category page
     return render_template(
             "category.html",
