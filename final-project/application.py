@@ -97,51 +97,24 @@ def product():
     # Keep the user logged in.
     user_id = session.get("user_id")
 
-    # Request product name from user.
-    def request_product():
+    # Request a product from the user.
+    product_request = request.args.get("product")
 
-        if not request.args.get("product"):
-            return apology("Please choose a product")
-        elif request.args.get("product") == None:
-            return apology("Please choose a product")
-        else:
-            # TODO: Figure out why we never receive this,
-            # from the new.html form.
-            requested_product = request.args.get("product")
-
-        # return product name
-        return requested_product
-
-    def search_product_database(product_name_parameter):
-        try:
-            #Search the database for the requested product.
-            product_data = db.execute(""""
-                SELECT *
-                FROM products
-                WHERE product_name
-                LIKE :product
-                LIMIT 1""",
-                product = product_name_parameter)
-
-        except RuntimeError:
-            # If problem with db.execute, then apologize.
-            return apology("Error: We'll fix this. Please try again shortly.")
-
-        # Make sure we found a product.
-        if not product_data:
-            # If no products were found, then tell the user.
-            return apology("We do not have any products named "
-                + request_product() )
-
-        # Otherwise, return information about the requested product.
-        return product_data
+    # Ensure the user asked for a product.
+    if not product_request:
+        return apology("Please let us know which product you are looking for")
+    elif product_request == None:
+        return apology("Please let us know which product you are looking for")
 
 
-    # Assign local variables.
-    product_info = (
-        search_product_database(
-        make_parameters_flexible(
-        request_product() ) ) )
+    # Find our record of this product
+    product_info = find_product(product_request)
+
+    # If no product was found, then apologize.
+    if not product_info or product_info == None:
+        return apology("Sorry, we don't have information for that product")
+
+    # Assign local variables
     product_name = product_info[0]["product_name"]
     image = product_info[0]["image"]
     link = product_info[0]["link"]
