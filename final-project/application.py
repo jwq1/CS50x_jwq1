@@ -466,8 +466,15 @@ def search_category():
     products_in_category = search_by_category(users_selected_category)
 
     # Check whether any products were found
-    if products_in_category == None:
-        return apology("No product were found in " + users_selected_category)
+    if products_in_category == "not a category":
+        return apology("Unfortunately, we don't have a category"
+            + users_selected_category)
+    elif products_in_category == "no products found":
+        return apology(
+                "Unfortunately, we don't have products in the "
+                + users_selected_category
+                + " category yet. "
+                + "Please consider adding any you think should be here.")
 
     # Save the number of products in the category.
     number_of_products = len(products_in_category)

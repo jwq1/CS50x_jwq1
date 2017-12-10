@@ -83,9 +83,9 @@ def search_by_category(selected_category):
 
     # Check whether a category was found.
     if category_row == None:
-        return None
+        return "not a category"
     elif not category_row:
-        return None
+        return "not a category"
 
     # Save the category id.
     category_id = category_row[0]["id"]
@@ -97,6 +97,12 @@ def search_by_category(selected_category):
             LEFT JOIN categories ON products.category_id=categories.id
             WHERE products.category_id=:category_id;"""
             , category_id=category_id)
+
+    # Check whether products exist in this category
+    if product_rows == None:
+        return "no products found"
+    elif not product_rows:
+        return "no products found"
 
     return product_rows
 
