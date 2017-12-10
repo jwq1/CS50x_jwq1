@@ -43,7 +43,7 @@ def index():
     # Keep the user logged in
     user_id = session.get("user_id")
 
-    # TODO: Get the username
+    # Get the username
     user_info = db.execute(
             "SELECT username FROM users WHERE id = :user_id"
             + " LIMIT 1",
@@ -55,6 +55,12 @@ def index():
 
     # Get username of the current user
     username = user_info[0]['username']
+
+    # Get a list of categories a user can choose from
+    category_list = all_categories()
+
+    # Get number of categories
+    number_of_categories = len(category_list)
 
     # Get the most recently added products. Limit to 2.
     recent_products = db.execute("""
@@ -75,7 +81,9 @@ def index():
             "index.html",
             recent_products=recent_products,
             product_count=product_count,
-            this_username=username)
+            this_username=username,
+            category_list=category_list,
+            number_of_categories=number_of_categories)
 
 
 @app.route("/category")
@@ -86,21 +94,11 @@ def category():
     # keep user logged in
     session.get("user_id")
 
-    # Select list of categories from the database
-    try:
-        category_rows = db.execute("SELECT category FROM categories;")
-    except RuntimeError:
-        return apology("500 Error: Oops something went wrong.")
-
-    # Create empty list to store categories
-    category_list = []
+    # Get a list of categories a user can choose from
+    category_list = all_categories()
 
     # Get number of categories
-    number_of_categories = len(category_rows)
-
-    # Store the list categories
-    for row in range(number_of_categories):
-        category_list.append(category_rows[row]["category"])
+    number_of_categories = len(category_list)
 
     # Render category page
     return render_template(
@@ -110,6 +108,7 @@ def category():
 
     # TODO
     return apology("TODO")
+
 
 @app.route("/product")
 # @login_required
@@ -443,19 +442,48 @@ def register():
         return render_template("register.html")
 
 
-# TODO: re-write search function to search for products
+# Search for products.
 @app.route("/search")
 def search():
     """Search for products that match query."""
 
-    # TODO: Get the name of products
-    product_name = request.args.get("product") + "%"
+    # Keep the user logged in.
+    user_id = session.get("user_id")
 
-    # TODO find matches for the location in search
+    # TODO
+    return apology("TODO")
 
-    # TODO: Render a page of the searched products
-    return apology("TODO Search")
 
+# Search for products in a category requested by the user.
+@app.route("/search_category")
+def search_category():
+    """Search for products that match query."""
+
+    # Get which category the user requested.
+    users_selected_category = request.args.get("category")
+
+    # Search database for products in a given category.
+    products_in_category = search_by_category(users_selected_category)
+
+    # Check whether any products were found
+    if products_in_category == "not a category":
+        return apology("Unfortunately, we don't have a category"
+            + users_selected_category)
+    elif products_in_category == "no products found":
+        return apology(
+                "Unfortunately, we don't have products in the "
+                + users_selected_category
+                + " category yet. "
+                + "Please consider adding any you think should be here.")
+
+    # Save the number of products in the category.
+    number_of_products = len(products_in_category)
+
+    # Render a page with all the products found.
+    return render_template("category-search.html",
+        products_in_category=products_in_category,
+        number_of_products=number_of_products,
+        users_selected_category=users_selected_category)
 
 
 # TODO: re-write update function

@@ -1,0 +1,35 @@
+<!--Final Project | Category Search | (jwq1)-->
+
+{% extends "layout.html" %}
+
+{% block title %}
+    {{products_in_category[0]["category"]}} Products
+{% endblock %}
+
+{% block head %}
+    {{products_in_category[0]["category"]}} Products
+{% endblock %}
+
+{% block main %}
+
+    <div id=welcome>
+        <header>
+            <h1>{{products_in_category[0]["category"]}}</h1>
+        </header>
+    </div>
+
+    <div id=recently_added_products>
+        <h3>Products found</h3>
+        {% for product in range(number_of_products) %}
+            <img src={{products_in_category[product]["image"]}} height=125px>
+            <div id=product_name>
+                {{products_in_category[product]["product_name"]}}
+            </div>
+        {% endfor %}
+    </div>
+
+{% endblock %}
+
+
+
+
