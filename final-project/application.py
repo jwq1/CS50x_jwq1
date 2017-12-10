@@ -442,19 +442,29 @@ def register():
         return render_template("register.html")
 
 
-# TODO: re-write search function to search for products
+# Search for products in a category requested by the user.
 @app.route("/search")
-def search():
+def search_category():
     """Search for products that match query."""
 
-    # TODO: Get the name of products
-    product_name = request.args.get("product") + "%"
+    # Get which category the user requested.
+    users_selected_category = request.args.get("category")
 
-    # TODO find matches for the location in search
+    # Search database for products in a given category.
+    products_in_category = search_by_category(users_selected_category)
 
-    # TODO: Render a page of the searched products
-    return apology("TODO Search")
+    # Check whether any products were found
+    if products_in_category == None:
+        return apology("No product were found in " + users_selected_category)
 
+    # Save the number of products in the category.
+    number_of_products = len(products_in_category)
+
+    # Render a page with all the products found.
+    return render_template("category-search.html",
+        products_in_category=products_in_category,
+        number_of_products=number_of_products,
+        users_selected_category=users_selected_category)
 
 
 # TODO: re-write update function

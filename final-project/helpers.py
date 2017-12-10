@@ -77,9 +77,15 @@ def search_by_category(selected_category):
 
     # Get the category information for the selected category.
     category_row = db.execute("""
-            SELECT category FROM categories
+            SELECT id, category FROM categories
             WHERE category=:selected_category"""
-            , selected_category=selected_category)
+            , selected_category=selected_category + "%")
+
+    # Check whether a category was found.
+    if category_row == None:
+        return None
+    elif not category_row:
+        return None
 
     # Save the category id.
     category_id = category_row[0]["id"]
@@ -102,7 +108,7 @@ def add_test_product():
     'Made with 100% organic cotton',
     'https://static.wearpact.com/img/product/men/mhe-chh-3-1505335935.jpg',
     'PACT Apparel', 35)""")
-  
+
 
 # Populate the category database (if deleted)
 def populate_categories_in_database():
