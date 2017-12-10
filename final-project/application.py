@@ -442,8 +442,20 @@ def register():
         return render_template("register.html")
 
 
-# Search for products in a category requested by the user.
+# Search for products.
 @app.route("/search")
+def search():
+    """Search for products that match query."""
+
+    # Keep the user logged in.
+    user_id = session.get("user_id")
+
+    # TODO
+    return apology("TODO")
+
+
+# Search for products in a category requested by the user.
+@app.route("/search_category")
 def search_category():
     """Search for products that match query."""
 

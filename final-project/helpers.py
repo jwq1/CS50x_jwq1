@@ -92,7 +92,10 @@ def search_by_category(selected_category):
 
     # Search for products with the same category id.
     product_rows = db.execute("""
-            SELECT * FROM products WHERE category_id=:category_id"""
+            SELECT product_name, image, categories.category
+            FROM products
+            LEFT JOIN categories ON products.category_id=categories.id
+            WHERE products.category_id=:category_id;"""
             , category_id=category_id)
 
     return product_rows
