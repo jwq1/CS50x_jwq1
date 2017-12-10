@@ -93,16 +93,16 @@ def search_by_category(selected_category):
 
 
 def add_test_product():
-    row = db.execute("INSERT INTO products (id, category_id, product_name, link, description, image, brand, price) VALUES (NULL, 1, 'long sleeve henley tee', 'https://wearpact.com/men/apparel/tops%20&%20shirts/long%20sleeve%20henley%20tee?id=wa1-mhe-chh', 'Made with 100% organic cotton', 'https://static.wearpact.com/img/product/men/mhe-chh-3-1505335935.jpg', 'PACT Apparel', 35)")
 
-# Create flexible query parameters.
-def make_parameters_flexible(query_input):
-
-    # Create a parameter to search our database for similar products.
-    sql_query_parameter = "%" + query_input + "%"
-
-    # Send query parameter.
-    return sql_query_parameter
+    row = db.execute("""
+    INSERT INTO products
+    (id, category_id, product_name, link, description, image, brand, price)
+    VALUES (NULL, 1, 'long sleeve henley tee',
+    'https://wearpact.com/men/apparel/tops%20&%20shirts/long%20sleeve%20henley%20tee?id=wa1-mhe-chh',
+    'Made with 100% organic cotton',
+    'https://static.wearpact.com/img/product/men/mhe-chh-3-1505335935.jpg',
+    'PACT Apparel', 35)""")
+  
 
 # Populate the category database (if deleted)
 def populate_categories_in_database():
@@ -149,3 +149,37 @@ def populate_categories_in_database():
                         """)
 
     return row_ids
+
+
+# Find our record for this product
+def find_product(product_requested):
+
+    # Create a parameter to search our database
+    # for any records, which contain the product name.
+    product_parameter = "%" + product_requested + "%"
+
+    try:
+        #Search the database for the requested product.
+        product_data = db.execute("""
+            SELECT *
+            FROM products
+            WHERE product_name
+            LIKE :product
+            LIMIT 1""",
+            product=product_parameter)
+
+    except RuntimeError:
+        # If problem with db.execute, then apologize.
+        return apology("Error: We'll fix this. Please try again shortly.")
+
+    # Make sure we found a product.
+    if product_data == None:
+        return apology("""
+            We're sorry, we do not have information for """
+            + product_requested +
+            """. Please consider adding this product to
+            our site, via the "Add Product" tab """)
+
+
+    # Otherwise, return information about the requested product.
+    return product_data

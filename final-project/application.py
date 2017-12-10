@@ -57,20 +57,18 @@ def index():
     username = user_info[0]['username']
 
     # Get the most recently added products. Limit to 2.
-    recent_products = db.execute(
-            "SELECT product_name, image"
-            + " FROM products"
-            + " ORDER BY id DESC"
-            + " LIMIT 2")
+    recent_products = db.execute("""
+            SELECT product_name, image
+            FROM products
+            ORDER BY id DESC
+            LIMIT 2""")
 
     # Ensure recent products were found.
     if recent_products == None:
         return apology("No recent products")
 
-    # Count products returned
-    product_count = 0
-    for rows in recent_products:
-        product_count += 1
+    # Get product count
+    product_count = len(recent_products)
 
     # Render the home page with the most recent products.
     return render_template(
@@ -112,50 +110,24 @@ def product():
     # Keep the user logged in.
     user_id = session.get("user_id")
 
-    # Request product name from user.
-    def request_product():
+    # Request a product from the user.
+    product_request = request.args.get("product")
 
-        if not request.args.get("product"):
-            return apology("Please choose a product")
-        elif request.args.get("product") == None:
-            return apology("Please choose a product")
-        else:
-            # TODO: Figure out why we never receive this,
-            # from the new.html form.
-            requested_product = request.args.get("product")
-
-        # return product name
-        return requested_product
-
-    def search_product_database(product_name_parameter):
-        try:
-            #Search the database for the requested product.
-            product_data = db.execute("SELECT *"
-                + " FROM products"
-                + " WHERE product_name"
-                + " LIKE :product"
-                + " LIMIT 1",
-                product = product_name_parameter)
-
-        except RuntimeError:
-            # If problem with db.execute, then apologize.
-            return apology("Error: We'll fix this. Please try again shortly.")
-
-        # Make sure we found a product.
-        if not product_data:
-            # If no products were found, then tell the user.
-            return apology("We do not have any products named "
-                + request_product() )
-
-        # Otherwise, return information about the requested product.
-        return product_data
+    # Ensure the user asked for a product.
+    if not product_request:
+        return apology("Please let us know which product you are looking for")
+    elif product_request == None:
+        return apology("Please let us know which product you are looking for")
 
 
-    # Assign local variables.
-    product_info = (
-        search_product_database(
-        make_parameters_flexible(
-        request_product() ) ) )
+    # Find our record of this product
+    product_info = find_product(product_request)
+
+    # If no product was found, then apologize.
+    if not product_info or product_info == None:
+        return apology("Sorry, we don't have information for that product")
+
+    # Assign local variables
     product_name = product_info[0]["product_name"]
     image = product_info[0]["image"]
     link = product_info[0]["link"]
@@ -210,9 +182,9 @@ def new():
         # Save this product to the database.
         def save_product():
 
-            product_exists = db.execute(
-                    "SELECT product_name FROM products"
-                    + " WHERE product_name = :product_name",
+            product_exists = db.execute("""
+                    SELECT product_name FROM products
+                    WHERE product_name = :product_name""",
                     product_name=product_name)
 
             # If the product already exists, apologize to the user.
@@ -221,14 +193,14 @@ def new():
 
             try:
                 # Save the new product in our products table.
-                new_product_row = db.execute(
-                        "INSERT INTO products"
-                        + " (id, category_id, product_name,"
-                        + " link, description, image, brand,"
-                        + " price)"
-                        + " VALUES (NULL, 1, :product_name,"
-                        + " :link, :description, :image,"
-                        + " :brand, :price)",
+                new_product_row = db.execute("""
+                        INSERT INTO products
+                        (id, category_id, product_name,
+                        link, description, image, brand,
+                        price)
+                        VALUES (NULL, 1, :product_name,
+                        :link, :description, :image,
+                        :brand, :price)""",
                         product_name=product_name,
                         link=link,
                         description=description,
@@ -300,10 +272,10 @@ def login():
 
         try:
             # Query database for username.
-            rows = db.execute(
-                    "SELECT * FROM users"
-                    + " WHERE username = :username"
-                    + " OR email = :username",
+            rows = db.execute("""
+                    SELECT * FROM users
+                    WHERE username = :username
+                    OR email = :username""",
                     username=request.form.get("username") )
 
         except RuntimeError:
@@ -337,9 +309,9 @@ def password():
     user_id = session.get("user_id")
 
     # retrieve the users current password
-    users_current_password = db.execute(
-            "SELECT hash FROM users"
-            + " WHERE id = :user_id",
+    users_current_password = db.execute("""
+            SELECT hash FROM users
+            WHERE id = :user_id""",
             user_id = session.get("user_id") )
 
     # if user reached route via POST (as by submitting a form via POST)
@@ -372,9 +344,9 @@ def password():
 
         try:
             # Update the password in the database.
-            updated_row = db.execute(
-                "UPDATE users SET hash = :password_hash"
-                + " WHERE id = :user_id",
+            updated_row = db.execute("""
+                UPDATE users SET hash = :password_hash
+                WHERE id = :user_id""",
                 user_id=user_id,
                 password_hash=password_hash)
 
@@ -440,9 +412,9 @@ def register():
 
         try:
             # Create a row in database for the new user.
-            rows = db.execute(
-                "INSERT INTO users (email, username, hash)"
-                + " VALUES (:email, :username, :password)",
+            rows = db.execute("""
+                INSERT INTO users (email, username, hash)
+                VALUES (:email, :username, :password)""",
                 username=username, password=password, email=email)
             # If the username already exists, then help the user.
             if rows == None:
