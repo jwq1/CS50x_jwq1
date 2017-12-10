@@ -43,7 +43,7 @@ def index():
     # Keep the user logged in
     user_id = session.get("user_id")
 
-    # TODO: Get the username
+    # Get the username
     user_info = db.execute(
             "SELECT username FROM users WHERE id = :user_id"
             + " LIMIT 1",
@@ -55,6 +55,12 @@ def index():
 
     # Get username of the current user
     username = user_info[0]['username']
+
+    # Get a list of categories a user can choose from
+    category_list = all_categories()
+
+    # Get number of categories
+    number_of_categories = len(category_list)
 
     # Get the most recently added products. Limit to 2.
     recent_products = db.execute("""
@@ -75,7 +81,9 @@ def index():
             "index.html",
             recent_products=recent_products,
             product_count=product_count,
-            this_username=username)
+            this_username=username,
+            category_list=category_list,
+            number_of_categories=number_of_categories)
 
 
 @app.route("/category")
