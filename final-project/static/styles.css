@@ -2,6 +2,11 @@
 
 /*Final Project CSS*/
 
+.categories
+{
+    text-transform:capitalize;
+}
+
 .unformat
 {
     list-style-type: none;

@@ -1,0 +1,19 @@
+<!--Final Project | product | (jwq1)-->
+
+{% extends "layout.html" %}
+
+{% block title %}
+    Categories
+{% endblock %}
+
+{% block main %}
+    <header>
+        <h1>Categories</h1>
+    </header>
+
+    {% for category in range(number_of_categories) %}
+        <div class=categories>{{category_list[category]}}</div>
+    {% endfor %}
+
+
+{% endblock %}
