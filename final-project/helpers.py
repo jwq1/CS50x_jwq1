@@ -78,8 +78,8 @@ def search_by_category(selected_category):
     # Get the category information for the selected category.
     category_row = db.execute("""
             SELECT id, category FROM categories
-            WHERE category=:selected_category"""
-            , selected_category=selected_category + "%")
+            WHERE category LIKE :category_parameter"""
+            , category_parameter=(selected_category + "%") )
 
     # Check whether a category was found.
     if category_row == None:
