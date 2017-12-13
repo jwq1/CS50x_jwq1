@@ -548,7 +548,8 @@ def reference():
     return render_template("references.html"
             , number_of_references=number_of_references
             , reference_titles=reference_titles
-            , reference_links=reference_links)
+            , reference_links=reference_links
+            , product_to_provide_references_for=product_to_provide_references_for)
 
     return apology("TODO")
 
