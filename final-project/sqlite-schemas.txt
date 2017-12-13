@@ -48,3 +48,13 @@ INSERT INTO products
     'A classic wool sweater in a fresh look, with a distinctive rib knit',
     'https://cdni.llbean.net/is/image/wim/500586_32573_41?wid=428&hei=494',
     'L.L. Bean', 59)
+
+
+Select statements
+
+SELECT research.link, title
+            FROM research
+            LEFT JOIN products
+            ON products.id=research.product_id
+            WHERE products.product_name='long sleeve henley tee';
+
