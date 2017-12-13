@@ -496,11 +496,17 @@ def reference():
 
     # Get the product name requested by the users
     product_to_provide_references_for = request.args.get(
-            "product_requested_for_reference")
+            "product")
+
+    # If no name is given, then ask the user for one.
+    if not product_to_provide_references_for:
+        return apology("Please specify product")
+    elif product_to_provide_references_for == None:
+        return apology("Please specify product")
 
     # Search for references to a given product
     references_for_product = db.execute("""
-            SELECT link, title
+            SELECT research.link, title
             FROM research
             LEFT JOIN research
             ON products.id=research.product_id
@@ -527,22 +533,19 @@ def reference():
 
         # Ensure we have a title.
         if not references_for_product[reference]["title"]:
-            return apology("Error: No title for reference "
-                    + references_for_product[reference]["title"])
-        # Ensure we have a link.
-        elif not references_for_product[reference]["link"]:
-            return apology("Error: No title for reference "
-                    + references_for_product[reference]["link"])
+            # If there is no title, then use the link.
+            reference_titles.append(references_for_product[reference]["link"])
+        # If there is a title, then use the title.
+        else:
+            # Save the title.
+            reference_titles.append(references_for_product[reference]["title"])
 
-        # Save the title
-        reference_titles.append(references_for_product[reference]["title"])
-
-        # Save the link
+        # Save the link.
         reference_links.append(references_for_product[reference]["link"])
 
 
     # Send product research references to display for the user.
-    return render_template("references"
+    return render_template("references.html"
             , number_of_references=number_of_references
             , reference_titles=reference_titles
             , reference_links=reference_links)
@@ -554,7 +557,6 @@ def reference():
 @app.route("/add_reference")
 def add_reference():
     """Add reference(s) to product research."""
-
 
     # Tell the user their reference was successfully added.
     return apology("TODO")
