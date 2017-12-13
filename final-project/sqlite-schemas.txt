@@ -1,0 +1,50 @@
+CREATE TRIGGER add_research_title AFTER INSERT ON research FOR EACH ROW BEGIN INSERT INTO research (title) VALUES (research.link); END;
+
+
+CREATE TABLE research (
+    id INTEGER PRIMARY KEY,
+    product_id INTEGER NOT NULL,
+    link TEXT NOT NULL,
+    title TEXT
+    );
+
+CREATE TRIGGER add_research_title
+    AFTER INSERT ON research
+    FOR EACH ROW
+    WHEN article_title ISNULL
+BEGIN
+    UPDATE research
+    SET article_title=NEW.link;
+END;
+
+
+INSERT INTO research (product_id, link, title)
+    VALUES (1, 'https://wearpact.com/about', 'PACT Apparel: About Page')
+    , (2, 'https://wearpact.com/about', NULL);
+
+INSERT INTO research (product_id, link, title)
+    VALUES (3,
+    'https://www.csrhub.com/CSR_and_sustainability_information/LL-Bean-Inc'
+    , 'LL Bean Profile: CSR Hub');
+
+
+
+Product Table
+
+INSERT INTO products
+    (id, category_id, product_name, link, description, image, brand, price)
+    VALUES (NULL, 1, 'long sleeve henley tee',
+    'https://wearpact.com/men/apparel/tops%20&%20shirts/'
+    + 'long%20sleeve%20henley%20tee?id=wa1-mhe-chh',
+    'Made with 100% organic cotton',
+    'https://static.wearpact.com/img/product/men/mhe-chh-3-1505335935.jpg',
+    'PACT Apparel', 35)
+
+INSERT INTO products
+    (id, category_id, product_name, link, description, image, brand, price)
+    VALUES (NULL, 1, 'Classic Ragg Wool Sweater, Rib-Knit Crewneck',
+    'https://www.llbean.com/llb/shop/113483?feat=wool%20sweater-SR0&'
+    + 'page=classic-ragg-wool-sweater-rib-knit-crewneck&csp=a',
+    'A classic wool sweater in a fresh look, with a distinctive rib knit',
+    'https://cdni.llbean.net/is/image/wim/500586_32573_41?wid=428&hei=494',
+    'L.L. Bean', 59)
