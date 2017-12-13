@@ -110,13 +110,13 @@ def search_by_category(selected_category):
 def add_test_product():
 
     row = db.execute("""
-    INSERT INTO products
-    (id, category_id, product_name, link, description, image, brand, price)
-    VALUES (NULL, 1, 'long sleeve henley tee',
-    'https://wearpact.com/men/apparel/tops%20&%20shirts/long%20sleeve%20henley%20tee?id=wa1-mhe-chh',
-    'Made with 100% organic cotton',
-    'https://static.wearpact.com/img/product/men/mhe-chh-3-1505335935.jpg',
-    'PACT Apparel', 35)""")
+            INSERT INTO products
+            (id, category_id, product_name, link, description, image, brand, price)
+            VALUES (NULL, 1, 'long sleeve henley tee',
+            'https://wearpact.com/men/apparel/tops%20&%20shirts/long%20sleeve%20henley%20tee?id=wa1-mhe-chh',
+            'Made with 100% organic cotton',
+            'https://static.wearpact.com/img/product/men/mhe-chh-3-1505335935.jpg',
+            'PACT Apparel', 35)""")
 
 
 # Populate the category database (if deleted)
