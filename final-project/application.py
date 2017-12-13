@@ -508,7 +508,7 @@ def reference():
     references_for_product = db.execute("""
             SELECT research.link, title
             FROM research
-            LEFT JOIN research
+            LEFT JOIN products
             ON products.id=research.product_id
             WHERE products.product_name=:product
             """, product=product_to_provide_references_for)
