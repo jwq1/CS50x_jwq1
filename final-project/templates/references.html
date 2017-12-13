@@ -1,0 +1,30 @@
+<!--Final Project | index | (jwq1)-->
+
+{% extends "layout.html" %}
+
+{% block title %}
+    References
+{% endblock %}
+
+{% block head %}
+    References to Research
+{% endblock %}
+
+{% block main %}
+
+    <div id=welcome>
+        <header>
+            <h1>Research for {{product_to_provide_references_for}}!</h1>
+        </header>
+    </div>
+
+    <div id=references>
+        <h3>References</h3>
+        {% for reference in range(number_of_references) %}
+            <a href='{{reference_links[reference]}}'>
+                {{reference_titles[reference]}}
+            </a>
+        {% endfor %}
+    </div>
+
+{% endblock %}
