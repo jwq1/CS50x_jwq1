@@ -198,3 +198,54 @@ def find_product(product_requested):
 
     # Otherwise, return information about the requested product.
     return product_data
+
+
+def get_reference(product_with_references):
+    """Search for references to product research."""
+
+    # If no name is given, then ask the user for one.
+    if not product_with_references:
+        return apology("Please specify product")
+    elif product_with_references == None:
+        return apology("Please specify product")
+
+    # Search for references to a given product
+    references_for_product = db.execute("""
+            SELECT research.link, title
+            FROM research
+            LEFT JOIN products
+            ON products.id=research.product_id
+            WHERE products.product_name=:product
+            """, product=product_with_references)
+
+    # Check whether we found references
+    if not references_for_product:
+        return apology("We have no references. Please help us research")
+    elif references_for_product == None:
+        return apology("We have no references. Please help us research")
+
+    # Save the number of research articles for this products.
+    number_of_references = len(references_for_product)
+
+    # Save the titles and links to each reference.
+    # Create an empty list to save our titles.
+    reference_titles = []
+    # Create an empty list to save our links.
+    reference_links = []
+
+    # Loop through each title in our list of references
+    for reference in range(number_of_references):
+
+        # Ensure we have a title.
+        if not references_for_product[reference]["title"]:
+            # If there is no title, then use the link.
+            reference_titles.append(references_for_product[reference]["link"])
+        # If there is a title, then use the title.
+        else:
+            # Save the title.
+            reference_titles.append(references_for_product[reference]["title"])
+
+        # Save the link.
+        reference_links.append(references_for_product[reference]["link"])
+
+    return (number_of_references, reference_titles, reference_links)
