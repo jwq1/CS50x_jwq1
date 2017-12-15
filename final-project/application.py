@@ -110,47 +110,6 @@ def category():
     return apology("TODO")
 
 
-@app.route("/product")
-# @login_required
-def product():
-    """View an individual product"""
-
-    # Keep the user logged in.
-    user_id = session.get("user_id")
-
-    # Request a product from the user.
-    product_request = request.args.get("product")
-
-    # Ensure the user asked for a product.
-    if not product_request:
-        return apology("Please let us know which product you are looking for")
-    elif product_request == None:
-        return apology("Please let us know which product you are looking for")
-
-
-    # Find our record of this product
-    product_info = find_product(product_request)
-
-    # If no product was found, then apologize.
-    if not product_info or product_info == None:
-        return apology("Sorry, we don't have information for that product")
-
-    # Assign local variables
-    product_name = product_info[0]["product_name"]
-    image = product_info[0]["image"]
-    link = product_info[0]["link"]
-    description = product_info[0]["description"]
-    brand = product_info[0]["brand"]
-    price = usd(product_info[0]["price"])
-
-    #Render the product page.
-    return render_template("product.html",
-                            product_name=product_name,
-                            image=image,
-                            link=link,
-                            description=description,
-                            brand=brand,
-                            price=price)
 
 
 @app.route("/new", methods=["GET", "POST"])
@@ -486,74 +445,6 @@ def search_category():
         users_selected_category=users_selected_category)
 
 
-# Store references to product research
-@app.route("/reference")
-def reference():
-    """Search for references to product research."""
-
-    # Keep the user logged in
-    user_id = session.get("user_id")
-
-    # Get the product name requested by the users
-    product_to_provide_references_for = request.args.get(
-            "product")
-
-    # If no name is given, then ask the user for one.
-    if not product_to_provide_references_for:
-        return apology("Please specify product")
-    elif product_to_provide_references_for == None:
-        return apology("Please specify product")
-
-    # Search for references to a given product
-    references_for_product = db.execute("""
-            SELECT research.link, title
-            FROM research
-            LEFT JOIN products
-            ON products.id=research.product_id
-            WHERE products.product_name=:product
-            """, product=product_to_provide_references_for)
-
-    # Check whether we found references
-    if not references_for_product:
-        return apology("We have no references. Please help us research")
-    elif references_for_product == None:
-        return apology("We have no references. Please help us research")
-
-    # Save the number of research articles for this products.
-    number_of_references = len(references_for_product)
-
-    # Save the titles and links to each reference.
-    # Create an empty list to save our titles.
-    reference_titles = []
-    # Create an empty list to save our links.
-    reference_links = []
-
-    # Loop through each title in our list of references
-    for reference in range(number_of_references):
-
-        # Ensure we have a title.
-        if not references_for_product[reference]["title"]:
-            # If there is no title, then use the link.
-            reference_titles.append(references_for_product[reference]["link"])
-        # If there is a title, then use the title.
-        else:
-            # Save the title.
-            reference_titles.append(references_for_product[reference]["title"])
-
-        # Save the link.
-        reference_links.append(references_for_product[reference]["link"])
-
-
-    # Send product research references to display for the user.
-    return render_template("references.html"
-            , number_of_references=number_of_references
-            , reference_titles=reference_titles
-            , reference_links=reference_links
-            , product_to_provide_references_for=product_to_provide_references_for)
-
-    return apology("TODO")
-
-
 # TODO: Add references to product research
 @app.route("/add_reference")
 def add_reference():
@@ -579,3 +470,54 @@ def update():
 
     # TODO
     return apology("TODO Update")
+
+
+@app.route("/product")
+# @login_required
+def product():
+    """View an individual product"""
+
+    # Keep the user logged in.
+    user_id = session.get("user_id")
+
+    # Request a product from the user.
+    product_request = request.args.get("product")
+
+    # Ensure the user asked for a product.
+    if not product_request:
+        return apology("Please let us know which product you are looking for")
+    elif product_request == None:
+        return apology("Please let us know which product you are looking for")
+
+
+    # Find our record of this product
+    product_info = find_product(product_request)
+
+    # If no product was found, then apologize.
+    if not product_info or product_info == None:
+        return apology("Sorry, we don't have information for that product")
+
+    # Assign local variables
+    product_name = product_info[0]["product_name"]
+    image = product_info[0]["image"]
+    link = product_info[0]["link"]
+    description = product_info[0]["description"]
+    brand = product_info[0]["brand"]
+    price = usd(product_info[0]["price"])
+
+    # Get product references
+    (number_of_references,
+    reference_titles,
+    reference_links) = get_reference(product_name)
+
+    #Render the product page.
+    return render_template("product.html",
+                            product_name=product_name,
+                            image=image,
+                            link=link,
+                            description=description,
+                            brand=brand,
+                            price=price,
+                            number_of_references=number_of_references,
+                            reference_titles=reference_titles,
+                            reference_links=reference_links)
