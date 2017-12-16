@@ -10,21 +10,35 @@
     <header>
         <h1>{{product_name}}</h1><h5>{{brand}}</h5>
     </header>
-    <img src="{{image}}" alt="Picture of {{product_name}}" height=350>
-    <div>
-        <h4>{{price}}</h4>
-    </div>
+    <div class=container-fluid>
 
-    <h1>Description</h1>
-    <p>{{description}}</p>
+        <div>
+            <img src="{{image}}" alt="Picture of {{product_name}}" height=350>
+        </div>
 
-    <!--TODO: Render characteristics of product on the page-->
-    <h2>Characteristics</h2>
-    <div>
-        <ul class = unformat>
-            <li>Plastic Free</li>
-            <li>Ethically Made</li>
-        </ul>
+        <div>
+            <h4>{{price}}</h4>
+        </div>
+
+        <h1>Description</h1>
+        <p>{{description}}</p>
+
+        <!--TODO: Render characteristics of product on the page-->
+        <h2>Characteristics</h2>
+        <div>
+            <p>Plastic Free</p>
+            <p>Ethically Made</p>
+        </div>
+
+        <div id=references>
+            <h3>References</h3>
+            {% for reference in range(number_of_references) %}
+                <a href='{{reference_links[reference]}}'>
+                    {{reference_titles[reference]}}
+                </a>
+            {% endfor %}
+        </div>
+
     </div>
 
 {% endblock %}
