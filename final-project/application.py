@@ -409,8 +409,25 @@ def search():
     # Keep the user logged in.
     user_id = session.get("user_id")
 
-    # TODO
-    return apology("TODO")
+    # Get the product to search from the user.
+    product_search = request.args.get("search")
+
+    # Ensure a product was received from the user.
+    if not product_search:
+        return apology("Please specify a product")
+
+    # Find products from criteria
+    product_info = find_product(product_search)
+
+    # Ensure a product was found in the database
+    if not product_info:
+        return apology("No products found.")
+
+    # Render template
+    return render_template("search.html"
+        , product_info=product_info
+        , product_search=product_search)
+
 
 
 # Search for products in a category requested by the user.

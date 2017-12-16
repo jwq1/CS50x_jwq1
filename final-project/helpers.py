@@ -179,7 +179,7 @@ def find_product(product_requested):
         FROM products
         WHERE product_name
         LIKE :product
-        LIMIT 2""",
+        LIMIT 30""",
         product=product_parameter)
 
 

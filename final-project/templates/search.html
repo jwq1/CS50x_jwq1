@@ -1,0 +1,30 @@
+<!--Final Project | search | (jwq1)-->
+
+{% extends "layout.html" %}
+
+{% block title %}
+    {{product_search}} search
+{% endblock %}
+
+{% block head %}
+    SEARCH
+{% endblock %}
+
+{% block main %}
+
+    <div id=welcome>
+        <header>
+            <h1>Products found for: "{{product_search}}"</h1>
+        </header>
+    </div>
+
+    <div id=products_found>
+        {% for product in product_info %}
+            <img src={{product["image"]}} height=250>
+            <div id=product_name>
+                {{product["product_name"]}}
+            </div>
+        {% endfor %}
+    </div>
+
+{% endblock %}
