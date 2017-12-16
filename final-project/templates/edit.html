@@ -1,0 +1,70 @@
+<!--Final Project | product | (jwq1)-->
+
+{% extends "layout.html" %}
+
+{% block title %}
+    {{product_name}}
+{% endblock %}
+
+{% block main %}
+    <header>
+        <h1>{{product_name}}</h1><h5>{{brand}}</h5>
+    </header>
+    <div class=container-fluid>
+
+        <div>
+            <img src="{{image}}" alt="Picture of {{product_name}}" height=350>
+            <form>
+                <input type="text" name="imageurl" placeholder="Image URL...">
+            </form>
+        </div>
+
+        <div>
+            <h4>{{price}}</h4>
+            <form>
+                <input type="text" name="price" placeholder="Product price...">
+            </form>
+        </div>
+
+        <h1>Description</h1>
+        <p>{{description}}</p>
+        <form>
+            <input type="text" name="description"
+                placeholder="Product description..."
+            >
+        </form>
+
+        <!--TODO: Render characteristics of product on the page-->
+        <h2>Characteristics</h2>
+        <div>
+            <p>Plastic Free</p>
+            <input type="radio" name="plasticfree" value="yes" checked>
+            Yes
+            <input type="radio" name="plasticfree" value="no">
+            No
+            <p>Ethically Made</p>
+            <input type="radio" name="ethical" value="yes" checked>
+            Yes
+            <input type="radio" name="ethical" value="no">
+            No
+        </div>
+
+        <div id=references>
+            <h3>References</h3>
+            {% for reference in range(number_of_references) %}
+                <a href='{{reference_links[reference]}}'>
+                    {{reference_titles[reference]}}
+                </a>
+            {% endfor %}
+            Add reference:
+            <input type="text" name="link" value="link" placeholder="article link">
+            <input type="text" name="link" value="link" placeholder="article title">
+        </div>
+
+        <form>
+            <input type="submit" value="Submit">
+        </form>
+
+    </div>
+
+{% endblock %}
