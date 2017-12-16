@@ -234,18 +234,18 @@ def get_reference(product_with_references):
     reference_links = []
 
     # Loop through each title in our list of references
-    for reference in range(number_of_references):
+    for reference_article in references_for_product:
 
         # Ensure we have a title.
-        if not references_for_product[reference]["title"]:
+        if not reference_article["title"]:
             # If there is no title, then use the link.
-            reference_titles.append(references_for_product[reference]["link"])
+            reference_titles.append(reference_article["link"])
         # If there is a title, then use the title.
         else:
             # Save the title.
-            reference_titles.append(references_for_product[reference]["title"])
+            reference_titles.append(reference_article["title"])
 
         # Save the link.
-        reference_links.append(references_for_product[reference]["link"])
+        reference_links.append(reference_article["link"])
 
     return (number_of_references, reference_titles, reference_links)
