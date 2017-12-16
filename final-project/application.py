@@ -540,3 +540,19 @@ def product():
                             number_of_references=number_of_references,
                             reference_titles=reference_titles,
                             reference_links=reference_links)
+
+@app.route("/edit")
+@login_required
+def edit_product():
+    """Edit an individual product"""
+
+    # Keep the user logged in.
+    user_id = session.get("user_id")
+
+    # TODO get product info.
+
+    # Render edit product template
+
+
+    # Return apology template
+    return apology("TODO")
