@@ -173,27 +173,14 @@ def find_product(product_requested):
     # for any records, which contain the product name.
     product_parameter = "%" + product_requested + "%"
 
-    try:
-        #Search the database for the requested product.
-        product_data = db.execute("""
-            SELECT *
-            FROM products
-            WHERE product_name
-            LIKE :product
-            LIMIT 1""",
-            product=product_parameter)
-
-    except RuntimeError:
-        # If problem with db.execute, then apologize.
-        return apology("Error: We'll fix this. Please try again shortly.")
-
-    # Make sure we found a product.
-    if product_data == None:
-        return apology("""
-            We're sorry, we do not have information for """
-            + product_requested +
-            """. Please consider adding this product to
-            our site, via the "Add Product" tab """)
+    #Search the database for the requested product.
+    product_data = db.execute("""
+        SELECT *
+        FROM products
+        WHERE product_name
+        LIKE :product
+        LIMIT 2""",
+        product=product_parameter)
 
 
     # Otherwise, return information about the requested product.
