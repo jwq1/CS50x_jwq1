@@ -496,6 +496,8 @@ def product():
     # If no product was found, then apologize.
     if not product_info or product_info == None:
         return apology("Sorry, we don't have information for that product")
+    elif len(product_info) > 1:
+        return apology("Found more than a single product. Please try again.")
 
     # Assign local variables
     product_name = product_info[0]["product_name"]
