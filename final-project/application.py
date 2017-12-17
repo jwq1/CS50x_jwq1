@@ -523,10 +523,15 @@ def product():
     # brand = product_info[0]["brand"]
     # price = usd(product_info[0]["price"])
 
-    # Get product references
-    (number_of_references,
-    reference_titles,
-    reference_links) = get_reference(product_name)
+    # Make a list to store product names
+    product_list = []
+
+    # Store each product name into the list
+    for product in product_info:
+        product_list.append(product["product_name"])
+
+    # Get references for each product in the list
+    article_references = get_reference(product_list)
 
     #Render the product page.
     return render_template("product.html",
@@ -538,6 +543,7 @@ def product():
                             # description=description,
                             # brand=brand,
                             # price=price,
-                            number_of_references=number_of_references,
-                            reference_titles=reference_titles,
-                            reference_links=reference_links)
+                            # number_of_references=number_of_references,
+                            # reference_titles=reference_titles,
+                            # reference_links=reference_links
+                            article_references=article_references)

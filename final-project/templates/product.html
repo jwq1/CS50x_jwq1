@@ -33,10 +33,13 @@
 
             <div id=references>
                 <h3>References</h3>
-                {% for reference in range(number_of_references) %}
-                    <a href='{{reference_links[reference]}}'>
-                        {{reference_titles[reference]}}
-                    </a>
+                {% for article in article_references %}
+                    number_of_articles = article[number_of_references]
+                    {% for reference in range(number_of_articles) %}
+                        <a href='{{ article[reference_links[reference]] }}'>
+                            {{ article[reference_titles[reference]] }}
+                        </a>
+                    {% endfor %}
                 {% endfor %}
             </div>
 
