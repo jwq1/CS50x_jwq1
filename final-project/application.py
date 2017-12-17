@@ -550,14 +550,19 @@ def edit_product():
     user_id = session.get("user_id")
 
     # Get product name to edit
-    product = request.args.get("product")
+    product_request = request.args.get("product")
 
     # Ensure product was received
-    if not product:
+    if not product_request:
         return apology("Please provide a product name")
 
     # Find our record of this product
     product_info = find_product(product_request)
+
+    # Get references for a given product
+    (number_of_references,
+    reference_titles,
+    reference_links) = get_reference(product_request)
 
     # If no product was found, then apologize.
     if not product_info or product_info == None:
@@ -567,7 +572,10 @@ def edit_product():
 
     # Render edit product template
     return render_template("edit.html"
-            , product_info=product_info)
+            , product_info=product_info
+            , number_of_references=number_of_references
+            , reference_titles=reference_titles
+            , reference_links=reference_links)
 
 
     # Return apology template
