@@ -549,9 +549,25 @@ def edit_product():
     # Keep the user logged in.
     user_id = session.get("user_id")
 
-    # TODO get product info.
+    # Get product name to edit
+    product = request.args.get("product")
+
+    # Ensure product was received
+    if not product:
+        return apology("Please provide a product name")
+
+    # Find our record of this product
+    product_info = find_product(product_request)
+
+    # If no product was found, then apologize.
+    if not product_info or product_info == None:
+        return apology("Sorry, we don't have information for that product")
+    elif len(product_info) > 1:
+        return apology("Found more than a single product. Please try again.")
 
     # Render edit product template
+    return render_template("edit.html"
+            , product_info=product_info)
 
 
     # Return apology template
