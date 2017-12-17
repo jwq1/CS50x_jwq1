@@ -187,52 +187,64 @@ def find_product(product_requested):
     return product_data
 
 
-def get_reference(product_with_references):
+def get_reference(list_of_products):
     """Search for references to product research."""
 
     # If no name is given, then ask the user for one.
-    if not product_with_references:
-        return apology("Please specify product")
-    elif product_with_references == None:
-        return apology("Please specify product")
+    if not list_of_products:
+        return None
+    elif list_of_products == None:
+        return None
 
-    # Search for references to a given product
-    references_for_product = db.execute("""
-            SELECT research.link, title
-            FROM research
-            LEFT JOIN products
-            ON products.id=research.product_id
-            WHERE products.product_name=:product
-            """, product=product_with_references)
+    # Create list to store references
+    reference_list = []
 
-    # Check whether we found references
-    if not references_for_product:
-        return apology("We have no references. Please help us research")
-    elif references_for_product == None:
-        return apology("We have no references. Please help us research")
+    # Look at each product in the list of products
+    for product_name in list_of_products:
 
-    # Save the number of research articles for this products.
-    number_of_references = len(references_for_product)
+        # Search for references to a given product
+        reference_returned = db.execute("""
+                SELECT research.link, title
+                FROM research
+                LEFT JOIN products
+                ON products.id=research.product_id
+                WHERE products.product_name=:product
+                """, product=product_name)
 
-    # Save the titles and links to each reference.
-    # Create an empty list to save our titles.
-    reference_titles = []
-    # Create an empty list to save our links.
-    reference_links = []
+        # TODO: Store values into a dictionary object
 
-    # Loop through each title in our list of references
-    for reference_article in references_for_product:
 
-        # Ensure we have a title.
-        if not reference_article["title"]:
-            # If there is no title, then use the link.
-            reference_titles.append(reference_article["link"])
-        # If there is a title, then use the title.
-        else:
-            # Save the title.
-            reference_titles.append(reference_article["title"])
+        # Save the number of research articles for this products.
+        number_of_references = len(reference_returned)
 
-        # Save the link.
-        reference_links.append(reference_article["link"])
+        # Save the titles and links to each reference.
+        # Create an empty list to save our titles.
+        reference_titles = []
+        # Create an empty list to save our links.
+        reference_links = []
 
-    return (number_of_references, reference_titles, reference_links)
+
+        # Loop through each title in our list of references
+        for reference_article in reference_returned:
+
+            # Ensure we have a title.
+            if not reference_article["title"]:
+                # If there is no title, then use the link.
+                reference_titles.append(reference_article["link"])
+            # If there is a title, then use the title.
+            else:
+                # Save the title.
+                reference_titles.append(reference_article["title"])
+
+            # Save the link.
+            reference_links.append(reference_article["link"])
+
+
+        # TODO: Save dict objects into the reference list
+
+
+
+
+
+
+    # TODO: Return a list of dict objects
