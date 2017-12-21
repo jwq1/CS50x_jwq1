@@ -8,6 +8,18 @@ $(function() {
 
 });
 
+/**
+ * Edit product information.
+ */
+function editProduct()
+{
+  var jsSuccess = 'Successfully used Javascript';
+
+  alert(jsSuccess);
+
+};
+
+
 
 /**
  * Updates product search and/or product specific changes.
