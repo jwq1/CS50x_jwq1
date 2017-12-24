@@ -516,33 +516,19 @@ def product():
         return apology("Sorry, we didn't find a product with id "
             + id_products_request)
 
-    # Return JSON with product info
-    return jsonify(product_info[0])
 
-    # Assign local variables
-    product_name = product_info[0]["product_name"]
-    image = product_info[0]["image"]
-    link = product_info[0]["link"]
-    description = product_info[0]["description"]
-    brand = product_info[0]["brand"]
-    price = usd(product_info[0]["price"])
-
-    # Get product references
+    # Get product references for a given product name.
     (number_of_references,
     reference_titles,
-    reference_links) = get_reference(product_name)
+    reference_links) = get_reference(product_info[0]["product_name"])
 
-    #Render the product page.
-    return render_template("product.html",
-                            product_name=product_name,
-                            image=image,
-                            link=link,
-                            description=description,
-                            brand=brand,
-                            price=price,
-                            number_of_references=number_of_references,
-                            reference_titles=reference_titles,
-                            reference_links=reference_links)
+    # add references to our product information
+    product_info[0]['number_of_references'] = number_of_references
+    product_info[0]['reference_titles'] = reference_titles
+    product_info[0]['reference_links'] = reference_links
+
+    # Return json of product information
+    return jsonify(product_info[0])
 
 
 @app.route("/edit")
