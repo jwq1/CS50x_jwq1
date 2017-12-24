@@ -510,6 +510,7 @@ def product():
     # Find our record of this product
     product_info = find_product(id_products_request)
 
+
     # If no product was found, then apologize.
     if not product_info or product_info == None:
         return apology("Sorry, we didn't find a product with id "
