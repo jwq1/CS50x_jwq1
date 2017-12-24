@@ -516,6 +516,9 @@ def product():
         return apology("Sorry, we didn't find a product with id "
             + id_products_request)
 
+    # Return JSON with product info
+    return jsonify(product_info[0])
+
     # Assign local variables
     product_name = product_info[0]["product_name"]
     image = product_info[0]["image"]
@@ -540,6 +543,7 @@ def product():
                             number_of_references=number_of_references,
                             reference_titles=reference_titles,
                             reference_links=reference_links)
+
 
 @app.route("/edit")
 @login_required
