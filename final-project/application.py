@@ -498,23 +498,22 @@ def product():
     user_id = session.get("user_id")
 
     # Request a product from the user.
-    product_request = request.args.get("product")
+    id_products_request = request.args.get("id")
 
     # Ensure the user asked for a product.
-    if not product_request:
+    if not id_products_request:
         return apology("Please let us know which product you are looking for")
-    elif product_request == None:
+    elif id_products_request == None:
         return apology("Please let us know which product you are looking for")
 
 
     # Find our record of this product
-    product_info = find_product(product_request)
+    product_info = find_product(id_products_request)
 
     # If no product was found, then apologize.
     if not product_info or product_info == None:
-        return apology("Sorry, we don't have information for that product")
-    elif len(product_info) > 1:
-        return apology("Found more than a single product. Please try again.")
+        return apology("Sorry, we didn't find a product with id "
+            + id_products_request)
 
     # Assign local variables
     product_name = product_info[0]["product_name"]
@@ -550,19 +549,19 @@ def edit_product():
     user_id = session.get("user_id")
 
     # Get product name to edit
-    product_request = request.args.get("product")
+    id_products_request = request.args.get("product")
 
     # Ensure product was received
-    if not product_request:
+    if not id_products_request:
         return apology("Please provide a product name")
 
     # Find our record of this product
-    product_info = find_product(product_request)
+    product_info = find_product(id_products_request)
 
     # Get references for a given product
     (number_of_references,
     reference_titles,
-    reference_links) = get_reference(product_request)
+    reference_links) = get_reference(id_products_request)
 
     # If no product was found, then apologize.
     if not product_info or product_info == None:

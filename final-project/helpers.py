@@ -167,20 +167,20 @@ def populate_categories_in_database():
 
 
 # Find our record for this product
-def find_product(product_requested):
+def find_product(id_requested):
 
     # Create a parameter to search our database
     # for any records, which contain the product name.
-    product_parameter = "%" + product_requested + "%"
+    product_parameter = "%" + id_requested + "%"
 
     #Search the database for the requested product.
     product_data = db.execute("""
         SELECT *
         FROM products
-        WHERE product_name
-        LIKE :product
+        WHERE id
+        LIKE :products_id
         LIMIT 30""",
-        product=product_parameter)
+        products_id=product_parameter)
 
 
     # Otherwise, return information about the requested product.
