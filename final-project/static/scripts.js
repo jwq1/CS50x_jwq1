@@ -3,16 +3,21 @@
 // global variable section
 // var example = [];
 
+// Enforce strict js code conventions
+"use strict";
+
 // execute when the DOM is fully loaded
 $(function() {
 
 });
 
-/**
- * Edit product information.
- */
-function editProduct()
-{
+// Render product on screen
+function displayProduct() {
+
+}
+
+// Edit product information.
+function editProduct() {
   var jsSuccess = 'Successfully used Javascript';
 
   alert(jsSuccess);
@@ -21,10 +26,7 @@ function editProduct()
 
 
 
-/**
- * Updates product search and/or product specific changes.
- */
-function update()
-{
+// Updates product search and/or product specific changes.
+function update() {
 
 };
