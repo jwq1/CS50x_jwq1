@@ -9,17 +9,17 @@
 // Render product on screen
 function displayProduct() {
 
-  // TODO: get JSON file
+  // TODO: create parameters for Flask.url_for() method
+  // TODO: use Flask.url_for("product", parameters) to generate JSON url
 
-    // TODO: loop through JSON object to get information
+  // TODO: create variable to store our JSON data
+    // (probably in jqXHR format)
 
-      // TODO: loop through array of references within the JSON object
+  // TODO: get the JSON with $.getJSON() & Flask.url_for()
+    // TODO: use callback to check for successful data retrieval
 
-    // TODO: save JSON information to variables
-
-  // TODO: render variables on screen w/ seperate function, update()
-
-
+  // TODO: pass the variable with our JSON data to the update() function
+    // update() manipulates the DOM objects to display the info we passed.
 
 
 }
@@ -40,17 +40,11 @@ function update() {
   // TODO: Get element I want to change from html
     // https://learn.jquery.com/using-jquery-core/jquery-object/#the-jquery-object
 
-  // TODO: Manipulate that element to display the product information
+  // TODO: Use the .map() method to go through each object on the product page
+    // TODO: Use the .filter() method to select the relevant info from our JSON
+    // TODO: change the object selected by .map() with the relevant JSON data
 
-    // TODO: Set attribute on the screen w/ attr()
-    // https://learn.jquery.com/using-jquery-core/manipulating-elements/#creating-new-elements
-      // Further detail
-      // https://learn.jquery.com/using-jquery-core/attributes/
-      // https://learn.jquery.com/using-jquery-core/working-with-selections/
-      // https://learn.jquery.com/using-jquery-core/manipulating-elements/
-
-
-
+    // TODO: use the .html() method to set the element on screen with our new info
 
 
 
