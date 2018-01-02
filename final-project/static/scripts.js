@@ -37,11 +37,6 @@ function editProduct() {
 // Updates product search and/or product specific changes.
 function update() {
 
-  // TODO: use the .detch() method to remove the old product information,
-    // then replace it will the new product information.
-    // Explore whether .detach() or .empty() is more efficient.
-    // https://learn.jquery.com/using-jquery-core/manipulating-elements/#creating-new-elements
-
   // TODO: Get element I want to change from html
     // https://learn.jquery.com/using-jquery-core/jquery-object/#the-jquery-object
 
