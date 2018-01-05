@@ -6,17 +6,45 @@
 // Enforce strict js code conventions
 "use strict";
 
-// Render product on screen
-function displayProduct() {
+// Render the product on screen.
+function retrieveJSON() {
 
-  // TODO: create parameters for Flask.url_for() method
-  // TODO: use Flask.url_for("product", parameters) to generate JSON url
+  //TODO: Call function upon click of product name.
 
-  // TODO: create variable to store our JSON data
-    // (probably in jqXHR format)
 
-  // TODO: get the JSON with $.getJSON() & Flask.url_for()
-    // TODO: use callback to check for successful data retrieval
+  // Create parameters for Flask.url_for() method.
+  var parameters = {
+    id: id_number
+  }
+
+  // Get the JSON with $.getJSON() & Flask.url_for().
+    // Use Flask.url_for("product", parameters) to generate JSON url.
+  function getProductInfo (parameters, callback) {
+    $.getJSON(Flask.url_for("product"), parameters)
+    // A callback executed upon successful retrieval.
+    .done(function(data, textStatus, jqXHR) {
+      console.log(textStatus)
+      console.log(jqXHR)
+      callback(jqXHR)
+    })
+    // A callback executed upon failed retrieval.
+    .fail(function(data, textStatus, jqXHR) {
+      // Log an error to the browser.
+      console.log(errorThrown.toString());
+    });
+  }
+
+  // Retrieve the desired product info.
+  getProductInfo(parameters, function(productInfo) {
+    // If no JSON was found, tell the user.
+    if (typeof(productInfo) == "undefined") {
+
+      // TODO: Get the html window element.
+
+      // TODO: Return an error message to the window.
+        // (e.g. 404: no articles for this location)
+    }
+  });
 
   // TODO: pass the variable with our JSON data to the update() function
     // update() manipulates the DOM objects to display the info we passed.
@@ -35,7 +63,7 @@ function editProduct() {
 
 
 // Updates product search and/or product specific changes.
-function update() {
+function updateDisplay(product_json) {
 
   // TODO: Get element I want to change from html
     // https://learn.jquery.com/using-jquery-core/jquery-object/#the-jquery-object
