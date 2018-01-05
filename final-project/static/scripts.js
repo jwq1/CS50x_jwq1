@@ -17,8 +17,7 @@ $(function retrieveJSON() {
     // A callback executed upon successful retrieval.
     .done(function(data, textStatus, jqXHR) {
       console.log(textStatus)
-      console.log(jqXHR)
-      callback(jqXHR)
+      callback(data)
     })
     // A callback executed upon failed retrieval.
     .fail(function(data, textStatus, errorThrown) {
@@ -49,8 +48,10 @@ $(function retrieveJSON() {
           // Log an error message.
           console.log("404 Error: Product support is on top of this (kind of)")
         }
-        // TODO: Otherwise, render the product using the JSON object.
-          // TODO: pass JSON to the update() function to render product info.
+        // Otherwise, return product info.
+        console.log("productInfo: ")
+        console.log(productInfo)
+        return productInfo
 
       });
     } else {
