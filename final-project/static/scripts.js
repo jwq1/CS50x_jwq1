@@ -33,25 +33,30 @@ $(function retrieveJSON() {
     var product_id = $(event.target).parent().attr("id");
     console.log("element id: " + product_id)
 
-    // Create parameters for Flask.url_for() method.
-    var parameters = {
-      id: product_id
-    }
-    console.log("parameters:")
-    console.log(parameters)
-
-    // Retrieve the desired product info.
-    getProductInfo(parameters, function(productInfo) {
-      // If no JSON was found, tell the user.
-      if (typeof(productInfo) == "undefined") {
-
-        // TODO: Return an error message to the window.
-        console.log("404 Error: Product support is on top of this (kind of)")
+    // If the user clicked on a product, return product data.
+    if ( Number(product_id) >= 0 && Number(product_id) <= 1000 ) {
+      // Create parameters for Flask.url_for() method.
+      var parameters = {
+        id: product_id
       }
-      // TODO: Otherwise, render the product using the JSON object.
-        // TODO: pass JSON to the update() function to render product info.
 
-    });
+      // Retrieve the desired product info.
+      getProductInfo(parameters, function(productInfo) {
+        // If no JSON was found, tell the user.
+        if (typeof(productInfo) == "undefined") {
+
+          // TODO: Return an error message to the window.
+          console.log("404 Error: Product support is on top of this (kind of)")
+        }
+        // TODO: Otherwise, render the product using the JSON object.
+          // TODO: pass JSON to the update() function to render product info.
+
+      });
+    } else {
+      // Otherwise, if the user did not click on a product, return an error.
+      console.log("Error: Please click on a product to view it.")
+    }
+
 
   });
 
