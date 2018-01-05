@@ -34,6 +34,7 @@ $(function retrieveJSON() {
     console.log("element id: " + product_id)
 
     // If the user clicked on a product, return product data.
+      // Refactor: This conditional needs a longer term solution.
     if ( Number(product_id) >= 0 && Number(product_id) <= 1000 ) {
       // Create parameters for Flask.url_for() method.
       var parameters = {
@@ -45,7 +46,7 @@ $(function retrieveJSON() {
         // If no JSON was found, tell the user.
         if (typeof(productInfo) == "undefined") {
 
-          // TODO: Return an error message to the window.
+          // Log an error message.
           console.log("404 Error: Product support is on top of this (kind of)")
         }
         // TODO: Otherwise, render the product using the JSON object.
@@ -74,19 +75,33 @@ function editProduct() {
 };
 
 
+// Redirect user to the Product page
+$(function redirectToProduct() {
 
-// Updates product search and/or product specific changes.
-function updateDisplay(product_json) {
+  // TODO: Listen for when the user clicks a product.
 
-  // TODO: Get element I want to change from html
-    // https://learn.jquery.com/using-jquery-core/jquery-object/#the-jquery-object
+  // TODO: Save the id and name of the product selected.
 
-  // TODO: Use the .map() method to go through each object on the product page
-    // TODO: Use the .filter() method to select the relevant info from our JSON
-    // TODO: change the object selected by .map() with the relevant JSON data
+  // TODO: Render the product page with the selected product name and id.
 
-    // TODO: use the .html() method to set the element on screen with our new info
+});
 
 
+// Display the product information on the page
+$(function displayProduct() {
 
-};
+
+  // TODO: Listen for when a product page loads.
+
+    // TODO: Get the product id.
+
+    // TODO: Get the product information based on id.
+
+    // TODO: Set the relevant elements to display product information.
+
+      // TODO: Select the desired DOM element.
+
+      // TODO: Parse the responseJSON for the data to show on screen.
+
+
+});
