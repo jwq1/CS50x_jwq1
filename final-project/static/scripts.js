@@ -7,15 +7,8 @@
 "use strict";
 
 // Render the product on screen.
-function retrieveJSON() {
+$(function retrieveJSON() {
 
-  //TODO: Call function upon click of product name.
-
-
-  // Create parameters for Flask.url_for() method.
-  var parameters = {
-    id: id_number
-  }
 
   // Get the JSON with $.getJSON() & Flask.url_for().
     // Use Flask.url_for("product", parameters) to generate JSON url.
@@ -28,29 +21,44 @@ function retrieveJSON() {
       callback(jqXHR)
     })
     // A callback executed upon failed retrieval.
-    .fail(function(data, textStatus, jqXHR) {
+    .fail(function(data, textStatus, errorThrown) {
       // Log an error to the browser.
       console.log(errorThrown.toString());
     });
   }
 
-  // Retrieve the desired product info.
-  getProductInfo(parameters, function(productInfo) {
-    // If no JSON was found, tell the user.
-    if (typeof(productInfo) == "undefined") {
+  // Get the element id attribute when a product is clicked
+  $("#recently_added_products").click(function(event) {
+    // Get id of clicked element's parent
+    var product_id = $(event.target).parent().attr("id");
+    console.log("element id: " + product_id)
 
-      // TODO: Get the html window element.
-
-      // TODO: Return an error message to the window.
-        // (e.g. 404: no articles for this location)
+    // Create parameters for Flask.url_for() method.
+    var parameters = {
+      id: product_id
     }
+    console.log("parameters:")
+    console.log(parameters)
+
+    // Retrieve the desired product info.
+    getProductInfo(parameters, function(productInfo) {
+      // If no JSON was found, tell the user.
+      if (typeof(productInfo) == "undefined") {
+
+        // TODO: Return an error message to the window.
+        console.log("404 Error: Product support is on top of this (kind of)")
+      }
+      // TODO: Otherwise, render the product using the JSON object.
+        // TODO: pass JSON to the update() function to render product info.
+
+    });
+
   });
 
-  // TODO: pass the variable with our JSON data to the update() function
-    // update() manipulates the DOM objects to display the info we passed.
+
+});
 
 
-}
 
 // Edit product information.
 function editProduct() {
