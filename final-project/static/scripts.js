@@ -79,11 +79,16 @@ function editProduct() {
 // Redirect user to the Product page
 $(function redirectToProduct() {
 
-  // TODO: Listen for when the user clicks a product.
+  // Listen for when the user clicks a product.
+  $("#recently_add_products").click(function(event) {
 
-  // TODO: Save the id and name of the product selected.
+    // TODO: Get id of the product clicked
 
-  // TODO: Render the product page with the selected product name and id.
+    // TODO: Save the id and name of the product selected.
+
+    // TODO: Render the product page with the selected product name and id.
+
+  });
 
 });
 
