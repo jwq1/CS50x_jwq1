@@ -12,13 +12,13 @@ $(function retrieveJSON() {
 
   // Get the JSON with $.getJSON() & Flask.url_for().
     // Use Flask.url_for("product", parameters) to generate JSON url.
-  function getProductInfo (parameters, callback) {
+  function getProductInfo (parameters, cb) {
     $.getJSON(Flask.url_for("product"), parameters)
     // A callback executed upon successful retrieval.
     .done(function(data, textStatus, jqXHR) {
       console.log(textStatus)
       console.log(jqXHR)
-      callback(jqXHR)
+      cb(jqXHR)
     })
     // A callback executed upon failed retrieval.
     .fail(function(data, textStatus, errorThrown) {
