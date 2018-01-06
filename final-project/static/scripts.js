@@ -9,6 +9,7 @@
 // Render the product on screen.
 $(function retrieveJSON() {
 
+
   // Get the element id attribute when a product is clicked
   $("#recently_added_products").click(function(event) {
     // Get id of clicked element's parent
