@@ -20,23 +20,9 @@
         <!-- http://getbootstrap.com/ -->
         <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet"/>
 
-        <!-- http://jquery.com/ -->
-        <script src="https://code.jquery.com/jquery-latest.min.js"></script>
-
-        <!-- http://getbootstrap.com/ -->
-        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
-
-        <!-- https://github.com/corejavascript/typeahead.js/blob/master/doc/jquery_typeahead.md -->
-        <script src="https://cdn.rawgit.com/corejavascript/typeahead.js/master/dist/typeahead.jquery.js"></script>
-
-        <!-- http://handlebarsjs.com/ -->
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/handlebars.js/4.0.5/handlebars.min.js"></script>
 
         <!-- http://stewartjpark.com/Flask-JSGlue/ -->
         {{ JSGlue.include() }}
-
-        <!--app's own JavaScript-->
-        <script src="{{ url_for('static', filename='scripts.js') }}"></script>
 
 
         <title>Final Project: {% block title %}{% endblock %}</title>
@@ -95,5 +81,20 @@
         </div>
 
     </body>
+
+    <!-- http://jquery.com/ -->
+    <script src="https://code.jquery.com/jquery-latest.min.js"></script>
+
+    <!-- http://getbootstrap.com/ -->
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+
+    <!-- https://github.com/corejavascript/typeahead.js/blob/master/doc/jquery_typeahead.md -->
+    <script src="https://cdn.rawgit.com/corejavascript/typeahead.js/master/dist/typeahead.jquery.js"></script>
+
+    <!-- http://handlebarsjs.com/ -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/handlebars.js/4.0.5/handlebars.min.js"></script>
+
+    <!--app's own JavaScript-->
+    <script src="{{ url_for('static', filename='scripts.js') }}"></script>
 
 </html>
