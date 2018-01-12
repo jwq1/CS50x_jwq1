@@ -11,6 +11,7 @@
 {% endblock %}
 
 {% block main %}
+    <p>Not loaded yet.</p>
 
     <div id=welcome>
         <header>
@@ -32,12 +33,12 @@
     </div>
 
 
-    <div id=recently_added_products>
-        <h3>Recent Products</h3>
+    <h3>Recent Products</h3>
+    <div>
         {% for product in range(product_count) %}
-            <img src={{recent_products[product]["image"]}} height=250>
-            <div id=product_name>
-                {{recent_products[product]["product_name"]}}
+            <div id={{recent_products[product]["id"]}} class=productListView>
+                <img src={{recent_products[product]["image"]}} height=250>
+                <p>{{recent_products[product]["product_name"]}}</p>
             </div>
         {% endfor %}
     </div>

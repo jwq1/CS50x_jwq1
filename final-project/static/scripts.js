@@ -6,46 +6,106 @@
 // Enforce strict js code conventions
 "use strict";
 
-// Render product on screen
-function displayProduct() {
+// Keep track of the products we have on screen.
+var productWasClicked = document.querySelector(".productListView")
 
-  // TODO: create parameters for Flask.url_for() method
-  // TODO: use Flask.url_for("product", parameters) to generate JSON url
 
-  // TODO: create variable to store our JSON data
-    // (probably in jqXHR format)
+// Search for product information when the user selects a product.
+productWasClicked.onclick = function() {
 
-  // TODO: get the JSON with $.getJSON() & Flask.url_for()
-    // TODO: use callback to check for successful data retrieval
+  // Get the product information our user wants.
+  retrieveJSON( getIdOnClick(productWasClicked) );
 
-  // TODO: pass the variable with our JSON data to the update() function
-    // update() manipulates the DOM objects to display the info we passed.
+}
+
+
+// Retrieve product information in the form of a JSON.
+function retrieveJSON(product_id) {
+
+    console.log(" ")
+    console.log("retreiveJSON function started")
+    console.log("product_id = ")
+    console.log(product_id)
+
+  // Create parameters for Flask.url_for() method.
+  var parameters = {
+    id: product_id
+  }
+  console.log(" ")
+  console.log("retrieveJSON returned parameters:")
+  console.log(parameters)
+
+  // Get the JSON with $.getJSON() & Flask.url_for().
+  // Use Flask.url_for("product", parameters) to generate JSON url.
+  var jsPromise = Promise.resolve(
+    $.getJSON(Flask.url_for("product"), parameters)
+  )
+
+  // Retrieve the desired product info through a promise.
+  jsPromise.then(function(response) {
+    console.log("retrieveJSON returned response")
+    console.log(response)
+    var theProductInfo = response
+    return theProductInfo
+  }, function(xhrObj) {
+    console.log("xhrObj")
+    console.log(xhrObj)
+  })
+
+}
+
+
+// Get the product id when it is clicked.
+function getIdOnClick(productClicked) {
+
+  // TODO: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise
+    // Apply await() using the Promise constructor
+
+  // Get the id of a product when it is clicked.
+  var productIdOfClicked = productClicked.id
+  console.log(" ")
+  console.log("Heard click on product")
+  console.log("Heading to product page!!! but not really...")
+  console.log("node id is " + productIdOfClicked)
+
+
+  // Return the product's id.
+  return productIdOfClicked
 
 
 }
 
-// Edit product information.
-function editProduct() {
-  var jsSuccess = 'Successfully used Javascript';
 
-  alert(jsSuccess);
+// Redirect user to the Product page
+function redirectToProduct() {
+
+  // TODO: Listen for when the user clicks a product.
+
+    // TODO: Get id of the product clicked
+
+    // TODO: Save the id and name of the product selected.
+
+    // TODO: Render the product page with the selected product name and id.
+
 
 };
 
 
+// Display the product information on the page
+function displayProduct() {
 
-// Updates product search and/or product specific changes.
-function update() {
 
-  // TODO: Get element I want to change from html
-    // https://learn.jquery.com/using-jquery-core/jquery-object/#the-jquery-object
+  // TODO: Listen for when a product page loads.
 
-  // TODO: Use the .map() method to go through each object on the product page
-    // TODO: Use the .filter() method to select the relevant info from our JSON
-    // TODO: change the object selected by .map() with the relevant JSON data
+    // TODO: Get the product id.
 
-    // TODO: use the .html() method to set the element on screen with our new info
+    // TODO: Get the product information based on id.
 
+    // TODO: Set the relevant elements to display product information.
+
+      // TODO: Select the desired DOM element.
+
+      // TODO: Parse the responseJSON for the data to show on screen.
 
 
 };

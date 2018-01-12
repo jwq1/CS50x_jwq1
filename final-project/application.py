@@ -64,7 +64,7 @@ def index():
 
     # Get the most recently added products. Limit to 2.
     recent_products = db.execute("""
-            SELECT product_name, image
+            SELECT id, product_name, image
             FROM products
             ORDER BY id DESC
             LIMIT 2""")
