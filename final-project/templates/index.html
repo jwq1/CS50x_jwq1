@@ -34,9 +34,9 @@
 
 
     <h3>Recent Products</h3>
-    <div id="recentProducts">
+    <div>
         {% for product in range(product_count) %}
-            <div id={{recent_products[product]["id"]}}>
+            <div id={{recent_products[product]["id"]}} class=productListView>
                 <img src={{recent_products[product]["image"]}} height=250>
                 <p>{{recent_products[product]["product_name"]}}</p>
             </div>
