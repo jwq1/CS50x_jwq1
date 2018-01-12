@@ -11,16 +11,16 @@
 {% endblock %}
 
 {% block main %}
-    <div id=homepage>
+    <div id="homepage">
 
-        <div id=welcome>
+        <div id="welcome">
             <header>
                 <h1>Welcome back {{this_username}}!</h1>
             </header>
         </div>
 
         <div>
-            <select id=homeSearchDropdown title="Search in">
+            <select id="home-search-dropdown" title="Search in">
                 <option selected="selected" value="All Departments">
                     All Departments
                 </option>
@@ -36,7 +36,7 @@
         <h3>Recent Products</h3>
         <div>
             {% for product in range(product_count) %}
-                <div id={{recent_products[product]["id"]}} class=productListView>
+                <div id={{recent_products[product]["id"]}} class="product-list-view">
                     <img src={{recent_products[product]["image"]}} height=250>
                     <p>{{recent_products[product]["product_name"]}}</p>
                 </div>

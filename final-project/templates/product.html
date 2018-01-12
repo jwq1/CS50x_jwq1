@@ -8,12 +8,12 @@
 
 {% block main %}
 
-    <div id=product-page>
+    <div id="product-page">
 
         <header>
             <h1>{{product_name}}</h1><h5>{{brand}}</h5>
         </header>
-        <div class=container-fluid>
+        <div class="container-fluid">
 
             <div>
                 <img src="{{image}}" alt="Picture of {{product_name}}" height=350>
@@ -33,7 +33,7 @@
                 <p>Ethically Made</p>
             </div>
 
-            <div id=references>
+            <div id="references">
                 <h3>References</h3>
                 {% for reference in range(number_of_references) %}
                     <a href='{{reference_links[reference]}}'>
@@ -44,8 +44,8 @@
 
             <div>
                 <h3>Edit Page</h3>
-                <input type='button' value='named function'
-                    onclick='editProduct(); return false;'
+                <input type="button" value="named function"
+                    onclick="editProduct(); return false;"
                 />
             </div>
 
