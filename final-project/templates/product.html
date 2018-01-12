@@ -7,43 +7,48 @@
 {% endblock %}
 
 {% block main %}
-    <header>
-        <h1>{{product_name}}</h1><h5>{{brand}}</h5>
-    </header>
-    <div class=container-fluid>
 
-        <div>
-            <img src="{{image}}" alt="Picture of {{product_name}}" height=350>
-        </div>
+    <div id=product-page>
 
-        <div>
-            <h4>{{price}}</h4>
-        </div>
+        <header>
+            <h1>{{product_name}}</h1><h5>{{brand}}</h5>
+        </header>
+        <div class=container-fluid>
 
-        <h1>Description</h1>
-        <p>{{description}}</p>
+            <div>
+                <img src="{{image}}" alt="Picture of {{product_name}}" height=350>
+            </div>
 
-        <!--TODO: Render characteristics of product on the page-->
-        <h2>Characteristics</h2>
-        <div>
-            <p>Plastic Free</p>
-            <p>Ethically Made</p>
-        </div>
+            <div>
+                <h4>{{price}}</h4>
+            </div>
 
-        <div id=references>
-            <h3>References</h3>
-            {% for reference in range(number_of_references) %}
-                <a href='{{reference_links[reference]}}'>
-                    {{reference_titles[reference]}}
-                </a>
-            {% endfor %}
-        </div>
+            <h1>Description</h1>
+            <p>{{description}}</p>
 
-        <div>
-            <h3>Edit Page</h3>
-            <input type='button' value='named function'
-                onclick='editProduct(); return false;'
-            />
+            <!--TODO: Render characteristics of product on the page-->
+            <h2>Characteristics</h2>
+            <div>
+                <p>Plastic Free</p>
+                <p>Ethically Made</p>
+            </div>
+
+            <div id=references>
+                <h3>References</h3>
+                {% for reference in range(number_of_references) %}
+                    <a href='{{reference_links[reference]}}'>
+                        {{reference_titles[reference]}}
+                    </a>
+                {% endfor %}
+            </div>
+
+            <div>
+                <h3>Edit Page</h3>
+                <input type='button' value='named function'
+                    onclick='editProduct(); return false;'
+                />
+            </div>
+
         </div>
 
     </div>
