@@ -1,0 +1,53 @@
+<!--Final Project | product | (jwq1)-->
+
+{% extends "layout.html" %}
+
+{% block title %}
+    Product Name
+{% endblock %}
+
+{% block main %}
+
+    <div class="product-page">
+
+        <header>
+            <h1>Product Name</h1><h5>brand</h5>
+        </header>
+        <div class="container-fluid">
+
+            <div>
+                <img src="" alt="Picture of [product name]" height=350>
+            </div>
+
+            <div>
+                <h4>price</h4>
+            </div>
+
+            <h1>Description</h1>
+            <p>description</p>
+
+            <!--TODO: Render characteristics of product on the page-->
+            <h2>Characteristics</h2>
+            <div>
+                <p>Plastic Free</p>
+                <p>Ethically Made</p>
+            </div>
+
+            <div id="references">
+                <h3>References</h3>
+                <span>title</span>
+                <span>link</span>
+            </div>
+
+            <div>
+                <h3>Edit Page</h3>
+                <input type="button" value="named function"
+                    onclick="editProduct(); return false;"
+                />
+            </div>
+
+        </div>
+
+    </div>
+
+{% endblock %}

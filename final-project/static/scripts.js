@@ -97,10 +97,11 @@ function getIdOnClick(productClicked) {
 // Redirect user to the Product page
 function renderProductPage() {
 
-  // TODO: Render the product page with the selected product name and id.
+  // Render the product page with the selected product name and id.
+  window.location.href = Flask.url_for("product");
 
 
-};
+}
 
 
 // Display the product information on the page
