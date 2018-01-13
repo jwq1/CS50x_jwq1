@@ -18,7 +18,6 @@ $(function(){
     // Keep track of the products we have on screen.
     var productWasClicked = document.querySelector(".clickable-products");
 
-
     // Search for product information when the user selects a product.
     productWasClicked.onclick = function() {
 
@@ -29,7 +28,7 @@ $(function(){
       var productInformation = retrieveJSON( productIdNumber );
 
       // Redirect to the 'View Product' page.
-      renderProductPage(productInformation);
+      renderProductPage();
 
     }
 
