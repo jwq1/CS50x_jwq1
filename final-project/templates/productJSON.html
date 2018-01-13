@@ -3,7 +3,7 @@
 {% extends "layout.html" %}
 
 {% block title %}
-    {{product_name}}
+    Product Name
 {% endblock %}
 
 {% block main %}
@@ -11,20 +11,20 @@
     <div class="product-page">
 
         <header>
-            <h1>{{product_name}}</h1><h5>{{brand}}</h5>
+            <h1>Product Name</h1><h5>brand</h5>
         </header>
         <div class="container-fluid">
 
             <div>
-                <img src="{{image}}" alt="Picture of {{product_name}}" height=350>
+                <img src="" alt="Picture of [product name]" height=350>
             </div>
 
             <div>
-                <h4>{{price}}</h4>
+                <h4>price</h4>
             </div>
 
             <h1>Description</h1>
-            <p>{{description}}</p>
+            <p>description</p>
 
             <!--TODO: Render characteristics of product on the page-->
             <h2>Characteristics</h2>
@@ -35,11 +35,8 @@
 
             <div id="references">
                 <h3>References</h3>
-                {% for reference in range(number_of_references) %}
-                    <a href='{{reference_links[reference]}}'>
-                        {{reference_titles[reference]}}
-                    </a>
-                {% endfor %}
+                <span>title</span>
+                <span>link</span>
             </div>
 
             <div>

@@ -6,26 +6,44 @@
 // Enforce strict js code conventions
 "use strict";
 
-// Keep track of the products we have on screen.
-var productWasClicked = document.querySelector(".productListView")
+// If user is on homepage then get product elements.
+$(function(){
 
+  console.log("function executes!")
 
-// Search for product information when the user selects a product.
-productWasClicked.onclick = function() {
+  if( !!(document.querySelector(".clickable-products")) ) {
 
-  // Get the product information our user wants.
-  retrieveJSON( getIdOnClick(productWasClicked) );
+    console.log("Conditional executes!")
 
-}
+    // Keep track of the products we have on screen.
+    var productWasClicked = document.querySelector(".clickable-products");
+
+    // Search for product information when the user selects a product.
+    productWasClicked.onclick = function() {
+
+      // Save the id of the product.
+      var productIdNumber = getIdOnClick( productWasClicked );
+
+      // Get information for the product our user selects.
+      var productInformation = retrieveJSON( productIdNumber );
+
+      // Redirect to the 'View Product' page.
+      renderProductPage();
+
+    }
+
+  }
+
+});
 
 
 // Retrieve product information in the form of a JSON.
 function retrieveJSON(product_id) {
 
-    console.log(" ")
-    console.log("retreiveJSON function started")
-    console.log("product_id = ")
-    console.log(product_id)
+  console.log(" ")
+  console.log("retreiveJSON function started")
+  console.log("product_id = ")
+  console.log(product_id)
 
   // Create parameters for Flask.url_for() method.
   var parameters = {
@@ -37,12 +55,12 @@ function retrieveJSON(product_id) {
 
   // Get the JSON with $.getJSON() & Flask.url_for().
   // Use Flask.url_for("product", parameters) to generate JSON url.
-  var jsPromise = Promise.resolve(
-    $.getJSON(Flask.url_for("product"), parameters)
+  var getProductJSON = Promise.resolve(
+    $.getJSON(Flask.url_for("getProductJSON"), parameters)
   )
 
   // Retrieve the desired product info through a promise.
-  jsPromise.then(function(response) {
+  getProductJSON.then(function(response) {
     console.log("retrieveJSON returned response")
     console.log(response)
     var theProductInfo = response
@@ -77,18 +95,13 @@ function getIdOnClick(productClicked) {
 
 
 // Redirect user to the Product page
-function redirectToProduct() {
+function renderProductPage() {
 
-  // TODO: Listen for when the user clicks a product.
-
-    // TODO: Get id of the product clicked
-
-    // TODO: Save the id and name of the product selected.
-
-    // TODO: Render the product page with the selected product name and id.
+  // Render the product page with the selected product name and id.
+  window.location.href = Flask.url_for("product");
 
 
-};
+}
 
 
 // Display the product information on the page

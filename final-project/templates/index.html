@@ -11,36 +11,38 @@
 {% endblock %}
 
 {% block main %}
-    <p>Not loaded yet.</p>
+    <div class="homepage">
 
-    <div id=welcome>
-        <header>
-            <h1>Welcome back {{this_username}}!</h1>
-        </header>
-    </div>
+        <div id="welcome">
+            <header>
+                <h1>Welcome back {{this_username}}!</h1>
+            </header>
+        </div>
 
-    <div>
-        <select id=homeSearchDropdown title="Search in">
-            <option selected="selected" value="All Departments">
-                All Departments
-            </option>
-            {% for category in range(number_of_categories) %}
-                <option value="{{category_list[category]}}">
-                    {{category_list[category]}}
+        <div>
+            <select id="home-search-dropdown" title="Search in">
+                <option selected="selected" value="All Departments">
+                    All Departments
                 </option>
+                {% for category in range(number_of_categories) %}
+                    <option value="{{category_list[category]}}">
+                        {{category_list[category]}}
+                    </option>
+                {% endfor %}
+            </select>
+        </div>
+
+
+        <h3>Recent Products</h3>
+        <div>
+            {% for product in range(product_count) %}
+                <div id={{recent_products[product]["id"]}} class="clickable-products">
+                    <img src={{recent_products[product]["image"]}} height=250>
+                    <p>{{recent_products[product]["product_name"]}}</p>
+                </div>
             {% endfor %}
-        </select>
-    </div>
+        </div>
 
-
-    <h3>Recent Products</h3>
-    <div>
-        {% for product in range(product_count) %}
-            <div id={{recent_products[product]["id"]}} class=productListView>
-                <img src={{recent_products[product]["image"]}} height=250>
-                <p>{{recent_products[product]["product_name"]}}</p>
-            </div>
-        {% endfor %}
     </div>
 
 {% endblock %}
