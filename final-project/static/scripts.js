@@ -6,14 +6,11 @@
 // Enforce strict js code conventions
 "use strict";
 
-// If user is on homepage then get product elements.
+// Check what kind of content to load when the document is ready.
 $(function(){
 
-  console.log("function executes!")
-
-  if( !!(document.querySelector(".clickable-products")) ) {
-
-    console.log("Conditional executes!")
+  // If there are product thumbnails on the page, then make them clickable.
+  if ( !!(document.querySelector(".clickable-products")) ) {
 
     // Keep track of the products we have on screen.
     var productWasClicked = document.querySelector(".clickable-products");
@@ -33,6 +30,8 @@ $(function(){
     }
 
   }
+
+
 
 });
 
