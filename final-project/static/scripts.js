@@ -31,6 +31,12 @@ $(function(){
 
   }
 
+  // If the user is on a product page, then load product content.
+  if ( !!( document.querySelector(".product-page") ) ) {
+
+    // TODO: load relevant product content
+
+  }
 
 });
 
