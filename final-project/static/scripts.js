@@ -19,7 +19,7 @@ $(function(){
     productWasClicked.onclick = function() {
 
       // Save the id of the product.
-      var productIdNumber = getIdOnClick( productWasClicked );
+      var productIdNumber = Number(getIdOnClick( productWasClicked ));
 
       // Get information for the product our user selects.
       var productInformation = retrieveJSON( productIdNumber );
@@ -63,17 +63,23 @@ function retrieveJSON(product_id) {
 
   // Retrieve the desired product info through a promise.
   getProductJSON.then(function(response) {
+
     console.log(" ")
     console.log("Success: retrieveJSON returned response")
     console.log(response)
+
     var theProductInfo = response
     return theProductInfo
+
+
   }, function(xhrObj) {
+
     console.log(" ")
     console.log("FAILURE: no product info was returned ")
-  })
 
-}
+  }) // end getProductJSON
+
+} // end retrieveJSON
 
 
 // Get the product id when it is clicked.
