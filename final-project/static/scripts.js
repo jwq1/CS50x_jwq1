@@ -6,14 +6,11 @@
 // Enforce strict js code conventions
 "use strict";
 
-// If user is on homepage then get product elements.
+// Check what kind of content to load when the document is ready.
 $(function(){
 
-  console.log("function executes!")
-
-  if( !!(document.querySelector(".clickable-products")) ) {
-
-    console.log("Conditional executes!")
+  // If there are product thumbnails on the page, then make them clickable.
+  if ( !!(document.querySelector(".clickable-products")) ) {
 
     // Keep track of the products we have on screen.
     var productWasClicked = document.querySelector(".clickable-products");
@@ -22,7 +19,7 @@ $(function(){
     productWasClicked.onclick = function() {
 
       // Save the id of the product.
-      var productIdNumber = getIdOnClick( productWasClicked );
+      var productIdNumber = Number(getIdOnClick( productWasClicked ));
 
       // Get information for the product our user selects.
       var productInformation = retrieveJSON( productIdNumber );
@@ -34,6 +31,13 @@ $(function(){
 
   }
 
+  // If the user is on a product page, then load product content.
+  if ( !!( document.querySelector(".product-page") ) ) {
+
+    // TODO: load relevant product content
+
+  }
+
 });
 
 
@@ -42,15 +46,13 @@ function retrieveJSON(product_id) {
 
   console.log(" ")
   console.log("retreiveJSON function started")
-  console.log("product_id = ")
-  console.log(product_id)
 
   // Create parameters for Flask.url_for() method.
   var parameters = {
     id: product_id
   }
   console.log(" ")
-  console.log("retrieveJSON returned parameters:")
+  console.log("parameters:")
   console.log(parameters)
 
   // Get the JSON with $.getJSON() & Flask.url_for().
@@ -61,16 +63,23 @@ function retrieveJSON(product_id) {
 
   // Retrieve the desired product info through a promise.
   getProductJSON.then(function(response) {
-    console.log("retrieveJSON returned response")
+
+    console.log(" ")
+    console.log("Success: retrieveJSON returned response")
     console.log(response)
+
     var theProductInfo = response
     return theProductInfo
-  }, function(xhrObj) {
-    console.log("xhrObj")
-    console.log(xhrObj)
-  })
 
-}
+
+  }, function(xhrObj) {
+
+    console.log(" ")
+    console.log("FAILURE: no product info was returned ")
+
+  }) // end getProductJSON
+
+} // end retrieveJSON
 
 
 // Get the product id when it is clicked.
@@ -82,9 +91,8 @@ function getIdOnClick(productClicked) {
   // Get the id of a product when it is clicked.
   var productIdOfClicked = productClicked.id
   console.log(" ")
-  console.log("Heard click on product")
-  console.log("Heading to product page!!! but not really...")
-  console.log("node id is " + productIdOfClicked)
+  console.log("Heard click")
+  console.log("product id is " + productIdOfClicked)
 
 
   // Return the product's id.
