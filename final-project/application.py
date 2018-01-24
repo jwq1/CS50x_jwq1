@@ -530,6 +530,9 @@ def productJSON():
     # Return json of product information
     productJSON = jsonify(product_info[0])
 
+
+    # BIG TODO: This is the incorrect process.
+        # TODO: The HTTP request for JSON needs to happen via AJAX.
     # Display the product html page
     return render_template("productJSON.html", productJSON=productJSON)
 
