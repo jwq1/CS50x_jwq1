@@ -12,22 +12,65 @@ $(function(){
   // If there are product thumbnails on the page, then make them clickable.
   if ( !!(document.querySelector(".clickable-products")) ) {
 
+
+    // BIG TODO: Only use fetch product data after the product page has been rendered.
+    // The browser's CORS security prevents cross-origin requests.
+    // Answer 1:
+    // https://stackoverflow.com/questions/42719041/how-to-resolve-typeerror-networkerror-when-attempting-to-fetch-resource
+    // Answer 2:
+    // https://stackoverflow.com/questions/37333573/fetch-with-the-wikipedia-api-results-in-typeerror-networkerror-when-attempti#37351064
+    // Documentation:
+    // https://developer.mozilla.org/en-US/docs/Web/HTTP/CORS
+    // Explanation:
+    // These answers and documentation explain the failure in my previous code.
+
+    // BIG TODO 2: The JSON is currently retrieved by asking Flask
+    // to render a URL which returns a json. This will not work, because the url
+    // would have to be different than the current page.
+    // Need to get JSON from our python application without using the Flask.url_for
+    // method. There must be some other way to do this, but it requires more research.
+    // How does one call a python function from javascript? <-- John, answer this.
+
+
+    // Small TODO: Update this to add a listener on all the products on page.
+    // Small TODO: use the event object to select the appropriate product.
     // Keep track of the products we have on screen.
     var productWasClicked = document.querySelector(".clickable-products");
 
+    // TODO: Replace with a promise chain.
+    // Promises will ensure functions call at the correct time to avoid CORS error.
+
+    // TODO: Create new promise object to get identification of product clicked
+    // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise
+
+    // TODO: Create a new promise to render the html template for the product page.
+
+
+    // TODO: Create a new promise to retrieve JSON information for that product
+
+
+    // TODO: Create a new promise to update the page with the product's information
+
+
+    // TODO: Chain promises together to execute functions one after another.
+
+
+
     // Search for product information when the user selects a product.
-    productWasClicked.onclick = function() {
+    productWasClicked.addEventListener('click', function() {
 
       // Save the id of the product.
       var productIdNumber = Number(getIdOnClick( productWasClicked ));
 
+      // Render the product page.
+      renderProductPage(productIdNumber);
+
+
       // Get information for the product our user selects.
-      var productInformation = retrieveJSON( productIdNumber );
+      var productInformation = retrieveJSON(getSearchParams);
 
-      // Redirect to the 'View Product' page.
-      renderProductPage();
 
-    }
+    });
 
   }
 
@@ -40,47 +83,70 @@ $(function(){
 
 });
 
+// Get product search parameters.
+function getSearchParams() {
+
+  // Get the parameters after the '?' in the URL.
+  let params = (new URL(document.location)).searchParams;
+
+  // Parse only the 'id=' parameter.
+  let productIdentity = params.get("id");
+
+  // Return the 'id' number of the product.
+  return productIdentity;
+}
+
+
 
 // Retrieve product information in the form of a JSON.
 function retrieveJSON(product_id) {
 
-  console.log(" ")
-  console.log("retreiveJSON function started")
+  console.log(" ");
+  console.log("retreiveJSON function started");
 
   // Create parameters for Flask.url_for() method.
   var parameters = {
     id: product_id
   }
-  console.log(" ")
-  console.log("parameters:")
-  console.log(parameters)
+  console.log(" ");
+  console.log("parameters:");
+  console.log(parameters);
 
-  // Get the JSON with $.getJSON() & Flask.url_for().
-  // Use Flask.url_for("product", parameters) to generate JSON url.
-  var getProductJSON = Promise.resolve(
-    $.getJSON(Flask.url_for("getProductJSON"), parameters)
-  )
+  // Set URL to find the product json.
+  var productUrl = Flask.url_for('product', parameters);
+  console.log('');
+  console.log('productUrl built by Flask.url_for');
+  console.log(productUrl);
 
-  // Retrieve the desired product info through a promise.
-  getProductJSON.then(function(response) {
+  // Create a variable to store the products.
+  var productsJsonData;
 
-    console.log(" ")
-    console.log("Success: retrieveJSON returned response")
-    console.log(response)
+  // Fetch product information.
+  fetch(productUrl).then(function(response) {
+    if(response.ok) {
+      response.json().then(function(json) {
+        // Store the JSON data in a properly scoped variable.
+        productsJsonData = json;
+      })
+    } else {
+      // Print an error if nothing was found.
+      console.log('Network request for products.json failed with response '
+        + response.status
+        + ': '
+        + response.statusText
+      );
+    }
+  });
 
-    var theProductInfo = response
-    return theProductInfo
+  // Print the data to the console for testing.
+  console.log('');
+  console.log(productsJsonData);
+  return productsJsonData;
 
+  // How to resolve “TypeError: NetworkError when attempting to fetch resource.""
+  // https://stackoverflow.com/questions/42719041/how-to-resolve-typeerror-networkerror-when-attempting-to-fetch-resource
 
-  }, function(xhrObj) {
-
-    console.log(" ")
-    console.log("FAILURE: no product info was returned ")
-
-  }) // end getProductJSON
-
-} // end retrieveJSON
-
+}
 
 // Get the product id when it is clicked.
 function getIdOnClick(productClicked) {
@@ -106,7 +172,7 @@ function getIdOnClick(productClicked) {
 function renderProductPage() {
 
   // Render the product page with the selected product name and id.
-  window.location.href = Flask.url_for("product");
+  window.location.href = Flask.url_for("product", parameters);
 
 
 }
