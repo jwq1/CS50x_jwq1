@@ -489,9 +489,9 @@ def update():
     return apology("TODO Update")
 
 
-@app.route("/get-product-json")
-# @login_required
-def getProductJSON():
+@app.route("/productJSON")
+@login_required
+def productJSON():
     """View an individual product"""
 
     # Keep the user logged in.
@@ -528,15 +528,14 @@ def getProductJSON():
     product_info[0]['reference_links'] = reference_links
 
     # Return json of product information
-    return jsonify(product_info[0])
+    productJSON = jsonify(product_info[0])
 
 
-@app.route("/product")
-@login_required
-def product():
-
+    # BIG TODO: This is the incorrect process.
+        # TODO: The HTTP request for JSON needs to happen via AJAX.
     # Display the product html page
-    return render_template("productJSON.html")
+    return render_template("productJSON.html", productJSON=productJSON)
+
 
 @app.route("/edit")
 @login_required
