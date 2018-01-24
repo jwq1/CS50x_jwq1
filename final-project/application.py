@@ -489,9 +489,9 @@ def update():
     return apology("TODO Update")
 
 
-@app.route("/get-product-json")
-# @login_required
-def getProductJSON():
+@app.route("/product")
+@login_required
+def product():
     """View an individual product"""
 
     # Keep the user logged in.
@@ -528,15 +528,12 @@ def getProductJSON():
     product_info[0]['reference_links'] = reference_links
 
     # Return json of product information
-    return jsonify(product_info[0])
-
-
-@app.route("/product")
-@login_required
-def product():
+    productJSON = jsonify(product_info[0])
+    productId = product_info[0]['id']
 
     # Display the product html page
-    return render_template("productJSON.html")
+    return render_template("productJSON.html", productJSON=productJSON, productId=productId)
+
 
 @app.route("/edit")
 @login_required
