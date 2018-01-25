@@ -489,9 +489,9 @@ def update():
     return apology("TODO Update")
 
 
-@app.route("/productJSON")
+@app.route("/get-product-json")
 @login_required
-def productJSON():
+def getProductJSON():
     """View an individual product"""
 
     # Keep the user logged in.
@@ -522,20 +522,24 @@ def productJSON():
     reference_titles,
     reference_links) = get_reference(product_info[0]["product_name"])
 
-    # add references to our product information
+    # Add references to our product information.
     product_info[0]['number_of_references'] = number_of_references
     product_info[0]['reference_titles'] = reference_titles
     product_info[0]['reference_links'] = reference_links
 
-    # Return json of product information
-    productJSON = jsonify(product_info[0])
 
+    # Helpful Documentation:
+    # MDN Cross-Origin Sharing Functional Overview
+    # https://developer.mozilla.org/en-US/docs/Web/HTTP/CORS
 
-    # BIG TODO: This is the incorrect process.
-        # TODO: The HTTP request for JSON needs to happen via AJAX.
+    # Return product information in the form of a JSON object.
+    return jsonify(product_info[0])
+
+@app.route("/product")
+def renderProductPage():
+
     # Display the product html page
-    return render_template("productJSON.html", productJSON=productJSON)
-
+    return render_template("productJSON.html")
 
 @app.route("/edit")
 @login_required
