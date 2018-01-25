@@ -490,7 +490,7 @@ def update():
 
 
 @app.route("/get-product-json")
-@login_required
+# @login_required
 def getProductJSON():
     """View an individual product"""
 
@@ -538,8 +538,18 @@ def getProductJSON():
 @app.route("/product")
 def renderProductPage():
 
+    # Request a product from the user.
+    idOfProductsRequested = request.args.get("id")
+
+    # Ensure the user asked for a product.
+    if not idOfProductsRequested:
+        return apology("Please let us know which product you are looking for")
+    elif idOfProductsRequested == None:
+        return apology("Please let us know which product you are looking for")
+
+
     # Display the product html page
-    return render_template("productJSON.html")
+    return render_template("productJSON.html", idOfProductsRequested=idOfProductsRequested)
 
 @app.route("/edit")
 @login_required
