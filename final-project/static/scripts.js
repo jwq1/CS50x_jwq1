@@ -9,32 +9,20 @@
 // Check what kind of content to load when the document is ready.
 $(function(){
 
+  // Get product data when user navigates to a product page.
+  if ( !!(document.querySelector(".product-page")) ) {
+    // Pull the id from the URL, then return a JSON object.
+    retrieveJSON(getSearchParams());
+  }
+
   // If there are product thumbnails on the page, then make them clickable.
   if ( !!(document.querySelector(".clickable-products")) ) {
-
-
-    // BIG TODO: Only use fetch product data after the product page has been rendered.
-    // The browser's CORS security prevents cross-origin requests.
-    // Answer 1:
-    // https://stackoverflow.com/questions/42719041/how-to-resolve-typeerror-networkerror-when-attempting-to-fetch-resource
-    // Answer 2:
-    // https://stackoverflow.com/questions/37333573/fetch-with-the-wikipedia-api-results-in-typeerror-networkerror-when-attempti#37351064
-    // Documentation:
-    // https://developer.mozilla.org/en-US/docs/Web/HTTP/CORS
-    // Explanation:
-    // These answers and documentation explain the failure in my previous code.
-
-    // BIG TODO 2: The JSON is currently retrieved by asking Flask
-    // to render a URL which returns a json. This will not work, because the url
-    // would have to be different than the current page.
-    // Need to get JSON from our python application without using the Flask.url_for
-    // method. There must be some other way to do this, but it requires more research.
-    // How does one call a python function from javascript? <-- John, answer this.
 
 
     // Small TODO: Update this to add a listener on all the products on page.
     // Small TODO: use the event object to select the appropriate product.
     // Keep track of the products we have on screen.
+    // BUG: This only listens for clicks on the first product on the page, not all.
     var productWasClicked = document.querySelector(".clickable-products");
 
     // TODO: Replace with a promise chain.
@@ -66,20 +54,10 @@ $(function(){
       renderProductPage(productIdNumber);
 
 
-      // Get information for the product our user selects.
-      var productInformation = retrieveJSON(getSearchParams);
-
-
     });
 
   }
 
-  // If the user is on a product page, then load product content.
-  if ( !!( document.querySelector(".product-page") ) ) {
-
-    // TODO: load relevant product content
-
-  }
 
 });
 
@@ -101,32 +79,31 @@ function getSearchParams() {
 // Retrieve product information in the form of a JSON.
 function retrieveJSON(product_id) {
 
-  console.log(" ");
-  console.log("retreiveJSON function started");
 
   // Create parameters for Flask.url_for() method.
   var parameters = {
     id: product_id
   }
-  console.log(" ");
-  console.log("parameters:");
-  console.log(parameters);
+
 
   // Set URL to find the product json.
-  var productUrl = Flask.url_for('product', parameters);
+  var productUrl = Flask.url_for("getProductJSON", parameters);
   console.log('');
   console.log('productUrl built by Flask.url_for');
   console.log(productUrl);
 
-  // Create a variable to store the products.
-  var productsJsonData;
 
   // Fetch product information.
   fetch(productUrl).then(function(response) {
     if(response.ok) {
       response.json().then(function(json) {
-        // Store the JSON data in a properly scoped variable.
-        productsJsonData = json;
+
+        // Print the data to the console for testing.
+        console.log('');
+        console.log('Success: fetch resolved!')
+        console.log('The JSON data is below.')
+        console.log(json);
+        return json;
       })
     } else {
       // Print an error if nothing was found.
@@ -138,14 +115,6 @@ function retrieveJSON(product_id) {
     }
   });
 
-  // Print the data to the console for testing.
-  console.log('');
-  console.log(productsJsonData);
-  return productsJsonData;
-
-  // How to resolve “TypeError: NetworkError when attempting to fetch resource.""
-  // https://stackoverflow.com/questions/42719041/how-to-resolve-typeerror-networkerror-when-attempting-to-fetch-resource
-
 }
 
 // Get the product id when it is clicked.
@@ -156,9 +125,6 @@ function getIdOnClick(productClicked) {
 
   // Get the id of a product when it is clicked.
   var productIdOfClicked = productClicked.id
-  console.log(" ")
-  console.log("Heard click")
-  console.log("product id is " + productIdOfClicked)
 
 
   // Return the product's id.
@@ -169,11 +135,14 @@ function getIdOnClick(productClicked) {
 
 
 // Redirect user to the Product page
-function renderProductPage() {
+function renderProductPage(productIdentificationNumber) {
+
+  var parameters = {
+    id: productIdentificationNumber
+  }
 
   // Render the product page with the selected product name and id.
-  window.location.href = Flask.url_for("product", parameters);
-
+  window.location.replace(Flask.url_for("renderProductPage", parameters));
 
 }
 
