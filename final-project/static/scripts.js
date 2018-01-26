@@ -12,11 +12,10 @@ $(function(){
   // Get product data when user navigates to a product page.
   if ( !!(document.querySelector(".product-page")) ) {
     // Pull the id from the URL, then return a JSON object.
-    retrieveJSON(getSearchParams());
+    var jsonProductReturned = retrieveJSON(getSearchParams());
 
-    // TODO: Display the product information on screen.
-    // Call displayProduct();
-    // Pass the JSON to the display function.
+    // Display the product information on screen.
+    displayProduct(jsonProductReturned);
 
   }
 
