@@ -13,6 +13,10 @@ $(function(){
   if ( !!(document.querySelector(".product-page")) ) {
     // Pull the id from the URL, then return a JSON object.
     retrieveJSON(getSearchParams());
+
+    // TODO: Display the product information on screen.
+    // Call displayProduct();
+
   }
 
   // If there are product thumbnails on the page, then make them clickable.
@@ -150,18 +154,89 @@ function renderProductPage(productIdentificationNumber) {
 // Display the product information on the page
 function displayProduct() {
 
+  // Select DOM elements by css class.
+  // document.querySelector
 
-  // TODO: Listen for when a product page loads.
+    // DOM
+    // Select header.
+      // Select product name.
+      // Select brand.
 
-    // TODO: Get the product id.
+    // Select product image.
 
-    // TODO: Get the product information based on id.
+    // Select link.
 
-    // TODO: Set the relevant elements to display product information.
+    // Select price.
 
-      // TODO: Select the desired DOM element.
+    // Select description.
 
-      // TODO: Parse the responseJSON for the data to show on screen.
+    // Select characteristics
+
+    // Select references.
+      // Select ordered list of references.
+
+
+    // Available product info.
+    // id
+    // category_id
+    // product_name
+    // link
+    // description
+    // image
+    // brand
+    // price
+
+    // Available reference info.
+    // id
+    // product_id
+    // title
+    // link
+
+
+  // Set content.
+  // Element.textContent
+
+  // Store JavaScript Object Notation JSON
+  // in a variable to access later.
+
+    // Set header.
+      // Set product name.
+        // Pull product name from JavaScript object.
+        // Set text content to equal JavaScript object content.
+      // Set brand.
+
+    // Set product image.
+
+    // Set link.
+
+    // Set price.
+
+    // Set description.
+
+    // Set characteristics
+      // Populate with empty state values
+      // until characteristics are available.
+      // TODO: Create characteristics in DB.
+      // See the productJSON.html note
+      // for details about structure.
+
+
+    // Set references.
+      // Create list item.
+
+      // Loop through all references for product.
+        // Create reference variable.
+        // Make it an anchor element.
+          // Set text content to title.
+          // Set href attribute to link.
+        // Append to the list item.
+
+      // Append list items to ordered list.
 
 
 };
+
+// TODO: Render "edit product info" UI.
+
+
+// TODO: Create generic page update function for interactive tasks.
