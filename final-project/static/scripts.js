@@ -16,6 +16,7 @@ $(function(){
 
     // TODO: Display the product information on screen.
     // Call displayProduct();
+    // Pass the JSON to the display function.
 
   }
 
@@ -30,7 +31,8 @@ $(function(){
     var productWasClicked = document.querySelector(".clickable-products");
 
     // TODO: Replace with a promise chain.
-    // Promises will ensure functions call at the correct time to avoid CORS error.
+    // Promises will ensure functions call at the correct time.
+    // JSON is required before document set.
 
     // TODO: Create new promise object to get identification of product clicked
     // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise
@@ -152,28 +154,36 @@ function renderProductPage(productIdentificationNumber) {
 
 
 // Display the product information on the page
-function displayProduct() {
+function displayProduct(jsonOfProductInfo) {
 
   // Select DOM elements by css class.
   // document.querySelector
 
-    // DOM
-    // Select header.
-      // Select product name.
-      // Select brand.
+  // Select product name.
+  var prodPageName = document.querySelector('.product-name');
+  // Select brand.
+  var prodPageBrand = document.querySelector('.brand');
 
-    // Select product image.
+  // Select product image.
+  var prodPageImage = document.querySelector('.product-image');
 
-    // Select link.
+  // Select price.
+  var prodPagePrice = document.querySelector('.price');
 
-    // Select price.
+  // Select description.
+  var prodPageDescription = document.querySelector('.description');
 
-    // Select description.
+  // Select characteristics
+  var prodPageCharacteristics = document.querySelector('.characteristics');
 
-    // Select characteristics
+  // Select references.
+  // Select ordered list of references.
+  var prodPageReferences = document.querySelector('.references-list');
 
-    // Select references.
-      // Select ordered list of references.
+
+  // Store JavaScript Object Notation JSON
+  // in a variable to access later.
+  var productJsonInfo = jsonOfProductInfo;
 
 
     // Available product info.
@@ -196,42 +206,40 @@ function displayProduct() {
   // Set content.
   // Element.textContent
 
-  // Store JavaScript Object Notation JSON
-  // in a variable to access later.
+  // Set product name.
+  // Pull product name from JavaScript object.
+  prodPageName =
+  // Set text content to equal JavaScript object content.
+  // Set id of product name.
+  // Set brand.
 
-    // Set header.
-      // Set product name.
-        // Pull product name from JavaScript object.
-        // Set text content to equal JavaScript object content.
-      // Set brand.
+  // Set product image.
 
-    // Set product image.
+  // Set link.
 
-    // Set link.
+  // Set price.
 
-    // Set price.
+  // Set description.
 
-    // Set description.
-
-    // Set characteristics
-      // Populate with empty state values
-      // until characteristics are available.
-      // TODO: Create characteristics in DB.
-      // See the productJSON.html note
-      // for details about structure.
+  // Set characteristics
+    // Populate with empty state values
+    // until characteristics are available.
+    // TODO: Create characteristics in DB.
+    // See the productJSON.html note
+    // for details about structure.
 
 
-    // Set references.
-      // Create list item.
+  // Set references.
+    // Create list item.
 
-      // Loop through all references for product.
-        // Create reference variable.
-        // Make it an anchor element.
-          // Set text content to title.
-          // Set href attribute to link.
-        // Append to the list item.
+    // Loop through all references for product.
+      // Create reference variable.
+      // Make it an anchor element.
+        // Set text content to title.
+        // Set href attribute to link.
+      // Append to the list item.
 
-      // Append list items to ordered list.
+    // Append list items to ordered list.
 
 
 };
