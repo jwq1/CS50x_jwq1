@@ -211,7 +211,7 @@ function displayProduct(jsonOfProductInfo) {
   prodPageBrand.textContent = productJsonInfo['brand'];
 
   // Set product image.
-  prodPageImage.setAttribute('src', productJsonInfo['image'])
+  prodPageImage.setAttribute('src', productJsonInfo['image']);
 
   // Set price.
   prodPagePrice.textContent = "$" + productJsonInfo['price'];
@@ -233,15 +233,15 @@ function displayProduct(jsonOfProductInfo) {
   var referenceListItem = document.createElement('li');
 
   // Loop through all references for product.
-  for (i = 0; i < productJsonInfo['references_titles'].length; i++) {
+  for (var i = 0; i < productJsonInfo['reference_titles'].length; i++) {
 
     // Create reference variable.
     // Make it an anchor element.
     var referenceItemContent = document.createElement('a');
-      // Set text content to title.
-      referenceItemContent.textContent = productJsonInfo['reference_titles'][i];
-      // Set href attribute to link.
-      referenceItemContent.setAttribute("href", productJsonInfo['reference_links'][i]);
+    // Set text content to title.
+    referenceItemContent.textContent = productJsonInfo['reference_titles'][i];
+    // Set href attribute to link.
+    referenceItemContent.setAttribute("href", productJsonInfo['reference_links'][i]);
     // Append to the list item.
     referenceListItem.appendChild(referenceItemContent);
 
