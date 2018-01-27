@@ -11,6 +11,7 @@ $(function(){
 
   // Get product data when user navigates to a product page.
   if ( !!(document.querySelector(".product-page")) ) {
+
     // Pull the id from the URL, then return a JSON object.
     // Display data on screen when fetch resolves.
     retrieveJSON(getSearchParams());
@@ -20,32 +21,11 @@ $(function(){
   // If there are product thumbnails on the page, then make them clickable.
   if ( !!(document.querySelector(".clickable-products")) ) {
 
-
     // Small TODO: Update this to add a listener on all the products on page.
     // Small TODO: use the event object to select the appropriate product.
     // Keep track of the products we have on screen.
     // BUG: This only listens for clicks on the first product on the page, not all.
     var productWasClicked = document.querySelector(".clickable-products");
-
-    // TODO: Replace with a promise chain.
-    // Promises will ensure functions call at the correct time.
-    // JSON is required before document set.
-
-    // TODO: Create new promise object to get identification of product clicked
-    // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise
-
-    // TODO: Create a new promise to render the html template for the product page.
-
-
-    // TODO: Create a new promise to retrieve JSON information for that product
-
-
-    // TODO: Create a new promise to update the page with the product's information
-
-
-    // TODO: Chain promises together to execute functions one after another.
-
-
 
     // Search for product information when the user selects a product.
     productWasClicked.addEventListener('click', function() {
@@ -56,13 +36,10 @@ $(function(){
       // Render the product page.
       renderProductPage(productIdNumber);
 
-
     });
-
   }
-
-
 });
+
 
 // Get product search parameters.
 function getSearchParams() {
@@ -78,10 +55,10 @@ function getSearchParams() {
 }
 
 
-
 // Retrieve product information in the form of a JSON.
 function retrieveJSON(product_id) {
 
+  // Set the parameters for the URL.
   var parameters = {
     id: product_id
   };
@@ -91,7 +68,6 @@ function retrieveJSON(product_id) {
   console.log('');
   console.log('productUrl built by Flask.url_for');
   console.log(productUrl);
-
 
   // Fetch product information.
   fetch(productUrl).then(function(response) {
@@ -116,8 +92,8 @@ function retrieveJSON(product_id) {
 
   });
 
-
 }
+
 
 // Get the product id when it is clicked.
 function getIdOnClick(productClicked) {
@@ -128,10 +104,8 @@ function getIdOnClick(productClicked) {
   // Get the id of a product when it is clicked.
   var productIdOfClicked = productClicked.id
 
-
   // Return the product's id.
   return productIdOfClicked
-
 
 }
 
@@ -139,6 +113,7 @@ function getIdOnClick(productClicked) {
 // Redirect user to the Product page
 function renderProductPage(productIdentificationNumber) {
 
+  // Set product parameters
   var parameters = {
     id: productIdentificationNumber
   }
@@ -152,8 +127,8 @@ function renderProductPage(productIdentificationNumber) {
 // Display the product information on the page
 function displayProduct(jsonOfProductInfo) {
 
-  // Select DOM elements by css class.
-  // document.querySelector
+
+  // v v v Select DOM elements by css class. v v v
 
   // Select product name.
   var prodPageName = document.querySelector('.product-name');
@@ -176,31 +151,12 @@ function displayProduct(jsonOfProductInfo) {
   // Select ordered list of references.
   var prodPageReferences = document.querySelector('.references-list');
 
-
   // Store JavaScript Object Notation JSON
   // in a variable to access later.
   var productJsonInfo = jsonOfProductInfo;
 
 
-    // Available product info.
-    // id
-    // category_id
-    // product_name
-    // link
-    // description
-    // image
-    // brand
-    // price
-
-    // Available reference info.
-    // id
-    // product_id
-    // title
-    // link
-
-
-  // Set content.
-  // Element.textContent
+  // v v v Set content. v v v
 
   // Set product name.
   prodPageName.textContent = productJsonInfo['product_name'];
@@ -227,7 +183,6 @@ function displayProduct(jsonOfProductInfo) {
     // See the productJSON.html note
     // for details about structure.
 
-
   // Set references.
   // Create list item.
   var referenceListItem = document.createElement('li');
@@ -249,8 +204,6 @@ function displayProduct(jsonOfProductInfo) {
     prodPageReferences.appendChild(referenceListItem);
 
   }
-
-
 };
 
 // TODO: Render "edit product info" UI.
