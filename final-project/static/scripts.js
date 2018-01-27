@@ -12,10 +12,8 @@ $(function(){
   // Get product data when user navigates to a product page.
   if ( !!(document.querySelector(".product-page")) ) {
     // Pull the id from the URL, then return a JSON object.
-    var jsonProductReturned = retrieveJSON(getSearchParams());
-
-    // Display the product information on screen.
-    displayProduct(jsonProductReturned);
+    // Display data on screen when fetch resolves.
+    retrieveJSON(getSearchParams());
 
   }
 
@@ -108,7 +106,7 @@ function retrieveJSON(product_id) {
         console.log('Success: fetch resolved!')
         console.log('The JSON data is below.')
         console.log(json);
-        return json;
+        displayProduct(json);
       })
     } else {
       // Print an error if nothing was found.
