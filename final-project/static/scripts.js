@@ -82,13 +82,6 @@ function getSearchParams() {
 // Retrieve product information in the form of a JSON.
 function retrieveJSON(product_id) {
 
-
-  // Create parameters for Flask.url_for() method.
-  var parameters = {
-    id: product_id
-  }
-
-
   // Set URL to find the product json.
   var productUrl = Flask.url_for("getProductJSON", parameters);
   console.log('');
@@ -116,7 +109,9 @@ function retrieveJSON(product_id) {
         + response.statusText
       );
     }
+
   });
+
 
 }
 
@@ -204,39 +199,52 @@ function displayProduct(jsonOfProductInfo) {
   // Element.textContent
 
   // Set product name.
-  // Pull product name from JavaScript object.
-  prodPageName =
-  // Set text content to equal JavaScript object content.
+  prodPageName.textContent = productJsonInfo['product_name'];
   // Set id of product name.
+  prodPageName.setAttribute('id', productJsonInfo['product_name']);
+
   // Set brand.
+  prodPageBrand.textContent = productJsonInfo['brand'];
 
   // Set product image.
-
-  // Set link.
+  prodPageImage.setAttribute('src', productJsonInfo['image'])
 
   // Set price.
+  prodPagePrice.textContent = "$" + productJsonInfo['price'];
 
   // Set description.
+  prodPageDescription.textContent = productJsonInfo['description'];
 
-  // Set characteristics
-    // Populate with empty state values
-    // until characteristics are available.
+  // Set characteristics.
+  // Populate with empty state values
+  // until characteristics are available.
+  prodPageCharacteristics.textContent = "This section is under construction.";
     // TODO: Create characteristics in DB.
     // See the productJSON.html note
     // for details about structure.
 
 
   // Set references.
-    // Create list item.
+  // Create list item.
+  var referenceListItem = document.createElement('li');
 
-    // Loop through all references for product.
-      // Create reference variable.
-      // Make it an anchor element.
-        // Set text content to title.
-        // Set href attribute to link.
-      // Append to the list item.
+  // Loop through all references for product.
+  for (i = 0; i < productJsonInfo['references_titles'].length; i++) {
+
+    // Create reference variable.
+    // Make it an anchor element.
+    var referenceItemContent = document.createElement('a');
+      // Set text content to title.
+      referenceItemContent.textContent = productJsonInfo['reference_titles'][i];
+      // Set href attribute to link.
+      referenceItemContent.setAttribute("href", productJsonInfo['reference_links'][i]);
+    // Append to the list item.
+    referenceListItem.appendChild(referenceItemContent);
 
     // Append list items to ordered list.
+    prodPageReferences.appendChild(referenceListItem);
+
+  }
 
 
 };
