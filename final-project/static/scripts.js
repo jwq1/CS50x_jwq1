@@ -21,22 +21,26 @@ $(function(){
   // If there are product thumbnails on the page, then make them clickable.
   if ( !!(document.querySelector(".clickable-products")) ) {
 
-    // Small TODO: Update this to add a listener on all the products on page.
-    // Small TODO: use the event object to select the appropriate product.
-    // Keep track of the products we have on screen.
-    // BUG: This only listens for clicks on the first product on the page, not all.
-    var productWasClicked = document.querySelector(".clickable-products");
+    // Listen for clicks on all the products on the screen.
+    var productWasClicked = document.querySelectorAll(".clickable-products");
 
-    // Search for product information when the user selects a product.
-    productWasClicked.addEventListener('click', function() {
+    // Loop through all the products on the page.
+    for (var i = 0; i < productWasClicked.length; i++) {
 
-      // Save the id of the product.
-      var productIdNumber = Number(getIdOnClick( productWasClicked ));
+      // Listen for clicks on those products.
+      productWasClicked[i].addEventListener('click', function(e) {
 
-      // Render the product page.
-      renderProductPage(productIdNumber);
+        // Select the product which was clicked.
+        // Get the id of that product.
+        // Save the id as a number.
+        var productIdNumber = Number(getIdOnClick(e.currentTarget));
 
-    });
+        // Render the product page.
+        // Set the URL to include the product ID.
+        renderProductPage(productIdNumber);
+
+      });
+    }
   }
 });
 
