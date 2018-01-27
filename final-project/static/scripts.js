@@ -82,6 +82,10 @@ function getSearchParams() {
 // Retrieve product information in the form of a JSON.
 function retrieveJSON(product_id) {
 
+  var parameters = {
+    id: product_id
+  };
+
   // Set URL to find the product json.
   var productUrl = Flask.url_for("getProductJSON", parameters);
   console.log('');
