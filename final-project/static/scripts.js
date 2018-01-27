@@ -12,7 +12,9 @@ $(function(){
   // Get product data when user navigates to a product page.
   if ( !!(document.querySelector(".product-page")) ) {
     // Pull the id from the URL, then return a JSON object.
+    // Display data on screen when fetch resolves.
     retrieveJSON(getSearchParams());
+
   }
 
   // If there are product thumbnails on the page, then make them clickable.
@@ -26,7 +28,8 @@ $(function(){
     var productWasClicked = document.querySelector(".clickable-products");
 
     // TODO: Replace with a promise chain.
-    // Promises will ensure functions call at the correct time to avoid CORS error.
+    // Promises will ensure functions call at the correct time.
+    // JSON is required before document set.
 
     // TODO: Create new promise object to get identification of product clicked
     // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise
@@ -79,12 +82,9 @@ function getSearchParams() {
 // Retrieve product information in the form of a JSON.
 function retrieveJSON(product_id) {
 
-
-  // Create parameters for Flask.url_for() method.
   var parameters = {
     id: product_id
-  }
-
+  };
 
   // Set URL to find the product json.
   var productUrl = Flask.url_for("getProductJSON", parameters);
@@ -103,7 +103,7 @@ function retrieveJSON(product_id) {
         console.log('Success: fetch resolved!')
         console.log('The JSON data is below.')
         console.log(json);
-        return json;
+        displayProduct(json);
       })
     } else {
       // Print an error if nothing was found.
@@ -113,7 +113,9 @@ function retrieveJSON(product_id) {
         + response.statusText
       );
     }
+
   });
+
 
 }
 
@@ -148,20 +150,110 @@ function renderProductPage(productIdentificationNumber) {
 
 
 // Display the product information on the page
-function displayProduct() {
+function displayProduct(jsonOfProductInfo) {
+
+  // Select DOM elements by css class.
+  // document.querySelector
+
+  // Select product name.
+  var prodPageName = document.querySelector('.product-name');
+  // Select brand.
+  var prodPageBrand = document.querySelector('.brand');
+
+  // Select product image.
+  var prodPageImage = document.querySelector('.product-image');
+
+  // Select price.
+  var prodPagePrice = document.querySelector('.price');
+
+  // Select description.
+  var prodPageDescription = document.querySelector('.description');
+
+  // Select characteristics
+  var prodPageCharacteristics = document.querySelector('.characteristics');
+
+  // Select references.
+  // Select ordered list of references.
+  var prodPageReferences = document.querySelector('.references-list');
 
 
-  // TODO: Listen for when a product page loads.
+  // Store JavaScript Object Notation JSON
+  // in a variable to access later.
+  var productJsonInfo = jsonOfProductInfo;
 
-    // TODO: Get the product id.
 
-    // TODO: Get the product information based on id.
+    // Available product info.
+    // id
+    // category_id
+    // product_name
+    // link
+    // description
+    // image
+    // brand
+    // price
 
-    // TODO: Set the relevant elements to display product information.
+    // Available reference info.
+    // id
+    // product_id
+    // title
+    // link
 
-      // TODO: Select the desired DOM element.
 
-      // TODO: Parse the responseJSON for the data to show on screen.
+  // Set content.
+  // Element.textContent
+
+  // Set product name.
+  prodPageName.textContent = productJsonInfo['product_name'];
+  // Set id of product name.
+  prodPageName.setAttribute('id', productJsonInfo['product_name']);
+
+  // Set brand.
+  prodPageBrand.textContent = productJsonInfo['brand'];
+
+  // Set product image.
+  prodPageImage.setAttribute('src', productJsonInfo['image']);
+
+  // Set price.
+  prodPagePrice.textContent = "$" + productJsonInfo['price'];
+
+  // Set description.
+  prodPageDescription.textContent = productJsonInfo['description'];
+
+  // Set characteristics.
+  // Populate with empty state values
+  // until characteristics are available.
+  prodPageCharacteristics.textContent = "This section is under construction.";
+    // TODO: Create characteristics in DB.
+    // See the productJSON.html note
+    // for details about structure.
+
+
+  // Set references.
+  // Create list item.
+  var referenceListItem = document.createElement('li');
+
+  // Loop through all references for product.
+  for (var i = 0; i < productJsonInfo['reference_titles'].length; i++) {
+
+    // Create reference variable.
+    // Make it an anchor element.
+    var referenceItemContent = document.createElement('a');
+    // Set text content to title.
+    referenceItemContent.textContent = productJsonInfo['reference_titles'][i];
+    // Set href attribute to link.
+    referenceItemContent.setAttribute("href", productJsonInfo['reference_links'][i]);
+    // Append to the list item.
+    referenceListItem.appendChild(referenceItemContent);
+
+    // Append list items to ordered list.
+    prodPageReferences.appendChild(referenceListItem);
+
+  }
 
 
 };
+
+// TODO: Render "edit product info" UI.
+
+
+// TODO: Create generic page update function for interactive tasks.
