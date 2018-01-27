@@ -9,36 +9,27 @@
 // Check what kind of content to load when the document is ready.
 $(function(){
 
+  // Get product data when user navigates to a product page.
+  if ( !!(document.querySelector(".product-page")) ) {
+    // Pull the id from the URL, then return a JSON object.
+    // Display data on screen when fetch resolves.
+    retrieveJSON(getSearchParams());
+
+  }
+
   // If there are product thumbnails on the page, then make them clickable.
   if ( !!(document.querySelector(".clickable-products")) ) {
-
-
-    // BIG TODO: Only use fetch product data after the product page has been rendered.
-    // The browser's CORS security prevents cross-origin requests.
-    // Answer 1:
-    // https://stackoverflow.com/questions/42719041/how-to-resolve-typeerror-networkerror-when-attempting-to-fetch-resource
-    // Answer 2:
-    // https://stackoverflow.com/questions/37333573/fetch-with-the-wikipedia-api-results-in-typeerror-networkerror-when-attempti#37351064
-    // Documentation:
-    // https://developer.mozilla.org/en-US/docs/Web/HTTP/CORS
-    // Explanation:
-    // These answers and documentation explain the failure in my previous code.
-
-    // BIG TODO 2: The JSON is currently retrieved by asking Flask
-    // to render a URL which returns a json. This will not work, because the url
-    // would have to be different than the current page.
-    // Need to get JSON from our python application without using the Flask.url_for
-    // method. There must be some other way to do this, but it requires more research.
-    // How does one call a python function from javascript? <-- John, answer this.
 
 
     // Small TODO: Update this to add a listener on all the products on page.
     // Small TODO: use the event object to select the appropriate product.
     // Keep track of the products we have on screen.
+    // BUG: This only listens for clicks on the first product on the page, not all.
     var productWasClicked = document.querySelector(".clickable-products");
 
     // TODO: Replace with a promise chain.
-    // Promises will ensure functions call at the correct time to avoid CORS error.
+    // Promises will ensure functions call at the correct time.
+    // JSON is required before document set.
 
     // TODO: Create new promise object to get identification of product clicked
     // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise
@@ -66,20 +57,10 @@ $(function(){
       renderProductPage(productIdNumber);
 
 
-      // Get information for the product our user selects.
-      var productInformation = retrieveJSON(getSearchParams);
-
-
     });
 
   }
 
-  // If the user is on a product page, then load product content.
-  if ( !!( document.querySelector(".product-page") ) ) {
-
-    // TODO: load relevant product content
-
-  }
 
 });
 
@@ -101,32 +82,28 @@ function getSearchParams() {
 // Retrieve product information in the form of a JSON.
 function retrieveJSON(product_id) {
 
-  console.log(" ");
-  console.log("retreiveJSON function started");
-
-  // Create parameters for Flask.url_for() method.
   var parameters = {
     id: product_id
-  }
-  console.log(" ");
-  console.log("parameters:");
-  console.log(parameters);
+  };
 
   // Set URL to find the product json.
-  var productUrl = Flask.url_for('product', parameters);
+  var productUrl = Flask.url_for("getProductJSON", parameters);
   console.log('');
   console.log('productUrl built by Flask.url_for');
   console.log(productUrl);
 
-  // Create a variable to store the products.
-  var productsJsonData;
 
   // Fetch product information.
   fetch(productUrl).then(function(response) {
     if(response.ok) {
       response.json().then(function(json) {
-        // Store the JSON data in a properly scoped variable.
-        productsJsonData = json;
+
+        // Print the data to the console for testing.
+        console.log('');
+        console.log('Success: fetch resolved!')
+        console.log('The JSON data is below.')
+        console.log(json);
+        displayProduct(json);
       })
     } else {
       // Print an error if nothing was found.
@@ -136,15 +113,9 @@ function retrieveJSON(product_id) {
         + response.statusText
       );
     }
+
   });
 
-  // Print the data to the console for testing.
-  console.log('');
-  console.log(productsJsonData);
-  return productsJsonData;
-
-  // How to resolve “TypeError: NetworkError when attempting to fetch resource.""
-  // https://stackoverflow.com/questions/42719041/how-to-resolve-typeerror-networkerror-when-attempting-to-fetch-resource
 
 }
 
@@ -156,9 +127,6 @@ function getIdOnClick(productClicked) {
 
   // Get the id of a product when it is clicked.
   var productIdOfClicked = productClicked.id
-  console.log(" ")
-  console.log("Heard click")
-  console.log("product id is " + productIdOfClicked)
 
 
   // Return the product's id.
@@ -169,30 +137,123 @@ function getIdOnClick(productClicked) {
 
 
 // Redirect user to the Product page
-function renderProductPage() {
+function renderProductPage(productIdentificationNumber) {
+
+  var parameters = {
+    id: productIdentificationNumber
+  }
 
   // Render the product page with the selected product name and id.
-  window.location.href = Flask.url_for("product", parameters);
-
+  window.location.replace(Flask.url_for("renderProductPage", parameters));
 
 }
 
 
 // Display the product information on the page
-function displayProduct() {
+function displayProduct(jsonOfProductInfo) {
+
+  // Select DOM elements by css class.
+  // document.querySelector
+
+  // Select product name.
+  var prodPageName = document.querySelector('.product-name');
+  // Select brand.
+  var prodPageBrand = document.querySelector('.brand');
+
+  // Select product image.
+  var prodPageImage = document.querySelector('.product-image');
+
+  // Select price.
+  var prodPagePrice = document.querySelector('.price');
+
+  // Select description.
+  var prodPageDescription = document.querySelector('.description');
+
+  // Select characteristics
+  var prodPageCharacteristics = document.querySelector('.characteristics');
+
+  // Select references.
+  // Select ordered list of references.
+  var prodPageReferences = document.querySelector('.references-list');
 
 
-  // TODO: Listen for when a product page loads.
+  // Store JavaScript Object Notation JSON
+  // in a variable to access later.
+  var productJsonInfo = jsonOfProductInfo;
 
-    // TODO: Get the product id.
 
-    // TODO: Get the product information based on id.
+    // Available product info.
+    // id
+    // category_id
+    // product_name
+    // link
+    // description
+    // image
+    // brand
+    // price
 
-    // TODO: Set the relevant elements to display product information.
+    // Available reference info.
+    // id
+    // product_id
+    // title
+    // link
 
-      // TODO: Select the desired DOM element.
 
-      // TODO: Parse the responseJSON for the data to show on screen.
+  // Set content.
+  // Element.textContent
+
+  // Set product name.
+  prodPageName.textContent = productJsonInfo['product_name'];
+  // Set id of product name.
+  prodPageName.setAttribute('id', productJsonInfo['product_name']);
+
+  // Set brand.
+  prodPageBrand.textContent = productJsonInfo['brand'];
+
+  // Set product image.
+  prodPageImage.setAttribute('src', productJsonInfo['image']);
+
+  // Set price.
+  prodPagePrice.textContent = "$" + productJsonInfo['price'];
+
+  // Set description.
+  prodPageDescription.textContent = productJsonInfo['description'];
+
+  // Set characteristics.
+  // Populate with empty state values
+  // until characteristics are available.
+  prodPageCharacteristics.textContent = "This section is under construction.";
+    // TODO: Create characteristics in DB.
+    // See the productJSON.html note
+    // for details about structure.
+
+
+  // Set references.
+  // Create list item.
+  var referenceListItem = document.createElement('li');
+
+  // Loop through all references for product.
+  for (var i = 0; i < productJsonInfo['reference_titles'].length; i++) {
+
+    // Create reference variable.
+    // Make it an anchor element.
+    var referenceItemContent = document.createElement('a');
+    // Set text content to title.
+    referenceItemContent.textContent = productJsonInfo['reference_titles'][i];
+    // Set href attribute to link.
+    referenceItemContent.setAttribute("href", productJsonInfo['reference_links'][i]);
+    // Append to the list item.
+    referenceListItem.appendChild(referenceItemContent);
+
+    // Append list items to ordered list.
+    prodPageReferences.appendChild(referenceListItem);
+
+  }
 
 
 };
+
+// TODO: Render "edit product info" UI.
+
+
+// TODO: Create generic page update function for interactive tasks.
