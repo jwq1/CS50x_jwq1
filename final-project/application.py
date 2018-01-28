@@ -620,6 +620,13 @@ def edit_product():
     else:
         # the code below is executed if the request method
         # was GET or the credentials were invalid
+        # TODO:
+        # Remove render_template.
+        # Return successful information edit message
+        # Call function to return new product information.
+        # New product information can be called here, or in javascript.
+        # Javascript would be better to keep this a single use funciton.
+        # Remove error varilable from argument list.
         return render_template('productJSON.html', error=error)
 
     # TODO:
