@@ -559,12 +559,75 @@ def edit_product():
     # Keep the user logged in.
     user_id = session.get("user_id")
 
+    # TODO:
+    # Ensure we can use request.args & .form in a single function.
+    # If we cannot, then we need to send the product id another way.
+
+
     # Get product name to edit
-    id_products_request = request.args.get("product")
+    id_products_request = request.args.get("id")
 
     # Ensure product was received
     if not id_products_request:
         return apology("Please provide a product name")
+
+    # Create a dictionary to store our requested edits.
+    # This makes it easier to ask for the information
+    # when it is time to edit the database.
+    # The dict can be used to loop through requests
+    # and check for dangerous or illogical info.
+    make_edits = {}
+
+    # If the request method was POST
+    if request.method == 'POST':
+        # Get information from the edit product form.
+        # Get the new name.
+        if request.form.get("product-name"):
+           make_edits['name_of_product'] = request.form.get("product-name")
+        # Get the new brand.
+        if request.form.get("brand"):
+            make_edits['brand_which_made'] = request.form.get("brand")
+        # Get the new image.
+        if request.form.get("image"):
+            make_edits['image_of_product'] = request.form.get("image")
+        # Get the new price.
+        if request.form.get("price"):
+            make_edits['price_of_product'] = request.form.get("price")
+        # Get the new description.
+        if request.form.get("description"):
+            make_edits['description'] = request.form.get("description")
+        # Get the new characteristics.
+        if request.form.get("characteristics"):
+            make_edits['charactertistics'] = request.form.get("characteristics")
+        # Get the new references.
+        # TODO:
+        # Get the entire list of references edited.
+        # Figure out how to logically organize the
+        # reference when our py application requests them.
+        # There will be a list.
+        # If there are multiple forms all with name='references'
+        # what will the request.form.get do?
+        # There will be a title and link for the reference.
+        # How do we access both after the request.form.get?
+        # Read flask documentation:
+        # http://werkzeug.pocoo.org/docs/0.14/wrappers/#werkzeug.wrappers.BaseRequest.form
+        if request.form.get("references"):
+            make_edits['references'] = request.form.get("references")
+        # Syntax = if request.form.get('<form name>')
+        # If no form was submitted, then do nothing
+        if not request.form:
+            return apology('No edits were made.');
+    else:
+        # the code below is executed if the request method
+        # was GET or the credentials were invalid
+        return render_template('productJSON.html', error=error)
+
+    # TODO:
+    # Ensure blank inputs are not accepted.
+    # Loop through make_edits dict to check for odd information.
+
+
+
 
     # Find our record of this product
     product_info = find_product(id_products_request)
