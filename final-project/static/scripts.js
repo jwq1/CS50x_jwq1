@@ -213,13 +213,41 @@ function displayProduct(jsonOfProductInfo) {
 };
 
 // TODO: Render "edit product info" UI.
+function editProduct() {
 
-  // Create form elements for all the required page elements.
+  // TODO: Create form elements for all the required page elements.
   // Submit the form via the POST method.
+
+  // Select all the product elements (could be own function).
+  // It is used in the displayProduct code as well.
+
+  // Select product name.
+  var prodPageName = document.querySelector('.product-name');
+  // Select brand.
+  var prodPageBrand = document.querySelector('.brand');
+
+  // Select product image.
+  var prodPageImage = document.querySelector('.product-image');
+
+  // Select price.
+  var prodPagePrice = document.querySelector('.price');
+
+  // Select description.
+  var prodPageDescription = document.querySelector('.description');
+
+  // Select characteristics
+  var prodPageCharacteristics = document.querySelector('.characteristics');
+
+  // Select references.
+  // Select ordered list of references.
+  var prodPageReferences = document.querySelector('.references-list');
+
 
     // Create an input element for each form.
 
     // Populate placeholder values with the current content of the element.
+
+    // Append the form to the related element.
 
   // For the references, create multiple form elements with multiple inputs.
 
@@ -235,6 +263,7 @@ function displayProduct(jsonOfProductInfo) {
   // Make this a separate function to perserve declarative conventions.
   // Declare the function at the root indent level.
 
+}
 
 // TODO: Create function to close the edit interface when the user is done.
 
