@@ -630,6 +630,7 @@ def edit_product():
         # TODO:
         # Test whether we can figure out which link is associated with which title.
         # through this method. Otherwise, come up with another system.
+
         if request.form.get("reference-titles"):
             make_edits['reference-titles'] = request.form.getList("reference-titles")
         if request.form.get("reference-links"):
@@ -638,6 +639,23 @@ def edit_product():
         # If no form was submitted, then do nothing
         if not request.form:
             return apology('No edits were made.');
+
+        # Reference List Idea:
+        # dynamically name the <form name=reference-1,2,3,etc>
+        # then in python add a while loop to check for a form with
+        # the intended name.
+        # e.g. while (request.form.get('reference-counterNumber')) {
+            # make_edits['reference']['title'] = request.form.getList['reference']['title']
+            # make_edits['reference']['link'] = request.form.getList['reference']['link']
+            # counterNumber++
+        # }
+        # This loop will end when there is no longer a form with the name we requested.
+        # TODO: Check whether .getList['reference']['title'] is the correct syntax.
+        # Essentially, will getList intelligently store multiple inputs from a single form
+        # into a dict.
+        # It could attempt to store them into a list or some other such nonsense.
+
+
     else:
         # the code below is executed if the request method
         # was GET or the credentials were invalid

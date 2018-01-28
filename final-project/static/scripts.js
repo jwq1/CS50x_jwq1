@@ -214,5 +214,22 @@ function displayProduct(jsonOfProductInfo) {
 
 // TODO: Render "edit product info" UI.
 
+  // Create form elements for all the required page elements.
+  // Submit the form via the POST method.
+
+    // Create an input element for each form.
+
+    // Populate placeholder values with the current content of the element.
+
+  // For the references, create multiple form elements with multiple inputs.
+
+    // For each form, create a title input and link input.
+
+    // Populate placeholder values with the current content of the element.
+
+  // Create a button element for submission.
+
+  // Listen for clicks on the submit button
+
 
 // TODO: Create generic page update function for interactive tasks.
