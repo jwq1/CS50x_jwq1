@@ -578,6 +578,14 @@ def edit_product():
     # and check for dangerous or illogical info.
     make_edits = {}
 
+    # TODO:
+    # Make sure the conditional checks for the existence of values sent from
+    # the form.
+    # "if request.form.get('<form name>')"" might only check for the existence
+    # of the form.
+    # Check whether a value was returned from the form. An alternative could
+    # be .length, or a similar method, to check for input in the value field.
+
     # If the request method was POST
     if request.method == 'POST':
         # Get information from the edit product form.
@@ -611,15 +619,53 @@ def edit_product():
         # How do we access both after the request.form.get?
         # Read flask documentation:
         # http://werkzeug.pocoo.org/docs/0.14/wrappers/#werkzeug.wrappers.BaseRequest.form
-        if request.form.get("references"):
-            make_edits['references'] = request.form.get("references")
+        # DOCUMENTATION:
+        # .form() returns an ImmutableMultiDict.
+        # MultiDict objects implement the standard dictionary methods.
+        # However, the if there are several values assigned to a single key
+        # then you have to use .getlist('<key>'), a list method, to access
+        # them.
+        # This is because the dictionary values for a single key are stored
+        # in a list.
+        # TODO:
+        # Test whether we can figure out which link is associated with which title.
+        # through this method. Otherwise, come up with another system.
+
+        if request.form.get("reference-titles"):
+            make_edits['reference-titles'] = request.form.getList("reference-titles")
+        if request.form.get("reference-links"):
+            make_edits['references-links'] = request.form.getList("reference-links")
         # Syntax = if request.form.get('<form name>')
         # If no form was submitted, then do nothing
         if not request.form:
             return apology('No edits were made.');
+
+        # Reference List Idea:
+        # dynamically name the <form name=reference-1,2,3,etc>
+        # then in python add a while loop to check for a form with
+        # the intended name.
+        # e.g. while (request.form.get('reference-counterNumber')) {
+            # make_edits['reference']['title'] = request.form.getList['reference']['title']
+            # make_edits['reference']['link'] = request.form.getList['reference']['link']
+            # counterNumber++
+        # }
+        # This loop will end when there is no longer a form with the name we requested.
+        # TODO: Check whether .getList['reference']['title'] is the correct syntax.
+        # Essentially, will getList intelligently store multiple inputs from a single form
+        # into a dict.
+        # It could attempt to store them into a list or some other such nonsense.
+
+
     else:
         # the code below is executed if the request method
         # was GET or the credentials were invalid
+        # TODO:
+        # Remove render_template.
+        # Return successful information edit message
+        # Call function to return new product information.
+        # New product information can be called here, or in javascript.
+        # Javascript would be better to keep this a single use funciton.
+        # Remove error varilable from argument list.
         return render_template('productJSON.html', error=error)
 
     # TODO:
