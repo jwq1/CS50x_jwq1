@@ -246,7 +246,16 @@ function editProduct() {
 
   // Store page elements into a map for easy access.
   var prodPageElements = new Map();
+  // Create variables to store information in.
+  var name;
+  var brand;
+  var image;
+  var price;
+  var description;
+  var characteristics;
+  var references;
 
+  // Set key / value pairs of the new Map.
   prodPageElements.set(name, prodPageName);
   prodPageElements.set(brand, prodPageBrand);
   prodPageElements.set(image, prodPageImage);
