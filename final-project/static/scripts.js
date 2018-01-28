@@ -231,5 +231,11 @@ function displayProduct(jsonOfProductInfo) {
 
   // Listen for clicks on the submit button
 
+  // Close the edit interface
+  // Make this a separate function to perserve declarative conventions.
+  // Declare the function at the root indent level.
+
+
+// TODO: Create function to close the edit interface when the user is done.
 
 // TODO: Create generic page update function for interactive tasks.
