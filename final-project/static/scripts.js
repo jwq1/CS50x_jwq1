@@ -241,25 +241,91 @@ function editProduct() {
   // Select references.
   // Select ordered list of references.
   var prodPageReferences = document.querySelector('.references-list');
+  // Select all list items in reference list.
+  var referenceList = prodPageReferences.childNodes;
+
+  // Store page elements into a map for easy access.
+  var prodPageElements = new Map();
+  // Create variables to store information in.
+  var name;
+  var brand;
+  var image;
+  var price;
+  var description;
+  var characteristics;
+  var references;
+
+  // Set key / value pairs of the new Map.
+  prodPageElements.set(name, prodPageName);
+  prodPageElements.set(brand, prodPageBrand);
+  prodPageElements.set(image, prodPageImage);
+  prodPageElements.set(price, prodPagePrice);
+  prodPageElements.set(description, prodPageDescription);
+  prodPageElements.set(characteristics, prodPageCharacteristics);
+  prodPageElements.set(references, referenceList);
 
 
-    // Create an input element for each form.
+  // Create an input element for each form.
+  prodPageElements.forEach(function(key, value) {
 
-    // Populate placeholder values with the current content of the element.
+    // On the references form, loop through all the reference items.
+    if (key === references) {
 
-    // Append the form to the related element.
+      // Loop through references.
+      for(var i = 0; i < value.length; i++) {
 
-  // For the references, create multiple form elements with multiple inputs.
+        // Create a form element.
+        formElement = document.createElement('form');
+        // Name the form.
+        formElement.setAttribute('name', 'reference-form-' + i);
 
-    // For each form, create a title input and link input.
+        // Create an input for the title
+        var titleInput = document.createElement('input');
+        // Name the input.
+        titleInput.setAttribute('name', 'reference-title-input-' + i);
 
-    // Populate placeholder values with the current content of the element.
+        // Create an input for the link.
+        var linkInput = document.createElement('input');
+        // Name the input.
+        titleInput.setAttribute('name', 'reference-link-input-' + i);
 
-  // Create a button element for submission.
+        // Append an input for the title.
+        formElement.appendChild(titleInput);
+        // Append an input for the link.
+        formElement.appendChild(linkInput);
+        // Append the form to the product page element.
+        value.appendChild(formElement);
+      }
 
-  // Listen for clicks on the submit button
+    // On all other forms append a single input.
+    } else {
 
-  // Close the edit interface
+      // Create a form element.
+      formElement = document.createElement('form');
+      // Name the form.
+      formElement.setAttribute('name', key + '-form');
+
+      // Create input element.
+      inputElement = document.createElement('input');
+      // Name the element.
+      inputElement.setAttribute('name', key + '-input');
+
+      // Append the input element to the form element.
+      formElement.appendChild(inputElement);
+      // Append the form to the product page element.
+      value.appendChild(formElement);
+    }
+
+
+  });
+
+  // TODO: Populate placeholder values with the current content of the element.
+
+  // TODO: Create a button element for submission.
+
+  // TODO: Listen for clicks on the submit button
+
+  // TODO: Close the edit interface
   // Make this a separate function to perserve declarative conventions.
   // Declare the function at the root indent level.
 
