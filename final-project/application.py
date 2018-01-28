@@ -583,8 +583,8 @@ def edit_product():
     # the form.
     # "if request.form.get('<form name>')"" might only check for the existence
     # of the form.
-    # We need to check whether a value was returned from the form. We could use
-    # .length or similar method to check for input in the value field.
+    # Check whether a value was returned from the form. An alternative could
+    # be .length, or a similar method, to check for input in the value field.
 
     # If the request method was POST
     if request.method == 'POST':
@@ -627,8 +627,13 @@ def edit_product():
         # them.
         # This is because the dictionary values for a single key are stored
         # in a list.
-        if request.form.get("references"):
-            make_edits['references'] = request.form.get("references")
+        # TODO:
+        # Test whether we can figure out which link is associated with which title.
+        # through this method. Otherwise, come up with another system.
+        if request.form.get("reference-titles"):
+            make_edits['reference-titles'] = request.form.getList("reference-titles")
+        if request.form.get("reference-links"):
+            make_edits['references-links'] = request.form.getList("reference-links")
         # Syntax = if request.form.get('<form name>')
         # If no form was submitted, then do nothing
         if not request.form:
