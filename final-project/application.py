@@ -578,6 +578,14 @@ def edit_product():
     # and check for dangerous or illogical info.
     make_edits = {}
 
+    # TODO:
+    # Make sure the conditional checks for the existence of values sent from
+    # the form.
+    # "if request.form.get('<form name>')"" might only check for the existence
+    # of the form.
+    # We need to check whether a value was returned from the form. We could use
+    # .length or similar method to check for input in the value field.
+
     # If the request method was POST
     if request.method == 'POST':
         # Get information from the edit product form.
@@ -611,6 +619,14 @@ def edit_product():
         # How do we access both after the request.form.get?
         # Read flask documentation:
         # http://werkzeug.pocoo.org/docs/0.14/wrappers/#werkzeug.wrappers.BaseRequest.form
+        # DOCUMENTATION:
+        # .form() returns an ImmutableMultiDict.
+        # MultiDict objects implement the standard dictionary methods.
+        # However, the if there are several values assigned to a single key
+        # then you have to use .getlist('<key>'), a list method, to access
+        # them.
+        # This is because the dictionary values for a single key are stored
+        # in a list.
         if request.form.get("references"):
             make_edits['references'] = request.form.get("references")
         # Syntax = if request.form.get('<form name>')

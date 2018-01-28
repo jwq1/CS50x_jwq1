@@ -9,6 +9,8 @@
 // Check what kind of content to load when the document is ready.
 $(function(){
 
+  // TODO: Edit the product page
+
   // Get product data when user navigates to a product page.
   if ( !!(document.querySelector(".product-page")) ) {
 
