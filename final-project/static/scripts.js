@@ -242,8 +242,20 @@ function editProduct() {
   // Select ordered list of references.
   var prodPageReferences = document.querySelector('.references-list');
 
+  // Store page elements into a map for easy access.
+  var prodPageElements = new Map();
 
-    // Create an input element for each form.
+  prodPageElements.set(name, prodPageName);
+  prodPageElements.set(brand, prodPageBrand);
+  prodPageElements.set(image, prodPageImage);
+  prodPageElements.set(price, prodPagePrice);
+  prodPageElements.set(description, prodPageDescription);
+  prodPageElements.set(characteristics, prodPageCharacteristics);
+  prodPageElements.set(references, prodPageReferences);
+
+
+  // Create an input element for each form.
+
 
     // Populate placeholder values with the current content of the element.
 
