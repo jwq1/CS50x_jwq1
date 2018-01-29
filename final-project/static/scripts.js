@@ -285,6 +285,11 @@ function editProduct() {
         var formElement = document.createElement('form');
         // Name the form.
         formElement.setAttribute('name', 'reference-form-' + i);
+        // Set the method to POST.
+        formElement.setAttribute('method', 'POST');
+        // POST to the url for editing the product.
+        formElement.setAttribute('action', Flask.url_for('edit_product'));
+
 
         // Create an input for the title
         var titleInput = document.createElement('input');
