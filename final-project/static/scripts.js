@@ -381,12 +381,18 @@ function editProduct() {
 // TODO: Save edits.
 function insertSaveButton() {
 
-  // TODO: Create a button element for submission.
+  // Create a button element for submission.
   var saveButton = document.createElement('button');
+  // Set type to button to enable the button functionality.
+  saveButton.setAttribute('type', 'button');
   // Give the element a generic class.
   saveButton.setAttribute('class', 'submission-button');
   // Give the element a unique id.
   saveButton.setAttribute('id', 'save-product-edits');
+  // Set the text to be instructive for the user.
+  saveButton.textContent = 'Save Edits';
+
+  // TODO: Append the button to the document.
 
   // TODO: Listen for clicks on the submit button
 
