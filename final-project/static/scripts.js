@@ -253,35 +253,40 @@ function editProduct() {
   // Store page elements into a map for easy access.
   var prodPageElements = new Map();
   // Create variables to store information in.
-  var name;
-  var brand;
-  var image;
-  var price;
-  var description;
-  var characteristics;
-  var references;
+  // var name = prodPageName;
+  // var brand = prodPageBrand;
+  // var image = prodPageImage;
+  // var price = prodPagePrice;
+  // var description = prodPageDescription;
+  // var characteristics = prodPageCharacteristics;
+  // var references = referenceList;
 
   // Set key / value pairs of the new Map.
-  prodPageElements.set(name, prodPageName);
-  prodPageElements.set(brand, prodPageBrand);
-  prodPageElements.set(image, prodPageImage);
-  prodPageElements.set(price, prodPagePrice);
-  prodPageElements.set(description, prodPageDescription);
-  prodPageElements.set(characteristics, prodPageCharacteristics);
-  prodPageElements.set(references, referenceList);
+  prodPageElements.set('name', prodPageName);
+  prodPageElements.set('brand', prodPageBrand);
+  prodPageElements.set('image', prodPageImage);
+  prodPageElements.set('price', prodPagePrice);
+  prodPageElements.set('description', prodPageDescription);
+  prodPageElements.set('characteristics', prodPageCharacteristics);
+  prodPageElements.set('references', referenceList);
 
 
   // Create an input element for each form.
-  prodPageElements.forEach(function(key, value) {
+  prodPageElements.forEach(function(value, key) {
+
+    // Create a form element.
+    var formElement = document.createElement('form');
+    // Name the form.
+    formElement.setAttribute('name', key + '-form');
 
     // On the references form, loop through all the reference items.
-    if (key === references) {
+    if (key === 'references') {
 
       // Loop through references.
       for(var i = 0; i < value.length; i++) {
 
-        // Create a form element.
-        formElement = document.createElement('form');
+        // Create a new form element.
+        var formElement = document.createElement('form');
         // Name the form.
         formElement.setAttribute('name', 'reference-form-' + i);
 
@@ -289,32 +294,47 @@ function editProduct() {
         var titleInput = document.createElement('input');
         // Name the input.
         titleInput.setAttribute('name', 'reference-title-input-' + i);
+        // Add placeholder text with current title.
+        titleInput.setAttribute('placeholder', value[i].firstChild.innerText);
 
         // Create an input for the link.
         var linkInput = document.createElement('input');
         // Name the input.
-        titleInput.setAttribute('name', 'reference-link-input-' + i);
+        linkInput.setAttribute('name', 'reference-link-input-' + i);
+        linkInput.setAttribute('placeholder', value[i].firstChild.href);
 
         // Append an input for the title.
         formElement.appendChild(titleInput);
         // Append an input for the link.
         formElement.appendChild(linkInput);
         // Append the form to the product page element.
-        value.appendChild(formElement);
+        value[i].appendChild(formElement);
       }
 
-    // On all other forms append a single input.
-    } else {
-
-      // Create a form element.
-      formElement = document.createElement('form');
-      // Name the form.
-      formElement.setAttribute('name', key + '-form');
+    // On the image form, use the URL as a placeholder.
+    } else if (key === 'image') {
 
       // Create input element.
-      inputElement = document.createElement('input');
+      var inputElement = document.createElement('input');
       // Name the element.
       inputElement.setAttribute('name', key + '-input');
+      // Provide placeholder text of current src.
+      inputElement.setAttribute('placeholder', value.src)
+
+      // Append the input element to the form element.
+      formElement.appendChild(inputElement);
+      // Append the form to the product page element.
+      value.appendChild(formElement);
+
+    // Otherwise, on all other elements use the innerText as a placeholder.
+    } else {
+
+      // Create input element.
+      var inputElement = document.createElement('input');
+      // Name the element.
+      inputElement.setAttribute('name', key + '-input');
+      // Provide inner text of current placeholder.
+      inputElement.setAttribute('placeholder', value.innerText)
 
       // Append the input element to the form element.
       formElement.appendChild(inputElement);
@@ -325,7 +345,7 @@ function editProduct() {
 
   });
 
-  // TODO: Populate placeholder values with the current content of the element.
+  // TODO: Populate value values with the current content of the element.
 
   // TODO: Create a button element for submission.
 
