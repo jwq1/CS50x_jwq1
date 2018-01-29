@@ -270,6 +270,10 @@ function editProduct() {
     var formElement = document.createElement('form');
     // Name the form.
     formElement.setAttribute('name', key + '-form');
+    // Set the method to POST.
+    formElement.setAttribute('method', 'POST');
+    // POST to the url for editing the product.
+    formElement.setAttribute('action', Flask.url_for(editProduct));
 
     // On the references form, loop through all the reference items.
     if (key === 'references') {
