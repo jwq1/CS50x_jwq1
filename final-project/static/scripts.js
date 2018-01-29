@@ -18,6 +18,12 @@ $(function(){
     // Display data on screen when fetch resolves.
     retrieveJSON(getSearchParams());
 
+    // Listen for edit button clicks.
+    // Find the edit button element.
+    var editButton = document.querySelector('#edit-product');
+    // On click, display edit forms.
+    editButton.addEventListener('click', editProduct);
+
   }
 
   // If there are product thumbnails on the page, then make them clickable.
