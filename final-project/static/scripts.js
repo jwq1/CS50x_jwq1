@@ -370,21 +370,40 @@ function editProduct() {
 
     }
 
-
   });
 
-  // TODO: Populate value values with the current content of the element.
-
-  // TODO: Create a button element for submission.
-
-  // TODO: Listen for clicks on the submit button
-
-  // TODO: Close the edit interface
-  // Make this a separate function to perserve declarative conventions.
-  // Declare the function at the root indent level.
+  // Add a save button for the user to submit their changes.
+  insertSaveButton();
 
 }
 
+
+// TODO: Save edits.
+function insertSaveButton() {
+
+  // TODO: Create a button element for submission.
+  var saveButton = document.createElement('button');
+  // Give the element a generic class.
+  saveButton.setAttribute('class', 'submission-button');
+  // Give the element a unique id.
+  saveButton.setAttribute('id', 'save-product-edits');
+
+  // TODO: Listen for clicks on the submit button
+
+  // TODO: Submit the changes to our python application
+  // via the Flask.url_for method.
+
+  // TODO: Update the page to enter 'View Product' state.
+
+}
+
+
+
+
+
+
 // TODO: Create function to close the edit interface when the user is done.
+
+
 
 // TODO: Create generic page update function for interactive tasks.
