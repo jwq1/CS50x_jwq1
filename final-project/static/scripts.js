@@ -252,14 +252,6 @@ function editProduct() {
 
   // Store page elements into a map for easy access.
   var prodPageElements = new Map();
-  // Create variables to store information in.
-  // var name = prodPageName;
-  // var brand = prodPageBrand;
-  // var image = prodPageImage;
-  // var price = prodPagePrice;
-  // var description = prodPageDescription;
-  // var characteristics = prodPageCharacteristics;
-  // var references = referenceList;
 
   // Set key / value pairs of the new Map.
   prodPageElements.set('name', prodPageName);
@@ -366,7 +358,6 @@ function editProduct() {
       formElement.appendChild(inputElement);
       // Append the form to the product page element.
       value.appendChild(formElement);
-
 
     }
 
