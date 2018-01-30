@@ -133,7 +133,7 @@ function renderProductPage(productIdentificationNumber) {
   }
 
   // Render the product page with the selected product name and id.
-  window.location.replace(Flask.url_for("renderProductPage", parameters));
+  window.location.replace(Flask.url_for("render_product_page", parameters));
 
 }
 
@@ -275,7 +275,7 @@ function editProduct() {
     // Set the method to POST.
     formElement.setAttribute('method', 'POST');
     // POST to the url for editing the product.
-    formElement.setAttribute('action', Flask.url_for('edit_product'));
+    formElement.setAttribute('action', Flask.url_for('render_product_page'));
 
     // On the references form, loop through all the reference items.
     if (key === 'references') {
@@ -290,7 +290,7 @@ function editProduct() {
         // Set the method to POST.
         formElement.setAttribute('method', 'POST');
         // POST to the url for editing the product.
-        formElement.setAttribute('action', Flask.url_for('edit_product'));
+        formElement.setAttribute('action', Flask.url_for('render_product_page'));
 
 
         // Create an input for the title
@@ -403,7 +403,7 @@ function insertSaveButton() {
 
 }
 
-function listenForSave () {
+function listenForSave() {
 
   // Find the save button on the DOM.
   var saveButton = document.querySelector('#save-edits');
@@ -413,12 +413,46 @@ function listenForSave () {
 
 }
 
-function submitSavedChanges () {
+function submitSavedChanges() {
 
   // TODO: Submit the changes to our python application
   // via the Flask.url_for method.
   alert('save event received')
   console.log('Submit event received');
+
+
+  // TODO: POST all the form data from the screen in a single click
+
+  // Get the edit forms.
+  var productEditForms = document.querySelectorAll('form');
+
+  // Pull the product data out of the forms.
+
+  // Store the product data into an Object or Map
+
+  // Send an XHR via POST to the python application at our desired URL.
+  // The URL will probably be the /products URL still.
+
+  // Once you have confirmed this POST was sent successfully.
+  // Wait until the Python application says the new data was saved.
+  // This can be done through a promise resolution.
+
+  // When you resolve the promise for this submission,
+  // re-render the page.
+
+
+
+
+
+  // Documentation: (Not helpful)
+  // https://jsfiddle.net/SqF6Z/3/
+  // 1:
+  // https://stackoverflow.com/questions/20667765/submit-multiple-forms-with-one-button#20683296
+  // 2:
+  // https://stackoverflow.com/questions/9096515/how-to-submit-2-forms-in-one-page-with-a-single-submit-button#9097003
+  // 3:
+  // https://stackoverflow.com/questions/21187028/javascript-submit-multiple-forms-with-one-button
+
 
 }
 
