@@ -538,6 +538,11 @@ def getProductJSON():
 @app.route("/product")
 def renderProductPage():
 
+    # If form was submitted, then it was probably an edit request.
+    # Submit the edits.
+    if request.method == "POST":
+        edit_product()
+
     # Request a product from the user.
     idOfProductsRequested = request.args.get("id")
 
@@ -551,13 +556,15 @@ def renderProductPage():
     # Display the product html page
     return render_template("productJSON.html", idOfProductsRequested=idOfProductsRequested)
 
-@app.route("/edit")
-@login_required
+
 def edit_product():
     """Edit an individual product"""
 
     # Keep the user logged in.
     user_id = session.get("user_id")
+
+    # Test:
+    return apology('"Edit" not set up yet.')
 
     # TODO:
     # Ensure we can use request.args & .form in a single function.
