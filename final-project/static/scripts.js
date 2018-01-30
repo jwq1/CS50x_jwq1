@@ -211,6 +211,172 @@ function displayProduct(jsonOfProductInfo) {
 };
 
 // TODO: Render "edit product info" UI.
+function editProduct() {
+
+  // TODO: Create form elements for all the required page elements.
+  // Submit the form via the POST method.
+
+  // Select all the product elements (could be own function).
+  // It is used in the displayProduct code as well.
+
+  // Select product name.
+  var prodPageName = document.querySelector('.product-name');
+  // Select brand.
+  var prodPageBrand = document.querySelector('.brand');
+
+  // Select product image.
+  var prodPageImage = document.querySelector('.product-image');
+
+  // Select price.
+  var prodPagePrice = document.querySelector('.price');
+
+  // Select description.
+  var prodPageDescription = document.querySelector('.description');
+
+  // Select characteristics
+  var prodPageCharacteristics = document.querySelector('.characteristics');
+
+  // Select references.
+  // Select ordered list of references.
+  var prodPageReferences = document.querySelector('.references-list');
+  // Select all list items in reference list.
+  var referenceList = prodPageReferences.childNodes;
+
+  // Store page elements into a map for easy access.
+  var prodPageElements = new Map();
+
+  // Set key / value pairs of the new Map.
+  prodPageElements.set('name', prodPageName);
+  prodPageElements.set('brand', prodPageBrand);
+  prodPageElements.set('image', prodPageImage);
+  prodPageElements.set('price', prodPagePrice);
+  prodPageElements.set('description', prodPageDescription);
+  prodPageElements.set('characteristics', prodPageCharacteristics);
+  prodPageElements.set('references', referenceList);
+
+
+  // Create an input element for each form.
+  prodPageElements.forEach(function(value, key) {
+
+    // Create a form element.
+    var formElement = document.createElement('form');
+    // Name the form.
+    formElement.setAttribute('name', key + '-form');
+    // Set the method to POST.
+    formElement.setAttribute('method', 'POST');
+    // POST to the url for editing the product.
+    formElement.setAttribute('action', Flask.url_for('edit_product'));
+
+    // On the references form, loop through all the reference items.
+    if (key === 'references') {
+
+      // Loop through references.
+      for(var i = 0; i < value.length; i++) {
+
+        // Create a new form element.
+        var formElement = document.createElement('form');
+        // Name the form.
+        formElement.setAttribute('name', 'reference-form-' + i);
+        // Set the method to POST.
+        formElement.setAttribute('method', 'POST');
+        // POST to the url for editing the product.
+        formElement.setAttribute('action', Flask.url_for('edit_product'));
+
+
+        // Create an input for the title
+        var titleInput = document.createElement('input');
+        // Name the input.
+        titleInput.setAttribute('name', 'reference-title-input-' + i);
+        // Add placeholder text with current title.
+        titleInput.setAttribute('placeholder', value[i].firstChild.innerText);
+
+        // Label the input field with an instructive title.
+        // Create a label element.
+        var labelTitle = document.createElement('label');
+        // Link the label element to the appropriate input field.
+        labelTitle.setAttribute('for', 'reference-title-input-' + i);
+        // Set the label to be an informative one.
+        labelTitle.textContent = 'Title';
+
+        // Create an input for the link.
+        var linkInput = document.createElement('input');
+        // Name the input.
+        linkInput.setAttribute('name', 'reference-link-input-' + i);
+        // Add placeholder text with current title.
+        linkInput.setAttribute('placeholder', value[i].firstChild.href);
+        // Label the input field with an instructive title.
+        linkInput.setAttribute('label', 'Link');
+
+        // Label the input field with an instructive title.
+        // Create a label element.
+        var labelLink = document.createElement('label');
+        // Link the label element to the appropriate input field.
+        labelLink.setAttribute('for', 'reference-title-input-' + i);
+        // Set the label to be an informative one.
+        labelLink.textContent = 'Link';
+
+
+        // Append the labels to the inputs
+        formElement.appendChild(labelTitle);
+        // Append an input for the title.
+        formElement.appendChild(titleInput);
+        // Append the labels to the inputs
+        formElement.appendChild(labelLink);
+        // Append an input for the link.
+        formElement.appendChild(linkInput);
+        // Append the form to the product page element.
+        value[i].appendChild(formElement);
+      }
+
+    } else {
+
+      // Create input element.
+      var inputElement = document.createElement('input');
+      // Name the element.
+      inputElement.setAttribute('name', key + '-input');
+
+      // Label the input field with an instructive title.
+      // Create a label element.
+      var label = document.createElement('label');
+      // Link the label element to the appropriate input field.
+      label.setAttribute('for', key + '-input');
+      // Set the label to be an informative one.
+      label.textContent = key;
+
+      // On the image form, use the URL as a placeholder.
+      if (key === 'image') {
+        // Provide placeholder text of current src.
+        inputElement.setAttribute('placeholder', value.src)
+
+      // Otherwise, on all other elements use the innerText as a placeholder.
+      } else {
+        inputElement.setAttribute('placeholder', value.innerText)
+      }
+
+      // Append the labels to the inputs
+      formElement.appendChild(label);
+      // Append the input element to the form element.
+      formElement.appendChild(inputElement);
+      // Append the form to the product page element.
+      value.appendChild(formElement);
+
+    }
+
+
+  });
+
+  // TODO: Populate value values with the current content of the element.
+
+  // TODO: Create a button element for submission.
+
+  // TODO: Listen for clicks on the submit button
+
+  // TODO: Close the edit interface
+  // Make this a separate function to perserve declarative conventions.
+  // Declare the function at the root indent level.
+
+}
+
 
 
 // TODO: Create generic page update function for interactive tasks.
