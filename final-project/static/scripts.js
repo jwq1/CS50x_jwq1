@@ -387,16 +387,28 @@ function insertSaveButton() {
   editButton['edit-product'].setAttribute('value', 'Save Edits');
   editButton['edit-product']['labels'][0].textContent = "When you're sure ";
 
+}
+
+function listenForSave () {
+
   // TODO: Listen for clicks on the submit button
+
+
+}
+
+function submitSavedChanges () {
 
   // TODO: Submit the changes to our python application
   // via the Flask.url_for method.
 
-  // TODO: Update the page to enter 'View Product' state.
-
 }
 
 
+// TODO: Update the page to enter 'View Product' state.
+// Call the displayProduct() function.
+// Only call after the edits have been submitted
+// and changes are saved to the database.
+// Otherwise, the user will not get the latest data.
 
 
 
