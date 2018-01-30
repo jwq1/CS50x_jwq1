@@ -9,20 +9,12 @@
 // Check what kind of content to load when the document is ready.
 $(function(){
 
-  // TODO: Edit the product page
-
   // Get product data when user navigates to a product page.
   if ( !!(document.querySelector(".product-page")) ) {
 
     // Pull the id from the URL, then return a JSON object.
     // Display data on screen when fetch resolves.
     retrieveJSON(getSearchParams());
-
-    // Listen for edit button clicks.
-    // Find the edit button element.
-    var editButton = document.querySelector('#edit-product');
-    // On click, display edit forms.
-    editButton.addEventListener('click', editProduct);
 
   }
 
@@ -114,10 +106,10 @@ function getIdOnClick(productClicked) {
     // Apply await() using the Promise constructor
 
   // Get the id of a product when it is clicked.
-  var productIdOfClicked = productClicked.id;
+  var productIdOfClicked = productClicked.id
 
   // Return the product's id.
-  return productIdOfClicked;
+  return productIdOfClicked
 
 }
 
@@ -385,6 +377,6 @@ function editProduct() {
 
 }
 
-// TODO: Create function to close the edit interface when the user is done.
+
 
 // TODO: Create generic page update function for interactive tasks.
