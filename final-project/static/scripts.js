@@ -22,7 +22,9 @@ $(function(){
     // Find the edit button element.
     var editButton = document.querySelector('#edit-product');
     // On click, display edit forms.
-    editButton.addEventListener('click', editProduct);
+    editButton.addEventListener('click', editProduct, {
+      once:true
+    });
 
   }
 
@@ -383,15 +385,30 @@ function insertSaveButton() {
 
   // Append the button to the document.
   var editRequestElement = document.querySelector('.edit');
+  // Change class to 'save'.
+  editRequestElement.setAttribute('class', 'save');
+  // Get the button and label elements, rather than the div.
   var editButton= editRequestElement.children;
+  // Set the attributes and text to 'Save' attributes.
   editButton['edit-product'].setAttribute('value', 'Save Edits');
   editButton['edit-product']['labels'][0].textContent = "When you're sure ";
+  editButton['edit-product']['labels'][0].setAttribute('for', 'save-edits');
+
+  // Reset the id for the button and label.
+  var editButtonToChange = document.querySelector('#edit-product');
+  editButtonToChange.setAttribute('id', 'save-edits');
+
+  // Listen for when the user would like to save.
+  listenForSave();
 
 }
 
 function listenForSave () {
 
-  // TODO: Listen for clicks on the submit button
+  // Find the save button on the DOM.
+  var saveButton = document.querySelector('#save-edits');
+  // Listen for clicks on the save button.
+  saveButton.addEventListener('click', submitSavedChanges);
 
 
 }
@@ -400,6 +417,7 @@ function submitSavedChanges () {
 
   // TODO: Submit the changes to our python application
   // via the Flask.url_for method.
+  alert("Save event received");
 
 }
 
