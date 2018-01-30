@@ -408,7 +408,7 @@ function listenForSave () {
   // Find the save button on the DOM.
   var saveButton = document.querySelector('#save-edits');
   // Listen for clicks on the save button.
-  saveButton.addEventListener('click', submitSavedChanges);
+  saveButton.addEventListener('click', submitSavedChanges, {once:true});
 
 
 }
