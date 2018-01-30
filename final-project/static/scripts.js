@@ -393,6 +393,10 @@ function insertSaveButton() {
   saveButton.textContent = 'Save Edits';
 
   // TODO: Append the button to the document.
+  var editRequestElement = document.querySelector('.edit');
+  var editButton= editRequestElement.children;
+  editButton['edit-product'].setAttribute('value', 'Save Edits');
+  editButton['edit-product']['labels'][0].textContent = "When you're sure ";
 
   // TODO: Listen for clicks on the submit button
 
