@@ -417,7 +417,8 @@ function submitSavedChanges () {
 
   // TODO: Submit the changes to our python application
   // via the Flask.url_for method.
-  alert("Save event received");
+  alert('save event received')
+  console.log('Submit event received');
 
 }
 
