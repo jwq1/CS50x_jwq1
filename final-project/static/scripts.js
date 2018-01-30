@@ -252,14 +252,6 @@ function editProduct() {
 
   // Store page elements into a map for easy access.
   var prodPageElements = new Map();
-  // Create variables to store information in.
-  // var name = prodPageName;
-  // var brand = prodPageBrand;
-  // var image = prodPageImage;
-  // var price = prodPagePrice;
-  // var description = prodPageDescription;
-  // var characteristics = prodPageCharacteristics;
-  // var references = referenceList;
 
   // Set key / value pairs of the new Map.
   prodPageElements.set('name', prodPageName);
@@ -278,6 +270,10 @@ function editProduct() {
     var formElement = document.createElement('form');
     // Name the form.
     formElement.setAttribute('name', key + '-form');
+    // Set the method to POST.
+    formElement.setAttribute('method', 'POST');
+    // POST to the url for editing the product.
+    formElement.setAttribute('action', Flask.url_for('edit_product'));
 
     // On the references form, loop through all the reference items.
     if (key === 'references') {
@@ -289,6 +285,11 @@ function editProduct() {
         var formElement = document.createElement('form');
         // Name the form.
         formElement.setAttribute('name', 'reference-form-' + i);
+        // Set the method to POST.
+        formElement.setAttribute('method', 'POST');
+        // POST to the url for editing the product.
+        formElement.setAttribute('action', Flask.url_for('edit_product'));
+
 
         // Create an input for the title
         var titleInput = document.createElement('input');
@@ -297,49 +298,76 @@ function editProduct() {
         // Add placeholder text with current title.
         titleInput.setAttribute('placeholder', value[i].firstChild.innerText);
 
+        // Label the input field with an instructive title.
+        // Create a label element.
+        var labelTitle = document.createElement('label');
+        // Link the label element to the appropriate input field.
+        labelTitle.setAttribute('for', 'reference-title-input-' + i);
+        // Set the label to be an informative one.
+        labelTitle.textContent = 'Title';
+
         // Create an input for the link.
         var linkInput = document.createElement('input');
         // Name the input.
         linkInput.setAttribute('name', 'reference-link-input-' + i);
+        // Add placeholder text with current title.
         linkInput.setAttribute('placeholder', value[i].firstChild.href);
+        // Label the input field with an instructive title.
+        linkInput.setAttribute('label', 'Link');
 
+        // Label the input field with an instructive title.
+        // Create a label element.
+        var labelLink = document.createElement('label');
+        // Link the label element to the appropriate input field.
+        labelLink.setAttribute('for', 'reference-title-input-' + i);
+        // Set the label to be an informative one.
+        labelLink.textContent = 'Link';
+
+
+        // Append the labels to the inputs
+        formElement.appendChild(labelTitle);
         // Append an input for the title.
         formElement.appendChild(titleInput);
+        // Append the labels to the inputs
+        formElement.appendChild(labelLink);
         // Append an input for the link.
         formElement.appendChild(linkInput);
         // Append the form to the product page element.
         value[i].appendChild(formElement);
       }
 
-    // On the image form, use the URL as a placeholder.
-    } else if (key === 'image') {
-
-      // Create input element.
-      var inputElement = document.createElement('input');
-      // Name the element.
-      inputElement.setAttribute('name', key + '-input');
-      // Provide placeholder text of current src.
-      inputElement.setAttribute('placeholder', value.src);
-
-      // Append the input element to the form element.
-      formElement.appendChild(inputElement);
-      // Append the form to the product page element.
-      value.appendChild(formElement);
-
-    // Otherwise, on all other elements use the innerText as a placeholder.
     } else {
 
       // Create input element.
       var inputElement = document.createElement('input');
       // Name the element.
       inputElement.setAttribute('name', key + '-input');
-      // Provide inner text of current placeholder.
-      inputElement.setAttribute('placeholder', value.innerText);
 
+      // Label the input field with an instructive title.
+      // Create a label element.
+      var label = document.createElement('label');
+      // Link the label element to the appropriate input field.
+      label.setAttribute('for', key + '-input');
+      // Set the label to be an informative one.
+      label.textContent = key;
+
+      // On the image form, use the URL as a placeholder.
+      if (key === 'image') {
+        // Provide placeholder text of current src.
+        inputElement.setAttribute('placeholder', value.src)
+
+      // Otherwise, on all other elements use the innerText as a placeholder.
+      } else {
+        inputElement.setAttribute('placeholder', value.innerText)
+      }
+
+      // Append the labels to the inputs
+      formElement.appendChild(label);
       // Append the input element to the form element.
       formElement.appendChild(inputElement);
       // Append the form to the product page element.
       value.appendChild(formElement);
+
     }
 
 
