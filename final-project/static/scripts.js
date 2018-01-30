@@ -114,10 +114,10 @@ function getIdOnClick(productClicked) {
     // Apply await() using the Promise constructor
 
   // Get the id of a product when it is clicked.
-  var productIdOfClicked = productClicked.id
+  var productIdOfClicked = productClicked.id;
 
   // Return the product's id.
-  return productIdOfClicked
+  return productIdOfClicked;
 
 }
 
@@ -319,7 +319,7 @@ function editProduct() {
       // Name the element.
       inputElement.setAttribute('name', key + '-input');
       // Provide placeholder text of current src.
-      inputElement.setAttribute('placeholder', value.src)
+      inputElement.setAttribute('placeholder', value.src);
 
       // Append the input element to the form element.
       formElement.appendChild(inputElement);
@@ -334,7 +334,7 @@ function editProduct() {
       // Name the element.
       inputElement.setAttribute('name', key + '-input');
       // Provide inner text of current placeholder.
-      inputElement.setAttribute('placeholder', value.innerText)
+      inputElement.setAttribute('placeholder', value.innerText);
 
       // Append the input element to the form element.
       formElement.appendChild(inputElement);
