@@ -536,7 +536,7 @@ def getProductJSON():
     return jsonify(product_info[0])
 
 @app.route("/product")
-def renderProductPage():
+def render_product_page():
 
     # If form was submitted, then it was probably an edit request.
     # Submit the edits.
