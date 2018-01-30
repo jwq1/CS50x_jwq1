@@ -9,20 +9,12 @@
 // Check what kind of content to load when the document is ready.
 $(function(){
 
-  // TODO: Edit the product page
-
   // Get product data when user navigates to a product page.
   if ( !!(document.querySelector(".product-page")) ) {
 
     // Pull the id from the URL, then return a JSON object.
     // Display data on screen when fetch resolves.
     retrieveJSON(getSearchParams());
-
-    // Listen for edit button clicks.
-    // Find the edit button element.
-    var editButton = document.querySelector('#edit-product');
-    // On click, display edit forms.
-    editButton.addEventListener('click', editProduct);
 
   }
 
@@ -114,10 +106,10 @@ function getIdOnClick(productClicked) {
     // Apply await() using the Promise constructor
 
   // Get the id of a product when it is clicked.
-  var productIdOfClicked = productClicked.id;
+  var productIdOfClicked = productClicked.id
 
   // Return the product's id.
-  return productIdOfClicked;
+  return productIdOfClicked
 
 }
 
@@ -219,144 +211,6 @@ function displayProduct(jsonOfProductInfo) {
 };
 
 // TODO: Render "edit product info" UI.
-function editProduct() {
 
-  // TODO: Create form elements for all the required page elements.
-  // Submit the form via the POST method.
-
-  // Select all the product elements (could be own function).
-  // It is used in the displayProduct code as well.
-
-  // Select product name.
-  var prodPageName = document.querySelector('.product-name');
-  // Select brand.
-  var prodPageBrand = document.querySelector('.brand');
-
-  // Select product image.
-  var prodPageImage = document.querySelector('.product-image');
-
-  // Select price.
-  var prodPagePrice = document.querySelector('.price');
-
-  // Select description.
-  var prodPageDescription = document.querySelector('.description');
-
-  // Select characteristics
-  var prodPageCharacteristics = document.querySelector('.characteristics');
-
-  // Select references.
-  // Select ordered list of references.
-  var prodPageReferences = document.querySelector('.references-list');
-  // Select all list items in reference list.
-  var referenceList = prodPageReferences.childNodes;
-
-  // Store page elements into a map for easy access.
-  var prodPageElements = new Map();
-  // Create variables to store information in.
-  // var name = prodPageName;
-  // var brand = prodPageBrand;
-  // var image = prodPageImage;
-  // var price = prodPagePrice;
-  // var description = prodPageDescription;
-  // var characteristics = prodPageCharacteristics;
-  // var references = referenceList;
-
-  // Set key / value pairs of the new Map.
-  prodPageElements.set('name', prodPageName);
-  prodPageElements.set('brand', prodPageBrand);
-  prodPageElements.set('image', prodPageImage);
-  prodPageElements.set('price', prodPagePrice);
-  prodPageElements.set('description', prodPageDescription);
-  prodPageElements.set('characteristics', prodPageCharacteristics);
-  prodPageElements.set('references', referenceList);
-
-
-  // Create an input element for each form.
-  prodPageElements.forEach(function(value, key) {
-
-    // Create a form element.
-    var formElement = document.createElement('form');
-    // Name the form.
-    formElement.setAttribute('name', key + '-form');
-
-    // On the references form, loop through all the reference items.
-    if (key === 'references') {
-
-      // Loop through references.
-      for(var i = 0; i < value.length; i++) {
-
-        // Create a new form element.
-        var formElement = document.createElement('form');
-        // Name the form.
-        formElement.setAttribute('name', 'reference-form-' + i);
-
-        // Create an input for the title
-        var titleInput = document.createElement('input');
-        // Name the input.
-        titleInput.setAttribute('name', 'reference-title-input-' + i);
-        // Add placeholder text with current title.
-        titleInput.setAttribute('placeholder', value[i].firstChild.innerText);
-
-        // Create an input for the link.
-        var linkInput = document.createElement('input');
-        // Name the input.
-        linkInput.setAttribute('name', 'reference-link-input-' + i);
-        linkInput.setAttribute('placeholder', value[i].firstChild.href);
-
-        // Append an input for the title.
-        formElement.appendChild(titleInput);
-        // Append an input for the link.
-        formElement.appendChild(linkInput);
-        // Append the form to the product page element.
-        value[i].appendChild(formElement);
-      }
-
-    // On the image form, use the URL as a placeholder.
-    } else if (key === 'image') {
-
-      // Create input element.
-      var inputElement = document.createElement('input');
-      // Name the element.
-      inputElement.setAttribute('name', key + '-input');
-      // Provide placeholder text of current src.
-      inputElement.setAttribute('placeholder', value.src);
-
-      // Append the input element to the form element.
-      formElement.appendChild(inputElement);
-      // Append the form to the product page element.
-      value.appendChild(formElement);
-
-    // Otherwise, on all other elements use the innerText as a placeholder.
-    } else {
-
-      // Create input element.
-      var inputElement = document.createElement('input');
-      // Name the element.
-      inputElement.setAttribute('name', key + '-input');
-      // Provide inner text of current placeholder.
-      inputElement.setAttribute('placeholder', value.innerText);
-
-      // Append the input element to the form element.
-      formElement.appendChild(inputElement);
-      // Append the form to the product page element.
-      value.appendChild(formElement);
-    }
-
-
-  });
-
-  // TODO: Populate value values with the current content of the element.
-
-  // TODO: Create a button element for submission.
-
-  // TODO: Listen for clicks on the submit button
-
-  // TODO: Close the edit interface
-  // Make this a separate function to perserve declarative conventions.
-  // Declare the function at the root indent level.
-
-}
-
-// TODO: Create function to close the edit interface when the user is done.
 
 // TODO: Create generic page update function for interactive tasks.
