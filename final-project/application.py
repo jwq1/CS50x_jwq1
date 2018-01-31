@@ -535,8 +535,11 @@ def getProductJSON():
     # Return product information in the form of a JSON object.
     return jsonify(product_info[0])
 
-@app.route("/product")
+@app.route("/product", methods=['POST', 'GET'])
 def render_product_page():
+
+    # Keep the user logged in.
+    user_id = session.get("user_id")
 
     # If form was submitted, then it was probably an edit request.
     # Submit the edits.
@@ -555,153 +558,17 @@ def render_product_page():
         # Display the product html page
         return render_template("productJSON.html", idOfProductsRequested=idOfProductsRequested)
 
+    if request.method == "POST":
+        # Apologize.
+        return apology('"Edit" not set up yet.')
 
-def edit_product():
-    """Edit an individual product"""
+        # Create an empty dictionary
+        productEditsRequested = {}
 
-    # Keep the user logged in.
-    user_id = session.get("user_id")
+        # Check for JSON data.
+        if ( request.json() ):
+            # Store the JSON data.
+            productEditsRequested = request.get_json()
 
-    # Test:
-    return apology('"Edit" not set up yet.')
+        # TODO: Send the info to our database.
 
-    # TODO:
-    # Ensure we can use request.args & .form in a single function.
-    # If we cannot, then we need to send the product id another way.
-
-
-    # Get product name to edit
-    id_products_request = request.args.get("id")
-
-    # Ensure product was received
-    if not id_products_request:
-        return apology("Please provide a product name")
-
-    # Create a dictionary to store our requested edits.
-    # This makes it easier to ask for the information
-    # when it is time to edit the database.
-    # The dict can be used to loop through requests
-    # and check for dangerous or illogical info.
-    make_edits = {}
-
-    # TODO:
-    # Make sure the conditional checks for the existence of values sent from
-    # the form.
-    # "if request.form.get('<form name>')"" might only check for the existence
-    # of the form.
-    # Check whether a value was returned from the form. An alternative could
-    # be .length, or a similar method, to check for input in the value field.
-
-    # If the request method was POST
-    if request.method == 'POST':
-        # Get information from the edit product form.
-        # Get the new name.
-        if request.form.get("product-name"):
-           make_edits['name_of_product'] = request.form.get("product-name")
-        # Get the new brand.
-        if request.form.get("brand"):
-            make_edits['brand_which_made'] = request.form.get("brand")
-        # Get the new image.
-        if request.form.get("image"):
-            make_edits['image_of_product'] = request.form.get("image")
-        # Get the new price.
-        if request.form.get("price"):
-            make_edits['price_of_product'] = request.form.get("price")
-        # Get the new description.
-        if request.form.get("description"):
-            make_edits['description'] = request.form.get("description")
-        # Get the new characteristics.
-        if request.form.get("characteristics"):
-            make_edits['charactertistics'] = request.form.get("characteristics")
-        # Get the new references.
-        # TODO:
-        # Get the entire list of references edited.
-        # Figure out how to logically organize the
-        # reference when our py application requests them.
-        # There will be a list.
-        # If there are multiple forms all with name='references'
-        # what will the request.form.get do?
-        # There will be a title and link for the reference.
-        # How do we access both after the request.form.get?
-        # Read flask documentation:
-        # http://werkzeug.pocoo.org/docs/0.14/wrappers/#werkzeug.wrappers.BaseRequest.form
-        # DOCUMENTATION:
-        # .form() returns an ImmutableMultiDict.
-        # MultiDict objects implement the standard dictionary methods.
-        # However, the if there are several values assigned to a single key
-        # then you have to use .getlist('<key>'), a list method, to access
-        # them.
-        # This is because the dictionary values for a single key are stored
-        # in a list.
-        # TODO:
-        # Test whether we can figure out which link is associated with which title.
-        # through this method. Otherwise, come up with another system.
-
-        if request.form.get("reference-titles"):
-            make_edits['reference-titles'] = request.form.getList("reference-titles")
-        if request.form.get("reference-links"):
-            make_edits['references-links'] = request.form.getList("reference-links")
-        # Syntax = if request.form.get('<form name>')
-        # If no form was submitted, then do nothing
-        if not request.form:
-            return apology('No edits were made.');
-
-        # Reference List Idea:
-        # dynamically name the <form name=reference-1,2,3,etc>
-        # then in python add a while loop to check for a form with
-        # the intended name.
-        # e.g. while (request.form.get('reference-counterNumber')) {
-            # make_edits['reference']['title'] = request.form.getList['reference']['title']
-            # make_edits['reference']['link'] = request.form.getList['reference']['link']
-            # counterNumber++
-        # }
-        # This loop will end when there is no longer a form with the name we requested.
-        # TODO: Check whether .getList['reference']['title'] is the correct syntax.
-        # Essentially, will getList intelligently store multiple inputs from a single form
-        # into a dict.
-        # It could attempt to store them into a list or some other such nonsense.
-
-
-    else:
-        # the code below is executed if the request method
-        # was GET or the credentials were invalid
-        # TODO:
-        # Remove render_template.
-        # Return successful information edit message
-        # Call function to return new product information.
-        # New product information can be called here, or in javascript.
-        # Javascript would be better to keep this a single use funciton.
-        # Remove error varilable from argument list.
-        return render_template('productJSON.html', error=error)
-
-    # TODO:
-    # Ensure blank inputs are not accepted.
-    # Loop through make_edits dict to check for odd information.
-
-
-
-
-    # Find our record of this product
-    product_info = find_product(id_products_request)
-
-    # Get references for a given product
-    (number_of_references,
-    reference_titles,
-    reference_links) = get_reference(id_products_request)
-
-    # If no product was found, then apologize.
-    if not product_info or product_info == None:
-        return apology("Sorry, we don't have information for that product")
-    elif len(product_info) > 1:
-        return apology("Found more than a single product. Please try again.")
-
-    # Render edit product template
-    return render_template("edit.html"
-            , product_info=product_info
-            , number_of_references=number_of_references
-            , reference_titles=reference_titles
-            , reference_links=reference_links)
-
-
-    # Return apology template
-    return apology("TODO")
