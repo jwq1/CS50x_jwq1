@@ -408,7 +408,7 @@ function listenForSave() {
   // Find the save button on the DOM.
   var saveButton = document.querySelector('#save-edits');
   // Listen for clicks on the save button.
-  saveButton.addEventListener('click', submitSavedChanges, {once:true});
+  saveButton.addEventListener('click', submitSavedChanges(), {once:true});
 
 
 }
@@ -426,32 +426,43 @@ function submitSavedChanges() {
   // Get the edit forms.
   var productEditForms = document.querySelectorAll('form');
 
-  // Pull the product data out of the forms.
+  // Create object to store array of form data.
+  var requestedEdits;
 
-  // Store the product data into an Object or Map
+  // Pull the product data out of the forms.
+  for (var i = 0; i < productEditForms.length; i++) {
+    // Get the name of the form we are looking at.
+    var key = productEditForms[i].name;
+    // Store the product data into an Object array.
+    requestedEdits[key] = productEditForms[i]['attributes']['value'];
+  }
+
+  // Get the id of the product we want to edit
+  var productHeader = document.querySelector('.product-name');
+  var productIdParameter = productHeader.getAttribute('id');
+
+  // Set the product id to be a parameter in our GET request.
+  var parameters = {
+    id: productIdParameter
+  }
 
   // Send an XHR via POST to the python application at our desired URL.
   // The URL will probably be the /products URL still.
+  var url = Flask.url_for('edit_product', parameters);
+  var data = requestedEdits;
 
-  // Once you have confirmed this POST was sent successfully.
-  // Wait until the Python application says the new data was saved.
-  // This can be done through a promise resolution.
+  fetch(url, {
+    method: 'POST',
+    body: JSON.stringify(data),
+    headers: new Headers({
+      'Content-Type': 'application/json'
+    })
+  }).then(res => res.json())
+  .catch(error => console.error('Error:', error))
+  .then(response => console.log('Success:', response));
 
-  // When you resolve the promise for this submission,
+  // TODO: When you resolve the promise for this submission,
   // re-render the page.
-
-
-
-
-
-  // Documentation: (Not helpful)
-  // https://jsfiddle.net/SqF6Z/3/
-  // 1:
-  // https://stackoverflow.com/questions/20667765/submit-multiple-forms-with-one-button#20683296
-  // 2:
-  // https://stackoverflow.com/questions/9096515/how-to-submit-2-forms-in-one-page-with-a-single-submit-button#9097003
-  // 3:
-  // https://stackoverflow.com/questions/21187028/javascript-submit-multiple-forms-with-one-button
 
 
 }
