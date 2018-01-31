@@ -546,29 +546,29 @@ def render_product_page():
     if request.method == "GET":
 
         # Request a product from the user.
-        idOfProductsRequested = request.args.get("id")
+        id_of_product_requested = request.args.get("id")
 
         # Ensure the user asked for a product.
-        if not idOfProductsRequested:
+        if not id_of_product_requested:
             return apology("Please let us know which product you are looking for")
-        elif idOfProductsRequested == None:
+        elif id_of_product_requested == None:
             return apology("Please let us know which product you are looking for")
 
 
         # Display the product html page
-        return render_template("productJSON.html", idOfProductsRequested=idOfProductsRequested)
+        return render_template("productJSON.html", id_of_product_requested=id_of_product_requested)
 
     if request.method == "POST":
         # Apologize.
         return apology('"Edit" not set up yet.')
 
         # Create an empty dictionary
-        productEditsRequested = {}
+        product_edits_requested = {}
 
         # Check for JSON data.
         if ( request.json() ):
             # Store the JSON data.
-            productEditsRequested = request.get_json()
+            product_edits_requested = request.get_json()
 
         # TODO: Send the info to our database.
         # TODO: Need to store the product ID in the JSON sent in POST.
@@ -582,11 +582,13 @@ def render_product_page():
             brand=:brand,
             price=:price,
             WHERE id = :product_id""",
-            product_id=productEditsRequested['product-id'],
-            name=productEditsRequested['name-form'],
-            link=productEditsRequested['link-form'],
-            description=productEditsRequested['description-form'],
-            image=productEditsRequested['image-form'],
-            brand=productEditsRequested['brand-form'],
-            price=productEditsRequested['price-form']
+            product_id=product_edits_requested['product-id'],
+            name=product_edits_requested['name-form'],
+            link=product_edits_requested['link-form'],
+            description=product_edits_requested['description-form'],
+            image=product_edits_requested['image-form'],
+            brand=product_edits_requested['brand-form'],
+            price=product_edits_requested['price-form']
             )
+
+        return render_template('productJSON.html', product_id=product_edits_requested['product-id'])
