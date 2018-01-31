@@ -441,6 +441,11 @@ function submitSavedChanges() {
   var productHeader = document.querySelector('.product-name');
   var productIdParameter = productHeader.getAttribute('id');
 
+  // Store product ID in requested products.
+  requestedEdits["product_id"] = productIdParameter;
+
+  // TODO: Get category changes and store those as well.
+
   // Set the product id to be a parameter in our GET request.
   var parameters = {
     id: productIdParameter
