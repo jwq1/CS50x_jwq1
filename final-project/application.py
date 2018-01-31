@@ -591,4 +591,6 @@ def render_product_page():
             price=product_edits_requested['price-form']
             )
 
-        return render_template('productJSON.html', product_id=product_edits_requested['product-id'])
+        return render_template('productJSON.html',
+                product_id=product_edits_requested['product-id']
+                )
