@@ -571,4 +571,22 @@ def render_product_page():
             productEditsRequested = request.get_json()
 
         # TODO: Send the info to our database.
-
+        # TODO: Need to store the product ID in the JSON sent in POST.
+        # TODO: Collect re-categorization data from user in edit form.
+        # TODO: Colect link information from the user.
+        updated_row = db.execute("""
+            UPDATE products SET product_name=:name,
+            link=:link,
+            description=:description,
+            image=:image,
+            brand=:brand,
+            price=:price,
+            WHERE id = :product_id""",
+            product_id=productEditsRequested['product-id'],
+            name=productEditsRequested['name-form'],
+            link=productEditsRequested['link-form'],
+            description=productEditsRequested['description-form'],
+            image=productEditsRequested['image-form'],
+            brand=productEditsRequested['brand-form'],
+            price=productEditsRequested['price-form']
+            )
