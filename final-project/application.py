@@ -540,21 +540,20 @@ def render_product_page():
 
     # If form was submitted, then it was probably an edit request.
     # Submit the edits.
-    if request.method == "POST":
-        edit_product()
+    if request.method == "GET":
 
-    # Request a product from the user.
-    idOfProductsRequested = request.args.get("id")
+        # Request a product from the user.
+        idOfProductsRequested = request.args.get("id")
 
-    # Ensure the user asked for a product.
-    if not idOfProductsRequested:
-        return apology("Please let us know which product you are looking for")
-    elif idOfProductsRequested == None:
-        return apology("Please let us know which product you are looking for")
+        # Ensure the user asked for a product.
+        if not idOfProductsRequested:
+            return apology("Please let us know which product you are looking for")
+        elif idOfProductsRequested == None:
+            return apology("Please let us know which product you are looking for")
 
 
-    # Display the product html page
-    return render_template("productJSON.html", idOfProductsRequested=idOfProductsRequested)
+        # Display the product html page
+        return render_template("productJSON.html", idOfProductsRequested=idOfProductsRequested)
 
 
 def edit_product():
