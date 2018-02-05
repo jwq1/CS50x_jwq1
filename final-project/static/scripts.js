@@ -28,6 +28,9 @@ $(function(){
       once:true
     });
 
+    // TODO: Wait for the edit button to be clicked before we insert
+    // a save button. Right now the below code executes immediately.
+
     // Add a save button for the user to submit their changes.
     var promiseToInsertSaveButton = insertSaveButton();
 
@@ -393,20 +396,28 @@ function insertSaveButton() {
 
   // Return a new promise when this resolves.
   return new Promise((resolve,reject) => {
-     // Append the button to the document.
-    var editRequestElement = document.querySelector('.edit');
-    // Change class to 'save'.
-    editRequestElement.setAttribute('class', 'save');
-    // Get the button and label elements, rather than the div.
-    var editButton= editRequestElement.children;
-    // Set the attributes and text to 'Save' attributes.
-    editButton['edit-product'].setAttribute('value', 'Save Edits');
-    editButton['edit-product']['labels'][0].textContent = "When you're sure ";
-    editButton['edit-product']['labels'][0].setAttribute('for', 'save-edits');
 
-    // Reset the id for the button and label.
-    var editButtonToChange = document.querySelector('#edit-product');
-    editButtonToChange.setAttribute('id', 'save-edits');
+    // Find the edit button.
+    var editRequestElement = document.querySelector('.edit');
+
+    // Remove the edit button and its child nodes.
+    while (editRequestElement.firstChild) {
+      editRequestElement.removeChild(editRequestElement.firstChild);
+    }
+
+    // Remove edit button container.
+    editRequestElement.parentNode.removeChild(editRequestElement);
+
+    // Create a save element.
+    var saveButton = document.createElement('input');
+    saveButton.setAttribute('id', 'save-edits');
+    saveButton.setAttribute('type', 'button');
+    saveButton.setAttribute('value', 'Save Edits');
+
+    // Get the product page element.
+    var productPage = document.querySelector('.product-page');
+    // Append this button to the bottom of the product page.
+    productPage.appendChild(saveButton);
 
     // Resolve the promise.
     resolve("A save button was created!");
