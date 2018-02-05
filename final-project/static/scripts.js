@@ -453,12 +453,12 @@ function submitSavedChanges() {
 
   // Send an XHR via POST to the python application at our desired URL.
   // The URL will probably be the /products URL still.
-  var url = Flask.url_for('edit_product', parameters);
-  var data = requestedEdits;
+  var urlToPostTo = Flask.url_for('edit_product', parameters);
+  var dataToPost = requestedEdits;
 
-  fetch(url, {
+  fetch(urlToPostTo, {
     method: 'POST',
-    body: JSON.stringify(data),
+    body: JSON.stringify(dataToPost),
     headers: new Headers({
       'Content-Type': 'application/json'
     })
