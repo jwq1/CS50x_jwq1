@@ -14,6 +14,8 @@ $(function(){
   // Get product data when user navigates to a product page.
   if ( !!(document.querySelector(".product-page")) ) {
 
+    // TODO: Chain these together in a promise so they are executed in the proper order.
+
     // Pull the id from the URL, then return a JSON object.
     // Display data on screen when fetch resolves.
     retrieveJSON(getSearchParams());
@@ -22,9 +24,15 @@ $(function(){
     // Find the edit button element.
     var editButton = document.querySelector('#edit-product');
     // On click, display edit forms.
-    editButton.addEventListener('click', editProduct, {
+    editButton.addEventListener('click', renderEditProductForm, {
       once:true
     });
+
+    // Add a save button for the user to submit their changes.
+    insertSaveButton();
+
+    // Listen for when the user would like to save.
+    listenForSave();
 
   }
 
@@ -221,7 +229,7 @@ function displayProduct(jsonOfProductInfo) {
 };
 
 // TODO: Render "edit product info" UI.
-function editProduct() {
+function renderEditProductForm() {
 
   // TODO: Create form elements for all the required page elements.
   // Submit the form via the POST method.
@@ -374,13 +382,9 @@ function editProduct() {
 
   });
 
-  // Add a save button for the user to submit their changes.
-  insertSaveButton();
-
 }
 
 
-// TODO: Save edits.
 function insertSaveButton() {
 
   // Append the button to the document.
@@ -397,9 +401,6 @@ function insertSaveButton() {
   // Reset the id for the button and label.
   var editButtonToChange = document.querySelector('#edit-product');
   editButtonToChange.setAttribute('id', 'save-edits');
-
-  // Listen for when the user would like to save.
-  listenForSave();
 
 }
 
