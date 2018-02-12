@@ -408,6 +408,12 @@ function renderEditProductForm() {
       }
     });
 
+    // TODO: Figure out why there is no image form rendered.
+    // Right now the screen does not show a form for the image.
+
+    // Update form values when users enters input.
+    updateFormValues();
+
     resolve('Edit form successfully rendered!');
   });
 }
@@ -456,6 +462,25 @@ function listenForSave() {
 
 }
 
+// Update the form values based on the user's input.
+function updateFormValues() {
+
+  // Select all the form inputs on screen.
+  var inputsToEditProductInfo = document.querySelectorAll('input');
+
+  // Go through each input element on the page.
+  for (var i = 0; i < inputsToEditProductInfo.length; i++)
+
+    // Listen for when the user enters information.
+    inputsToEditProductInfo[i].addEventListener('input', function(){
+      // If there is content in the input field,
+      // then update the value to match.
+      if (this.value.length) {
+        inputsToEditProductInfo.value = this.value;
+      }
+    });
+}
+
 function submitSavedChanges() {
 
   // TODO: Submit the changes to our python application
@@ -476,54 +501,57 @@ function submitSavedChanges() {
     // Set our key to be the name of the form.
     var key = productEditForms[i]['name'];
 
-    // If an edit to the product content was made,
-    // save the new information.
-    if (productEditForms[i]['attributes']['value']) {
-      requestedEdits.set(key, productEditForms[i]['attributes']['value']);
+    // Loop through each input
+    for(var j = 0; j < productEditForms[i].length; j++) {
 
-    // Otherwise, this form might be the reference form.
-    // If it is the reference form, look at each reference.
-    } else if (productEditForms[i]['name'].startsWith("reference-form")) {
+      // If an edit to the product content was made,
+      // save the new information.
+      if (productEditForms[i][j]['value']) {
+        requestedEdits.set(key, productEditForms[i][j]['value']);
 
-      // TODO: Store the reference links and titles
-      // in a way we clearly know which are paired up.
-      // Example: Within the requested edits object
-      // Store a key named reference-form.
-      // Within the key, save the reference title+link pairs
-      // by their database table ids.
-      // Each id should have a two keys, title and link.
-      // Then when we scan the JSON object in python,
-      // we know which reference information to update.
+      // Otherwise, this form might be the reference form.
+      // If it is the reference form, look at each reference.
+      } else if (productEditForms[i]['name'].startsWith("reference-form")) {
 
-      // Create a new map for organizational purposes.
-      var referenceTitleAndLink = new Map();
+        // TODO: Store the reference links and titles
+        // in a way we clearly know which are paired up.
+        // Example: Within the requested edits object
+        // Store a key named reference-form.
+        // Within the key, save the reference title+link pairs
+        // by their database table ids.
+        // Each id should have a two keys, title and link.
+        // Then when we scan the JSON object in python,
+        // we know which reference information to update.
 
-      // View each reference.
-      for (var j = 0; j < productEditForms[i].length; j++) {
+        // Create a new map for organizational purposes.
+        var referenceTitleAndLink = new Map();
 
-        // Set the key for each reference.
-        key = productEditForms[i][j]['name'];
+        // View each reference.
+        for (var j = 0; j < productEditForms[i].length; j++) {
 
-        // If a new reference was provided, then save the new reference.
-        if (productEditForms[i][j]['value']) {
+          // Set the key for each reference.
+          key = productEditForms[i][j]['name'];
 
-          referenceTitleAndLink.set(key, productEditForms[i][j]['value']);
+          // If a new reference was provided, then save the new reference.
+          if (productEditForms[i][j]['value']) {
 
-        // If no new reference has been provided, move onto the next input.
+            referenceTitleAndLink.set(key, productEditForms[i][j]['value']);
+
+          // If no new reference has been provided, move onto the next input.
+          }
+
         }
 
-      }
+        // If there are been edits to the reference list,
+        // then add them to our requested edits.
+        if (referenceTitleAndLink.size > 0) {
+          // Save the reference changes to our requested edits.
+          requestedEdits.set('reference-form', referenceTitleAndLink);
+        }
 
-      // If there are been edits to the reference list,
-      // then add them to our requested edits.
-      if (referenceTitleAndLink.size > 0) {
-        // Save the reference changes to our requested edits.
-        requestedEdits.set('reference-form', referenceTitleAndLink);
+      // Otherwise, no values was entered. Move onto the next form.
       }
-
-    // Otherwise, no values was entered. Move onto the next form.
     }
-
   }
 
   // Get the id of the product we want to edit

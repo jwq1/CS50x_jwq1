@@ -571,23 +571,27 @@ def render_product_page():
         print("Here's our JSON")
         print(prod_data)
         print(type(prod_data))
+        print('length', len(prod_data))
         print('')
         print('')
 
         # TODO: Create an additional tier of loops
         # to account for the list of references.
 
+        # Create dictionary to store product updates.
+        dictionary_data = {}
+
         # Loop through each item of product data.
         for j in range(0, len(prod_data)):
             # Organize the data into key value pairs
             # to request the correct data later.
-            dictionary_data = {
-                prod_data[j][0]: prod_data[j][1]
-            }
+            dictionary_data[prod_data[j][0]] = prod_data[j][1]
 
         # Print the product data key-value pairs
         # to see if we matched the data correctly.
         print('It contains')
+        print('Items', dictionary_data.items())
+        print('Length', len(dictionary_data))
         for k, v in dictionary_data.items():
             print(k, 'value(', v ,')')
         print('')
