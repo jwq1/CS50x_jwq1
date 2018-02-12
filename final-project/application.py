@@ -527,11 +527,6 @@ def getProductJSON():
     product_info[0]['reference_titles'] = reference_titles
     product_info[0]['reference_links'] = reference_links
 
-
-    # Helpful Documentation:
-    # MDN Cross-Origin Sharing Functional Overview
-    # https://developer.mozilla.org/en-US/docs/Web/HTTP/CORS
-
     # Return product information in the form of a JSON object.
     return jsonify(product_info[0])
 
@@ -554,43 +549,118 @@ def render_product_page():
         elif id_of_product_requested == None:
             return apology("Please let us know which product you are looking for")
 
-
         # Display the product html page
         return render_template("productJSON.html", id_of_product_requested=id_of_product_requested)
 
     if request.method == "POST":
-        # Apologize.
-        return apology('"Edit" not set up yet.')
 
-        # Create an empty dictionary
-        product_edits_requested = {}
+        # TODO: Move the find product info to later in the code.
+        # IDEA: Make requestJSON more flexible so it can accept the product ID
+        # from something other than the URL, or send the ID in the URL.
+        # This way there is no need for a code re-write.
+        # TODO: Replace this with the actual id.
 
-        # Check for JSON data.
-        if ( request.json() ):
-            # Store the JSON data.
-            product_edits_requested = request.get_json()
+        # Save the product data
+        # product_data_in_POST = request.get_json()
+        # prod_data = product_data_in_POST[0]
+        print('')
+        print('')
+        print('')
+        print('')
+        prod_data = request.get_json()
+        print("Here's our JSON")
+        print(prod_data)
+        print(type(prod_data))
+        print('')
+        print('')
 
-        # TODO: Send the info to our database.
-        # TODO: Need to store the product ID in the JSON sent in POST.
-        # TODO: Collect re-categorization data from user in edit form.
-        # TODO: Colect link information from the user.
-        updated_row = db.execute("""
-            UPDATE products SET product_name=:name,
-            link=:link,
-            description=:description,
-            image=:image,
-            brand=:brand,
-            price=:price,
-            WHERE id = :product_id""",
-            product_id=product_edits_requested['product-id'],
-            name=product_edits_requested['name-form'],
-            link=product_edits_requested['link-form'],
-            description=product_edits_requested['description-form'],
-            image=product_edits_requested['image-form'],
-            brand=product_edits_requested['brand-form'],
-            price=product_edits_requested['price-form']
-            )
+        # TODO: Create an additional tier of loops
+        # to account for the list of references.
 
-        return render_template('productJSON.html',
-                product_id=product_edits_requested['product-id']
-                )
+        # Loop through each item of product data.
+        for j in range(0, len(prod_data)):
+            # Organize the data into key value pairs
+            # to request the correct data later.
+            dictionary_data = {
+                prod_data[j][0]: prod_data[j][1]
+            }
+
+        # Print the product data key-value pairs
+        # to see if we matched the data correctly.
+        print('It contains')
+        for k, v in dictionary_data.items():
+            print(k, 'value(', v ,')')
+        print('')
+        print('')
+
+        # Get product id from json.
+        product_id_of_the_request = dictionary_data['product-id']
+
+        # Find the record of this product in the database.
+        product_info = find_product(product_id_of_the_request)
+
+        # If no product was found, then apologize.
+        if not product_info or product_info == None:
+            return apology("Sorry, we didn't find a product with id "
+                + str(product_id_of_the_request))
+
+        # Get product references for a given product name.
+        (number_of_references,
+        reference_titles,
+        reference_links) = get_reference(product_info[0]["product_name"])
+
+        # Add references to our product information.
+        product_info[0]['number_of_references'] = number_of_references
+        product_info[0]['reference_titles'] = reference_titles
+        product_info[0]['reference_links'] = reference_links
+
+        # Print out our final dictionary of information
+        # to ensure the correct data is sent back to the client.
+        print('')
+        print('')
+        print('Information about product id=3:')
+        print('')
+        print(product_info[0])
+        print('')
+        print('')
+
+        # Return a json of the data back to the client.
+        # This should contain the updated product information
+        # based on their user's requested edits.
+        return jsonify(product_info[0])
+
+
+        # # Create an empty dictionary
+        # product_edits_requested = {}
+
+        # # Check for JSON data.
+        # if ( request.json() ):
+        #     # Store the JSON data.
+        #     product_edits_requested = request.get_json()
+
+        # # TODO: Only update product information when a user
+        # # requests a change.
+        # #
+        # # TODO: Send the info to our database.
+        # #
+        # # TODO: Collect re-categorization data from user in edit form.
+        # updated_row = db.execute("""
+        #     UPDATE products SET product_name=:name,
+        #     link=:link,
+        #     description=:description,
+        #     image=:image,
+        #     brand=:brand,
+        #     price=:price,
+        #     WHERE id = :product_id""",
+        #     product_id=product_edits_requested['product-id'],
+        #     name=product_edits_requested['name-form'],
+        #     link=product_edits_requested['link-form'],
+        #     description=product_edits_requested['description-form'],
+        #     image=product_edits_requested['image-form'],
+        #     brand=product_edits_requested['brand-form'],
+        #     price=product_edits_requested['price-form']
+        #     )
+
+        # return render_template('productJSON.html',
+        #         product_id=product_edits_requested['product-id']
+        #         )
