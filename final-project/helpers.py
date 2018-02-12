@@ -171,7 +171,7 @@ def find_product(id_requested):
 
     # Create a parameter to search our database
     # for any records, which contain the product name.
-    product_parameter = "%" + id_requested + "%"
+    product_parameter = "%" + str(id_requested) + "%"
 
     #Search the database for the requested product.
     product_data = db.execute("""
@@ -183,7 +183,7 @@ def find_product(id_requested):
         products_id=product_parameter)
 
 
-    # Otherwise, return information about the requested product.
+    # Return information about the requested product.
     return product_data
 
 
