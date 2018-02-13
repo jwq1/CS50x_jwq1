@@ -519,11 +519,13 @@ def getProductJSON():
 
     # Get product references for a given product name.
     (number_of_references,
+    reference_ids,
     reference_titles,
     reference_links) = get_reference(product_info[0]["product_name"])
 
     # Add references to our product information.
     product_info[0]['number_of_references'] = number_of_references
+    product_info[0]['reference_ids'] = reference_ids
     product_info[0]['reference_titles'] = reference_titles
     product_info[0]['reference_links'] = reference_links
 

@@ -251,8 +251,6 @@ function renderEditProductForm() {
   // TODO: Create form elements for all the required page elements.
   // Submit the form via the POST method.
 
-
-
   return new Promise((resolve, reject) => {
 
     // Select all the product elements (could be own function).
@@ -458,7 +456,7 @@ function listenForSave() {
   // Find the save button on the DOM.
   var saveButton = document.querySelector('#save-edits');
   // Listen for clicks on the save button.
-  saveButton.addEventListener('click', submitSavedChanges, {once:false});
+  saveButton.addEventListener('click', submitEditForm, {once:false});
 
 }
 
@@ -481,7 +479,7 @@ function updateFormValues() {
     });
 }
 
-function submitSavedChanges() {
+function submitEditForm() {
 
   // TODO: Submit the changes to our python application
   // via the Flask.url_for method.
@@ -509,21 +507,10 @@ function submitSavedChanges() {
       if (productEditForms[i][j]['value']) {
         requestedEdits.set(key, productEditForms[i][j]['value']);
 
-      // Otherwise, this form might be the reference form.
       // If it is the reference form, look at each reference.
       } else if (productEditForms[i]['name'].startsWith("reference-form")) {
 
-        // TODO: Store the reference links and titles
-        // in a way we clearly know which are paired up.
-        // Example: Within the requested edits object
-        // Store a key named reference-form.
-        // Within the key, save the reference title+link pairs
-        // by their database table ids.
-        // Each id should have a two keys, title and link.
-        // Then when we scan the JSON object in python,
-        // we know which reference information to update.
-
-        // Create a new map for organizational purposes.
+        // Loop through each reference form.
         var referenceTitleAndLink = new Map();
 
         // View each reference.
