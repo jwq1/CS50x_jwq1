@@ -207,12 +207,15 @@ function displayProduct(jsonOfProductInfo) {
     // See the productJSON.html note
     // for details about structure.
 
-  // Set references.
-  // Create list item.
-  var referenceListItem = document.createElement('li');
-
   // Loop through all references for product.
   for (var i = 0; i < productJsonInfo['reference_titles'].length; i++) {
+
+    // Set references.
+    // Create list item.
+    var referenceListItem = document.createElement('li');
+
+    // Set the id of this reference to correspond to the id in our database
+    referenceListItem.setAttribute('id', 'reference-id-' + productJsonInfo['reference_ids'][i]);
 
     // Create reference variable.
     // Make it an anchor element.
