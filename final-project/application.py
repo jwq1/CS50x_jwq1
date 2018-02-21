@@ -556,23 +556,16 @@ def render_product_page():
 
     if request.method == "POST":
 
-        # Save the product data
-        # product_data_in_POST = request.get_json()
-        # prod_data = product_data_in_POST[0]
-        print('')
-        print('')
-        print('')
-        print('')
-        prod_data = request.get_json()
-        print("Here's our JSON")
-        print(prod_data)
-        print(type(prod_data))
-        print('length', len(prod_data))
-        print('')
-        print('')
+        # PART 1: Save the JSON.
 
-        # Print the product data key-value pairs
-        # to see if we matched the data correctly.
+        # If edits were made, then save them.
+        if request.get_json():
+            prod_data = request.get_json()
+        # If no edits were made, then stop.
+        else:
+            return apology("Sorry, we didn't find any edits.")
+
+        # Print the product data key-value pairs (debugger).
         print('It contains', len(prod_data), prod_data.items())
         for k, v in prod_data.items():
             if 'reference' in k:
@@ -584,16 +577,18 @@ def render_product_page():
         print('')
         print('')
 
-        # Get product id from json.
+
+        # PART 2: Update the database.
+        # TODO:
+
+
+
+        # PART 3: Return the new product information.
+
+        # Store the product id..
         product_id_of_the_request = prod_data['product-id']
 
-
-
-        # TODO: Update the database with the new information.
-
-
-
-        # Find the record of this product in the database.
+        # Get the updated information for this product id.
         product_info = find_product(product_id_of_the_request)
 
         # If no product was found, then apologize.
@@ -601,62 +596,21 @@ def render_product_page():
             return apology("Sorry, we didn't find a product with id "
                 + str(product_id_of_the_request))
 
-        # Get product references for a given product name.
+        # Get the references.
         (number_of_references,
         reference_titles,
         reference_ids,
         reference_links) = get_reference(product_info[0]["product_name"])
 
-        # Add references to our product information.
+        # Append the references to our product information.
         product_info[0]['number_of_references'] = number_of_references
         product_info[0]['reference_ids'] = reference_ids
         product_info[0]['reference_titles'] = reference_titles
         product_info[0]['reference_links'] = reference_links
 
-        # Print out our final dictionary of information
-        # to ensure the correct data is sent back to the client.
-        print('')
-        print('')
-        print('Information about product id=3:')
-        print('')
-        print(product_info[0])
-        print('')
-        print('')
-
-        # Return a json of the data back to the client.
+        # Return the product information back to the client
         # This should contain the updated product information
         # based on their user's requested edits.
         return jsonify(product_info[0])
 
 
-        # # Check for JSON data.
-        # if ( request.json() ):
-        #     # Store the JSON data.
-        #     product_edits_requested = request.get_json()
-
-        # # TODO: Only update product information when a user
-        # # requests a change.
-        # #
-        # # TODO: Send the info to our database.
-        # #
-        # # TODO: Collect re-categorization data from user in edit form.
-        # updated_row = db.execute("""
-        #     UPDATE products SET product_name=:name,
-        #     link=:link,
-        #     description=:description,
-        #     image=:image,
-        #     brand=:brand,
-        #     price=:price,
-        #     WHERE id = :product_id""",
-        #     product_id=product_edits_requested['product-id'],
-        #     name=product_edits_requested['name-form'],
-        #     link=product_edits_requested['link-form'],
-        #     description=product_edits_requested['description-form'],
-        #     image=product_edits_requested['image-form'],
-        #     brand=product_edits_requested['brand-form'],
-        #     price=product_edits_requested['price-form']
-        #     )
-
-        # return render_template('productJSON.html',
-        #         product_id=product_edits_requested['product-id']
-        #         )
