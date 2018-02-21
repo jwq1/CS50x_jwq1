@@ -556,12 +556,6 @@ def render_product_page():
 
     if request.method == "POST":
 
-        # TODO: Move the find product info to later in the code.
-        # IDEA: Make requestJSON more flexible so it can accept the product ID
-        # from something other than the URL, or send the ID in the URL.
-        # This way there is no need for a code re-write.
-        # TODO: Replace this with the actual id.
-
         # Save the product data
         # product_data_in_POST = request.get_json()
         # prod_data = product_data_in_POST[0]
@@ -577,30 +571,27 @@ def render_product_page():
         print('')
         print('')
 
-        # TODO: Create an additional tier of loops
-        # to account for the list of references.
-
-        # Create dictionary to store product updates.
-        dictionary_data = {}
-
-        # Loop through each item of product data.
-        for j in range(0, len(prod_data)):
-            # Organize the data into key value pairs
-            # to request the correct data later.
-            dictionary_data[prod_data[j][0]] = prod_data[j][1]
-
         # Print the product data key-value pairs
         # to see if we matched the data correctly.
-        print('It contains')
-        print('Items', dictionary_data.items())
-        print('Length', len(dictionary_data))
-        for k, v in dictionary_data.items():
-            print(k, 'value(', v ,')')
+        print('It contains', len(prod_data), prod_data.items())
+        for k, v in prod_data.items():
+            if 'reference' in k:
+                print(k)
+                for key, value in v.items():
+                    print('   key', key, 'has value(', value ,')')
+            else:
+                print('key', k ,'has value(', v ,')')
         print('')
         print('')
 
         # Get product id from json.
-        product_id_of_the_request = dictionary_data['product-id']
+        product_id_of_the_request = prod_data['product-id']
+
+
+
+        # TODO: Update the database with the new information.
+
+
 
         # Find the record of this product in the database.
         product_info = find_product(product_id_of_the_request)
@@ -613,10 +604,12 @@ def render_product_page():
         # Get product references for a given product name.
         (number_of_references,
         reference_titles,
+        reference_ids,
         reference_links) = get_reference(product_info[0]["product_name"])
 
         # Add references to our product information.
         product_info[0]['number_of_references'] = number_of_references
+        product_info[0]['reference_ids'] = reference_ids
         product_info[0]['reference_titles'] = reference_titles
         product_info[0]['reference_links'] = reference_links
 
@@ -635,9 +628,6 @@ def render_product_page():
         # based on their user's requested edits.
         return jsonify(product_info[0])
 
-
-        # # Create an empty dictionary
-        # product_edits_requested = {}
 
         # # Check for JSON data.
         # if ( request.json() ):

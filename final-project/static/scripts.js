@@ -484,74 +484,100 @@ function updateFormValues() {
 
 function submitEditForm() {
 
-  // TODO: Submit the changes to our python application
-  // via the Flask.url_for method.
   console.log('The save button was clicked. Submitting changes.');
 
+  // IN-PROGRESS: REFACTOR CODE TO LOOK FOR INPUTS
 
-  // TODO: POST all the form data from the screen in a single click
+  // Look for all the places where a user can request edits.
+  var inputsAvailableToUser = document.querySelectorAll('input');
 
-  // Get the edit forms.
-  var productEditForms = document.querySelectorAll('form');
+  // Create an object to store any edits requested by our user.
+  var editRequestsFromUser = {};
 
-  // Create object to store array of form data.
-  var requestedEdits = new Map();
+  // Find any requested edits from the user.
+  for (var i = 0; i < inputsAvailableToUser.length; i++) {
+    // If the input has a value, save the information.
+    if (inputsAvailableToUser[i].value && inputsAvailableToUser[i].id != 'save-edits') {
 
-  // Look for product information edits made the by user.
-  for (var i = 0; i < productEditForms.length; i++) {
-    // Set our key to be the name of the form.
-    var key = productEditForms[i]['name'];
+      // Identify which information the user would like to change.
+      var infoToChange = inputsAvailableToUser[i].parentNode.name;
 
-    // Loop through each input
-    for(var j = 0; j < productEditForms[i].length; j++) {
+      // If it is not a reference, then store the info.
+      if (!infoToChange.startsWith("reference-form")) {
+        // Create a key. Set it equal to the form name.
+        var itemToEdit = inputsAvailableToUser[i].parentNode.name;
+        // Create a value. Store the users edits here.
+        var requestedUpdateFromUser = inputsAvailableToUser[i].value;
 
-      // If an edit to the product content was made,
-      // save the new information.
-      if (productEditForms[i][j]['value']) {
-        requestedEdits.set(key, productEditForms[i][j]['value']);
+        // Store this key-value pair into a single javascript object.
+        // Then we can make a single request to our server.
+        editRequestsFromUser[itemToEdit] = requestedUpdateFromUser;
+      }
+      // If the requested edit was for a reference,
+      // then make an additional array to organize the data.
+      else {
+        // Make a javascript array to store our reference data into.
+        // This will be the 'value' which corresponds to the reference 'key'.
+        var editToThisReference = {};
 
-      // If it is the reference form, look at each reference.
-      } else if (productEditForms[i]['name'].startsWith("reference-form")) {
+        // If this edit is for a reference's title, save the title.
+        if (inputsAvailableToUser[i].name.startsWith('reference-title')) {
 
-        // Loop through each reference form.
-        var referenceTitleAndLink = new Map();
+          // Save the title edit.
+          var referenceTitle = inputsAvailableToUser[i].value;
 
-        // View each reference.
-        for (var j = 0; j < productEditForms[i].length; j++) {
+          // Store this information in the array for this reference id.
+          editToThisReference['referenceTitle'] = referenceTitle;
 
-          // Set the key for each reference.
-          key = productEditForms[i][j]['name'];
+          // Check for requested changes to the link.
+          if (inputsAvailableToUser[i+1].value) {
 
-          // If a new reference was provided, then save the new reference.
-          if (productEditForms[i][j]['value']) {
+            // If there is a change to the link then save the change.
+            var referenceLink = inputsAvailableToUser[i+1].value;
 
-            referenceTitleAndLink.set(key, productEditForms[i][j]['value']);
+            // Store this information in the array for this reference id.
+            editToThisReference['referenceLink'] = referenceLink;
 
-          // If no new reference has been provided, move onto the next input.
+            // Otherwise, do not save a link value.
           }
 
+          // No need to check the link input item again.
+          // Increment i to jump to the next relevant input.
+          i++;
+        }
+        // Otherwise, if the requested edit corresponds to a reference's link,
+        // only save the link.
+        else {
+
+          // Save the link.
+          var referenceLink = inputsAvailableToUser[i].value;
+          // There is no change to this reference's title.
+
+          // Store this information in the array for this reference id.
+          editToThisReference['referenceLink'] = referenceLink;
         }
 
-        // If there are been edits to the reference list,
-        // then add them to our requested edits.
-        if (referenceTitleAndLink.size > 0) {
-          // Save the reference changes to our requested edits.
-          requestedEdits.set('reference-form', referenceTitleAndLink);
-        }
+        // Find the reference id.
+        // This will be how we determine which reference to update in our db.
+        var referenceId = inputsAvailableToUser[i].parentNode.parentNode.id;
 
-      // Otherwise, no values was entered. Move onto the next form.
+        // Append this reference and it's corresponding edits to our storage.
+        // The reference id will be the 'key'
+        // The array which contains our title and link will be the 'value'.
+        editRequestsFromUser[referenceId] = editToThisReference;
       }
+
     }
+
   }
 
   // Get the id of the product we want to edit
   var productHeader = document.querySelector('.product-name');
   var productIdParameter = productHeader.getAttribute('id');
 
-  // Set the key to be "product-id"
-  var key = "product-id";
-  // Store product ID in requested products.
-  requestedEdits.set(key, productIdParameter);
+  // Add the product's id to our request.
+  // This tells the server which product to edit.
+  editRequestsFromUser['product-id'] = productIdParameter;
 
   // TODO: Get category changes and store those as well.
 
@@ -563,20 +589,20 @@ function submitEditForm() {
   // Send an XHR via POST to the python application at our desired URL.
   // The URL will probably be the /products URL still.
   var postToThisURL = Flask.url_for('render_product_page');
-  var dataToPost = requestedEdits;
-  // Convert maps back to a Javascript object.
-  // .stringify() only works on plain Javascript objects, not Maps.
-  // See the following link for an explanation.
-  // https://stackoverflow.com/questions/28918232/how-do-i-persist-a-es6-map-in-localstorage-or-elsewhere
-  var arrayOfMap = Array.from(dataToPost.entries());
-  var stringOfJSON = JSON.stringify(arrayOfMap);
+
+  // Use a declaritive variable name.
+  console.log(editRequestsFromUser);
+  var dataToPost = editRequestsFromUser;
+
+  // Convert the JSON to a string.
+  var stringVersion = JSON.stringify(dataToPost);
 
   var plainJavascriptObjectArray = {"product-id":"3"};
   var stringToTestFetch = JSON.stringify(plainJavascriptObjectArray);
 
   fetch(postToThisURL, {
     method: 'POST', // or 'PUT'
-    body: stringOfJSON,
+    body: stringVersion,
     headers: new Headers({
       'Content-Type': 'application/json'
     })
