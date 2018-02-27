@@ -532,6 +532,81 @@ def getProductJSON():
     # Return product information in the form of a JSON object.
     return jsonify(product_info[0])
 
+
+def handle_post_requests_for_render_product():
+
+    # PART 1: Save the JSON.
+
+    # If edits were made, then save them.
+    if request.get_json():
+        prod_data = request.get_json()
+    # If no edits were made, then stop.
+    else:
+        return apology("Sorry, we didn't find any edits.")
+
+    # Print the product data key-value pairs (debugger).
+    print('It contains', len(prod_data), prod_data.items())
+    for k, v in prod_data.items():
+        if 'reference' in k:
+            print(k)
+            for key, value in v.items():
+                print('   key', key, 'has value(', value ,')')
+        else:
+            print('key', k ,'has value(', v ,')')
+    print('')
+    print('')
+
+
+    # PART 2: Update the database.
+    # TODO:
+
+
+
+    # PART 3: Return the new product information.
+
+    # Store the product id..
+    product_id_of_the_request = prod_data['product-id']
+
+    # Get the updated information for this product id.
+    product_info = find_product(product_id_of_the_request)
+
+    # If no product was found, then apologize.
+    if not product_info or product_info == None:
+        return apology("Sorry, we didn't find a product with id "
+            + str(product_id_of_the_request))
+
+    # Get the references.
+    (number_of_references,
+    reference_titles,
+    reference_ids,
+    reference_links) = get_reference(product_info[0]["product_name"])
+
+    # Append the references to our product information.
+    product_info[0]['number_of_references'] = number_of_references
+    product_info[0]['reference_ids'] = reference_ids
+    product_info[0]['reference_titles'] = reference_titles
+    product_info[0]['reference_links'] = reference_links
+
+    # Return the product information back to the client
+    # This should contain the updated product information
+    # based on their user's requested edits.
+    return product_info[0]
+
+def handle_get_requests_for_render_product():
+
+    # Request a product from the user.
+    id_of_product_requested = request.args.get("id")
+
+    # Ensure the user asked for a product.
+    if not id_of_product_requested:
+        return apology("Please let us know which product you are looking for")
+    elif id_of_product_requested == None:
+        return apology("Please let us know which product you are looking for")
+
+    # Display the product html page
+    return id_of_product_requested
+
+
 @app.route("/product", methods=['POST', 'GET'])
 def render_product_page():
 
@@ -542,75 +617,20 @@ def render_product_page():
     # Submit the edits.
     if request.method == "GET":
 
-        # Request a product from the user.
-        id_of_product_requested = request.args.get("id")
+        product_identifier = handle_get_requests_for_render_product()
 
-        # Ensure the user asked for a product.
-        if not id_of_product_requested:
-            return apology("Please let us know which product you are looking for")
-        elif id_of_product_requested == None:
-            return apology("Please let us know which product you are looking for")
-
-        # Display the product html page
-        return render_template("productJSON.html", id_of_product_requested=id_of_product_requested)
+        return render_template(
+                "productJSON.html",
+                product_identifier=product_identifier
+                )
 
     if request.method == "POST":
 
-        # PART 1: Save the JSON.
+        new_product_info = handle_post_requests_for_render_product()
 
-        # If edits were made, then save them.
-        if request.get_json():
-            prod_data = request.get_json()
-        # If no edits were made, then stop.
-        else:
-            return apology("Sorry, we didn't find any edits.")
-
-        # Print the product data key-value pairs (debugger).
-        print('It contains', len(prod_data), prod_data.items())
-        for k, v in prod_data.items():
-            if 'reference' in k:
-                print(k)
-                for key, value in v.items():
-                    print('   key', key, 'has value(', value ,')')
-            else:
-                print('key', k ,'has value(', v ,')')
-        print('')
-        print('')
-
-
-        # PART 2: Update the database.
-        # TODO:
+        return jsonify(new_product_info)
 
 
 
-        # PART 3: Return the new product information.
-
-        # Store the product id..
-        product_id_of_the_request = prod_data['product-id']
-
-        # Get the updated information for this product id.
-        product_info = find_product(product_id_of_the_request)
-
-        # If no product was found, then apologize.
-        if not product_info or product_info == None:
-            return apology("Sorry, we didn't find a product with id "
-                + str(product_id_of_the_request))
-
-        # Get the references.
-        (number_of_references,
-        reference_titles,
-        reference_ids,
-        reference_links) = get_reference(product_info[0]["product_name"])
-
-        # Append the references to our product information.
-        product_info[0]['number_of_references'] = number_of_references
-        product_info[0]['reference_ids'] = reference_ids
-        product_info[0]['reference_titles'] = reference_titles
-        product_info[0]['reference_links'] = reference_links
-
-        # Return the product information back to the client
-        # This should contain the updated product information
-        # based on their user's requested edits.
-        return jsonify(product_info[0])
 
 
