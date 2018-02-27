@@ -620,7 +620,7 @@ def render_product_page():
         product_identifier = handle_get_requests_for_render_product()
 
         return render_template(
-                "productJSON.html",
+                "productRenderedViaJSON.html",
                 product_identifier=product_identifier
                 )
 
