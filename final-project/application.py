@@ -556,6 +556,7 @@ def parse_posted_json():
     print('')
     print('')
 
+    # Return the product edits requested by our user.
     return prod_data
 
 
@@ -646,8 +647,10 @@ def render_product_page():
     # Submit the edits.
     if request.method == "GET":
 
+        # Get the product id for this page.
         product_identifier = get_product_identifer()
 
+        # Render the product with that id.
         return render_template(
                 "productRenderedViaJSON.html",
                 product_identifier=product_identifier
@@ -655,11 +658,14 @@ def render_product_page():
 
     if request.method == "POST":
 
+        # Receive a JSON with product updates from the user.
         client_product_update = parse_posted_json()
 
-        # Update the database.
+        # Update the database with those updates.
         update_database(client_product_update)
 
+        # Get the new information for the product.
         latest_product_info = get_new_info(client_product_update['product-id'])
 
+        # Return the updated information to the client.
         return jsonify(latest_product_info)
