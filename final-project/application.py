@@ -533,7 +533,7 @@ def getProductJSON():
     return jsonify(product_info[0])
 
 
-def handle_post_requests_for_render_product():
+def parse_posted_json():
 
     # PART 1: Save the JSON.
 
@@ -556,16 +556,42 @@ def handle_post_requests_for_render_product():
     print('')
     print('')
 
-
-    # PART 2: Update the database.
-    # TODO:
+    return prod_data
 
 
+# PART 2: Update the database.
+# TODO:
+def update_database_with_edits(information_to_update):
 
-    # PART 3: Return the new product information.
+    # TODO: Only update product information when a user
+    # requests a change.
+
+    # TODO: Send the info to our database.
+
+    # TODO: Collect re-categorization data from user in edit form.
+    updated_row = db.execute("""
+        UPDATE products SET product_name=:name,
+        link=:link,
+        description=:description,
+        image=:image,
+        brand=:brand,
+        price=:price,
+        WHERE id = :product_id""",
+        product_id=product_edits_requested['product-id'],
+        name=product_edits_requested['name-form'],
+        link=product_edits_requested['link-form'],
+        description=product_edits_requested['description-form'],
+        image=product_edits_requested['image-form'],
+        brand=product_edits_requested['brand-form'],
+        price=product_edits_requested['price-form']
+        )
+
+
+# PART 3: Return the new product information.
+def get_new_info(get_info_for_product_with_this_id):
 
     # Store the product id..
-    product_id_of_the_request = prod_data['product-id']
+    product_id_of_the_request = get_info_for_product_with_this_id
 
     # Get the updated information for this product id.
     product_info = find_product(product_id_of_the_request)
@@ -592,7 +618,7 @@ def handle_post_requests_for_render_product():
     # based on their user's requested edits.
     return product_info[0]
 
-def handle_get_requests_for_render_product():
+def get_product_identifer():
 
     # Request a product from the user.
     id_of_product_requested = request.args.get("id")
@@ -617,7 +643,7 @@ def render_product_page():
     # Submit the edits.
     if request.method == "GET":
 
-        product_identifier = handle_get_requests_for_render_product()
+        product_identifier = get_product_identifer()
 
         return render_template(
                 "productRenderedViaJSON.html",
@@ -626,11 +652,10 @@ def render_product_page():
 
     if request.method == "POST":
 
-        new_product_info = handle_post_requests_for_render_product()
+        client_product_update = parse_posted_json()
 
-        return jsonify(new_product_info)
+        # TODO: Update the database...
 
+        latest_product_info = get_new_info(client_product_update['product-id'])
 
-
-
-
+        return jsonify(latest_product_info)
