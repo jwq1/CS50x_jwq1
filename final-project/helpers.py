@@ -171,7 +171,7 @@ def find_product(id_requested):
 
     # Create a parameter to search our database
     # for any records, which contain the product name.
-    product_parameter = "%" + id_requested + "%"
+    product_parameter = "%" + str(id_requested) + "%"
 
     #Search the database for the requested product.
     product_data = db.execute("""
@@ -183,7 +183,7 @@ def find_product(id_requested):
         products_id=product_parameter)
 
 
-    # Otherwise, return information about the requested product.
+    # Return information about the requested product.
     return product_data
 
 
@@ -198,7 +198,7 @@ def get_reference(product_with_references):
 
     # Search for references to a given product
     references_for_product = db.execute("""
-            SELECT research.link, title
+            SELECT research.link, title, research.id
             FROM research
             LEFT JOIN products
             ON products.id=research.product_id
@@ -215,6 +215,8 @@ def get_reference(product_with_references):
     number_of_references = len(references_for_product)
 
     # Save the titles and links to each reference.
+    # Create an empty list to save our ids.
+    reference_ids = []
     # Create an empty list to save our titles.
     reference_titles = []
     # Create an empty list to save our links.
@@ -222,6 +224,9 @@ def get_reference(product_with_references):
 
     # Loop through each title in our list of references
     for reference_article in references_for_product:
+
+        # Save the id.
+        reference_ids.append(reference_article["id"])
 
         # Ensure we have a title.
         if not reference_article["title"]:
@@ -235,4 +240,4 @@ def get_reference(product_with_references):
         # Save the link.
         reference_links.append(reference_article["link"])
 
-    return (number_of_references, reference_titles, reference_links)
+    return (number_of_references, reference_ids, reference_titles, reference_links)
