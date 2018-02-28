@@ -561,30 +561,33 @@ def parse_posted_json():
 
 # PART 2: Update the database.
 # TODO:
-def update_database_with_edits(information_to_update):
+def update_database(the_new_info):
 
-    # TODO: Only update product information when a user
-    # requests a change.
+    # Update only the information our user asked to change.
+    if not the_new_info['product-id']:
+        return apology("Unsure which product to update")
+    if 'name-form' in the_new_info:
+        updated_row = db.execute("""
+            UPDATE products SET product_name=:name""",
+            name=the_new_info['name-form'])
+    if 'brand-form' in the_new_info:
+        updated_row = db.execute("""
+            UPDATE products SET brand=:brand""",
+            brand=the_new_info['brand-form'])
+    if 'price-form' in the_new_info:
+        updated_row = db.execute("""
+            UPDATE products SET price=:price""",
+            price=the_new_info['price-form'])
+    if 'description-form' in the_new_info:
+        updated_row = db.execute("""
+            UPDATE products SET description=:description""",
+            description=the_new_info['description-form'])
 
-    # TODO: Send the info to our database.
 
-    # TODO: Collect re-categorization data from user in edit form.
-    updated_row = db.execute("""
-        UPDATE products SET product_name=:name,
-        link=:link,
-        description=:description,
-        image=:image,
-        brand=:brand,
-        price=:price,
-        WHERE id = :product_id""",
-        product_id=product_edits_requested['product-id'],
-        name=product_edits_requested['name-form'],
-        link=product_edits_requested['link-form'],
-        description=product_edits_requested['description-form'],
-        image=product_edits_requested['image-form'],
-        brand=product_edits_requested['brand-form'],
-        price=product_edits_requested['price-form']
-        )
+    # TODO: update the references
+    # TODO: update product image
+    # TODO: update the characteristics
+    # TODO: update the product link (e.g. LLBean's website)
 
 
 # PART 3: Return the new product information.
@@ -654,7 +657,8 @@ def render_product_page():
 
         client_product_update = parse_posted_json()
 
-        # TODO: Update the database...
+        # Update the database.
+        update_database(client_product_update)
 
         latest_product_info = get_new_info(client_product_update['product-id'])
 
