@@ -519,183 +519,118 @@ def getProductJSON():
 
     # Get product references for a given product name.
     (number_of_references,
+    reference_ids,
     reference_titles,
     reference_links) = get_reference(product_info[0]["product_name"])
 
     # Add references to our product information.
     product_info[0]['number_of_references'] = number_of_references
+    product_info[0]['reference_ids'] = reference_ids
     product_info[0]['reference_titles'] = reference_titles
     product_info[0]['reference_links'] = reference_links
-
-
-    # Helpful Documentation:
-    # MDN Cross-Origin Sharing Functional Overview
-    # https://developer.mozilla.org/en-US/docs/Web/HTTP/CORS
 
     # Return product information in the form of a JSON object.
     return jsonify(product_info[0])
 
-@app.route("/product")
-def renderProductPage():
+
+def handle_post_requests_for_render_product():
+
+    # PART 1: Save the JSON.
+
+    # If edits were made, then save them.
+    if request.get_json():
+        prod_data = request.get_json()
+    # If no edits were made, then stop.
+    else:
+        return apology("Sorry, we didn't find any edits.")
+
+    # Print the product data key-value pairs (debugger).
+    print('It contains', len(prod_data), prod_data.items())
+    for k, v in prod_data.items():
+        if 'reference' in k:
+            print(k)
+            for key, value in v.items():
+                print('   key', key, 'has value(', value ,')')
+        else:
+            print('key', k ,'has value(', v ,')')
+    print('')
+    print('')
+
+
+    # PART 2: Update the database.
+    # TODO:
+
+
+
+    # PART 3: Return the new product information.
+
+    # Store the product id..
+    product_id_of_the_request = prod_data['product-id']
+
+    # Get the updated information for this product id.
+    product_info = find_product(product_id_of_the_request)
+
+    # If no product was found, then apologize.
+    if not product_info or product_info == None:
+        return apology("Sorry, we didn't find a product with id "
+            + str(product_id_of_the_request))
+
+    # Get the references.
+    (number_of_references,
+    reference_titles,
+    reference_ids,
+    reference_links) = get_reference(product_info[0]["product_name"])
+
+    # Append the references to our product information.
+    product_info[0]['number_of_references'] = number_of_references
+    product_info[0]['reference_ids'] = reference_ids
+    product_info[0]['reference_titles'] = reference_titles
+    product_info[0]['reference_links'] = reference_links
+
+    # Return the product information back to the client
+    # This should contain the updated product information
+    # based on their user's requested edits.
+    return product_info[0]
+
+def handle_get_requests_for_render_product():
 
     # Request a product from the user.
-    idOfProductsRequested = request.args.get("id")
+    id_of_product_requested = request.args.get("id")
 
     # Ensure the user asked for a product.
-    if not idOfProductsRequested:
+    if not id_of_product_requested:
         return apology("Please let us know which product you are looking for")
-    elif idOfProductsRequested == None:
+    elif id_of_product_requested == None:
         return apology("Please let us know which product you are looking for")
-
 
     # Display the product html page
-    return render_template("productJSON.html", idOfProductsRequested=idOfProductsRequested)
+    return id_of_product_requested
 
-@app.route("/edit")
-@login_required
-def edit_product():
-    """Edit an individual product"""
+
+@app.route("/product", methods=['POST', 'GET'])
+def render_product_page():
 
     # Keep the user logged in.
     user_id = session.get("user_id")
 
-    # TODO:
-    # Ensure we can use request.args & .form in a single function.
-    # If we cannot, then we need to send the product id another way.
+    # If form was submitted, then it was probably an edit request.
+    # Submit the edits.
+    if request.method == "GET":
 
+        product_identifier = handle_get_requests_for_render_product()
 
-    # Get product name to edit
-    id_products_request = request.args.get("id")
+        return render_template(
+                "productRenderedViaJSON.html",
+                product_identifier=product_identifier
+                )
 
-    # Ensure product was received
-    if not id_products_request:
-        return apology("Please provide a product name")
+    if request.method == "POST":
 
-    # Create a dictionary to store our requested edits.
-    # This makes it easier to ask for the information
-    # when it is time to edit the database.
-    # The dict can be used to loop through requests
-    # and check for dangerous or illogical info.
-    make_edits = {}
+        new_product_info = handle_post_requests_for_render_product()
 
-    # TODO:
-    # Make sure the conditional checks for the existence of values sent from
-    # the form.
-    # "if request.form.get('<form name>')"" might only check for the existence
-    # of the form.
-    # Check whether a value was returned from the form. An alternative could
-    # be .length, or a similar method, to check for input in the value field.
-
-    # If the request method was POST
-    if request.method == 'POST':
-        # Get information from the edit product form.
-        # Get the new name.
-        if request.form.get("product-name"):
-           make_edits['name_of_product'] = request.form.get("product-name")
-        # Get the new brand.
-        if request.form.get("brand"):
-            make_edits['brand_which_made'] = request.form.get("brand")
-        # Get the new image.
-        if request.form.get("image"):
-            make_edits['image_of_product'] = request.form.get("image")
-        # Get the new price.
-        if request.form.get("price"):
-            make_edits['price_of_product'] = request.form.get("price")
-        # Get the new description.
-        if request.form.get("description"):
-            make_edits['description'] = request.form.get("description")
-        # Get the new characteristics.
-        if request.form.get("characteristics"):
-            make_edits['charactertistics'] = request.form.get("characteristics")
-        # Get the new references.
-        # TODO:
-        # Get the entire list of references edited.
-        # Figure out how to logically organize the
-        # reference when our py application requests them.
-        # There will be a list.
-        # If there are multiple forms all with name='references'
-        # what will the request.form.get do?
-        # There will be a title and link for the reference.
-        # How do we access both after the request.form.get?
-        # Read flask documentation:
-        # http://werkzeug.pocoo.org/docs/0.14/wrappers/#werkzeug.wrappers.BaseRequest.form
-        # DOCUMENTATION:
-        # .form() returns an ImmutableMultiDict.
-        # MultiDict objects implement the standard dictionary methods.
-        # However, the if there are several values assigned to a single key
-        # then you have to use .getlist('<key>'), a list method, to access
-        # them.
-        # This is because the dictionary values for a single key are stored
-        # in a list.
-        # TODO:
-        # Test whether we can figure out which link is associated with which title.
-        # through this method. Otherwise, come up with another system.
-
-        if request.form.get("reference-titles"):
-            make_edits['reference-titles'] = request.form.getList("reference-titles")
-        if request.form.get("reference-links"):
-            make_edits['references-links'] = request.form.getList("reference-links")
-        # Syntax = if request.form.get('<form name>')
-        # If no form was submitted, then do nothing
-        if not request.form:
-            return apology('No edits were made.');
-
-        # Reference List Idea:
-        # dynamically name the <form name=reference-1,2,3,etc>
-        # then in python add a while loop to check for a form with
-        # the intended name.
-        # e.g. while (request.form.get('reference-counterNumber')) {
-            # make_edits['reference']['title'] = request.form.getList['reference']['title']
-            # make_edits['reference']['link'] = request.form.getList['reference']['link']
-            # counterNumber++
-        # }
-        # This loop will end when there is no longer a form with the name we requested.
-        # TODO: Check whether .getList['reference']['title'] is the correct syntax.
-        # Essentially, will getList intelligently store multiple inputs from a single form
-        # into a dict.
-        # It could attempt to store them into a list or some other such nonsense.
-
-
-    else:
-        # the code below is executed if the request method
-        # was GET or the credentials were invalid
-        # TODO:
-        # Remove render_template.
-        # Return successful information edit message
-        # Call function to return new product information.
-        # New product information can be called here, or in javascript.
-        # Javascript would be better to keep this a single use funciton.
-        # Remove error varilable from argument list.
-        return render_template('productJSON.html', error=error)
-
-    # TODO:
-    # Ensure blank inputs are not accepted.
-    # Loop through make_edits dict to check for odd information.
+        return jsonify(new_product_info)
 
 
 
 
-    # Find our record of this product
-    product_info = find_product(id_products_request)
 
-    # Get references for a given product
-    (number_of_references,
-    reference_titles,
-    reference_links) = get_reference(id_products_request)
-
-    # If no product was found, then apologize.
-    if not product_info or product_info == None:
-        return apology("Sorry, we don't have information for that product")
-    elif len(product_info) > 1:
-        return apology("Found more than a single product. Please try again.")
-
-    # Render edit product template
-    return render_template("edit.html"
-            , product_info=product_info
-            , number_of_references=number_of_references
-            , reference_titles=reference_titles
-            , reference_links=reference_links)
-
-
-    # Return apology template
-    return apology("TODO")

@@ -14,17 +14,20 @@ $(function(){
   // Get product data when user navigates to a product page.
   if ( !!(document.querySelector(".product-page")) ) {
 
+    // TODO: Chain these together in a promise so they are executed in the proper order.
+
     // Pull the id from the URL, then return a JSON object.
     // Display data on screen when fetch resolves.
     retrieveJSON(getSearchParams());
 
-    // Listen for edit button clicks.
-    // Find the edit button element.
+    // Select the edit button.
     var editButton = document.querySelector('#edit-product');
-    // On click, display edit forms.
-    editButton.addEventListener('click', editProduct);
+    // Listen for clicks.
+    editButton.addEventListener('click', renderEditInterface, {once:false});
 
   }
+
+
 
   // If there are product thumbnails on the page, then make them clickable.
   if ( !!(document.querySelector(".clickable-products")) ) {
@@ -52,6 +55,13 @@ $(function(){
   }
 });
 
+function renderEditInterface() {
+
+  renderEditProductForm();
+  insertSaveButton();
+  listenForSave();
+
+}
 
 // Get product search parameters.
 function getSearchParams() {
@@ -131,7 +141,7 @@ function renderProductPage(productIdentificationNumber) {
   }
 
   // Render the product page with the selected product name and id.
-  window.location.replace(Flask.url_for("renderProductPage", parameters));
+  window.location.replace(Flask.url_for("render_product_page", parameters));
 
 }
 
@@ -173,7 +183,9 @@ function displayProduct(jsonOfProductInfo) {
   // Set product name.
   prodPageName.textContent = productJsonInfo['product_name'];
   // Set id of product name.
-  prodPageName.setAttribute('id', productJsonInfo['product_name']);
+  prodPageName.setAttribute('id', productJsonInfo['id']);
+  // TODO: Set a link to the product's website info.
+  // e.g. A patagonia sweater should link to Patagonia's page for the product.
 
   // Set brand.
   prodPageBrand.textContent = productJsonInfo['brand'];
@@ -195,12 +207,15 @@ function displayProduct(jsonOfProductInfo) {
     // See the productJSON.html note
     // for details about structure.
 
-  // Set references.
-  // Create list item.
-  var referenceListItem = document.createElement('li');
-
   // Loop through all references for product.
   for (var i = 0; i < productJsonInfo['reference_titles'].length; i++) {
+
+    // Set references.
+    // Create list item.
+    var referenceListItem = document.createElement('li');
+
+    // Set the id of this reference to correspond to the id in our database
+    referenceListItem.setAttribute('id', 'reference-id-' + productJsonInfo['reference_ids'][i]);
 
     // Create reference variable.
     // Make it an anchor element.
@@ -218,191 +233,386 @@ function displayProduct(jsonOfProductInfo) {
   }
 };
 
-// TODO: Render "edit product info" UI.
-function editProduct() {
+// Listen for edit requests
+function listenForEditRequests() {
+
+  return new Promise((resolve,reject) => {
+    // Find the edit button element.
+    var editButton = document.querySelector('#edit-product');
+    // On click, display edit forms.
+    editButton.addEventListener('click',
+      resolve('Waiting for a user to click on the edit button'),
+      {once:false}
+    );
+  })
+
+}
+
+// Render "edit product info" UI.
+function renderEditProductForm() {
 
   // TODO: Create form elements for all the required page elements.
   // Submit the form via the POST method.
 
-  // Select all the product elements (could be own function).
-  // It is used in the displayProduct code as well.
+  return new Promise((resolve, reject) => {
 
-  // Select product name.
-  var prodPageName = document.querySelector('.product-name');
-  // Select brand.
-  var prodPageBrand = document.querySelector('.brand');
+    // Select all the product elements (could be own function).
+    // It is used in the displayProduct code as well.
 
-  // Select product image.
-  var prodPageImage = document.querySelector('.product-image');
+    // Select product name.
+    var prodPageName = document.querySelector('.product-name');
+    // Select brand.
+    var prodPageBrand = document.querySelector('.brand');
 
-  // Select price.
-  var prodPagePrice = document.querySelector('.price');
+    // Select product image.
+    var prodPageImage = document.querySelector('.product-image');
 
-  // Select description.
-  var prodPageDescription = document.querySelector('.description');
+    // Select price.
+    var prodPagePrice = document.querySelector('.price');
 
-  // Select characteristics
-  var prodPageCharacteristics = document.querySelector('.characteristics');
+    // Select description.
+    var prodPageDescription = document.querySelector('.description');
 
-  // Select references.
-  // Select ordered list of references.
-  var prodPageReferences = document.querySelector('.references-list');
-  // Select all list items in reference list.
-  var referenceList = prodPageReferences.childNodes;
+    // Select characteristics
+    var prodPageCharacteristics = document.querySelector('.characteristics');
 
-  // Store page elements into a map for easy access.
-  var prodPageElements = new Map();
+    // Select references.
+    // Select ordered list of references.
+    var prodPageReferences = document.querySelector('.references-list');
+    // Select all list items in reference list.
+    var referenceList = prodPageReferences.childNodes;
 
-  // Set key / value pairs of the new Map.
-  prodPageElements.set('name', prodPageName);
-  prodPageElements.set('brand', prodPageBrand);
-  prodPageElements.set('image', prodPageImage);
-  prodPageElements.set('price', prodPagePrice);
-  prodPageElements.set('description', prodPageDescription);
-  prodPageElements.set('characteristics', prodPageCharacteristics);
-  prodPageElements.set('references', referenceList);
+    // Store page elements into a map for easy access.
+    var prodPageElements = new Map();
 
-
-  // Create an input element for each form.
-  prodPageElements.forEach(function(value, key) {
-
-    // Create a form element.
-    var formElement = document.createElement('form');
-    // Name the form.
-    formElement.setAttribute('name', key + '-form');
-    // Set the method to POST.
-    formElement.setAttribute('method', 'POST');
-    // POST to the url for editing the product.
-    formElement.setAttribute('action', Flask.url_for('edit_product'));
-
-    // On the references form, loop through all the reference items.
-    if (key === 'references') {
-
-      // Loop through references.
-      for(var i = 0; i < value.length; i++) {
-
-        // Create a new form element.
-        var formElement = document.createElement('form');
-        // Name the form.
-        formElement.setAttribute('name', 'reference-form-' + i);
-        // Set the method to POST.
-        formElement.setAttribute('method', 'POST');
-        // POST to the url for editing the product.
-        formElement.setAttribute('action', Flask.url_for('edit_product'));
+    // Set key / value pairs of the new Map.
+    prodPageElements.set('name', prodPageName);
+    prodPageElements.set('brand', prodPageBrand);
+    prodPageElements.set('image', prodPageImage);
+    prodPageElements.set('price', prodPagePrice);
+    prodPageElements.set('description', prodPageDescription);
+    prodPageElements.set('characteristics', prodPageCharacteristics);
+    prodPageElements.set('references', referenceList);
 
 
-        // Create an input for the title
-        var titleInput = document.createElement('input');
-        // Name the input.
-        titleInput.setAttribute('name', 'reference-title-input-' + i);
-        // Add placeholder text with current title.
-        titleInput.setAttribute('placeholder', value[i].firstChild.innerText);
+    // Create an input element for each form.
+    prodPageElements.forEach(function(value, key) {
 
-        // Label the input field with an instructive title.
-        // Create a label element.
-        var labelTitle = document.createElement('label');
-        // Link the label element to the appropriate input field.
-        labelTitle.setAttribute('for', 'reference-title-input-' + i);
-        // Set the label to be an informative one.
-        labelTitle.textContent = 'Title';
+      // Create a form element.
+      var formElement = document.createElement('form');
+      // Name the form.
+      formElement.setAttribute('name', key + '-form');
+      // Set the method to POST.
+      formElement.setAttribute('method', 'POST');
+      // POST to the url for editing the product.
+      formElement.setAttribute('action', Flask.url_for('render_product_page'));
 
-        // Create an input for the link.
-        var linkInput = document.createElement('input');
-        // Name the input.
-        linkInput.setAttribute('name', 'reference-link-input-' + i);
-        // Add placeholder text with current title.
-        linkInput.setAttribute('placeholder', value[i].firstChild.href);
-        // Label the input field with an instructive title.
-        linkInput.setAttribute('label', 'Link');
+      // On the references form, loop through all the reference items.
+      if (key === 'references') {
 
-        // Label the input field with an instructive title.
-        // Create a label element.
-        var labelLink = document.createElement('label');
-        // Link the label element to the appropriate input field.
-        labelLink.setAttribute('for', 'reference-title-input-' + i);
-        // Set the label to be an informative one.
-        labelLink.textContent = 'Link';
+        // TODO: Set the reference id value on this UI.
+        // When the user requests reference item edits
+        // we will need to find the correct reference to update
+        // in the database (i.e. search by id).
+
+        // Loop through references.
+        for(var i = 0; i < value.length; i++) {
+
+          // Create a new form element.
+          var formElement = document.createElement('form');
+          // Name the form.
+          formElement.setAttribute('name', 'reference-form-' + i);
+          // Set the method to POST.
+          formElement.setAttribute('method', 'POST');
+          // POST to the url for editing the product.
+          formElement.setAttribute('action', Flask.url_for('render_product_page'));
+          // TODO: See if this form action can be removed
+          // based on how we submit the XHR.
 
 
-        // Append the labels to the inputs
-        formElement.appendChild(labelTitle);
-        // Append an input for the title.
-        formElement.appendChild(titleInput);
-        // Append the labels to the inputs
-        formElement.appendChild(labelLink);
-        // Append an input for the link.
-        formElement.appendChild(linkInput);
-        // Append the form to the product page element.
-        value[i].appendChild(formElement);
-      }
+          // Create an input for the title of this reference.
+          var titleInput = document.createElement('input');
+          // Name the input.
+          titleInput.setAttribute('name', 'reference-title-input-' + i);
+          // Add placeholder text with current title.
+          titleInput.setAttribute('placeholder', value[i].firstChild.innerText);
 
-    } else {
+          // Label the input field with an instructive title.
+          // Create a label element.
+          var labelTitle = document.createElement('label');
+          // Link the label element to the appropriate input field.
+          labelTitle.setAttribute('for', 'reference-title-input-' + i);
+          // Set the label to be an informative one.
+          labelTitle.textContent = 'Title';
 
-      // Create input element.
-      var inputElement = document.createElement('input');
-      // Name the element.
-      inputElement.setAttribute('name', key + '-input');
+          // Create an input for the link.
+          var linkInput = document.createElement('input');
+          // Name the input.
+          linkInput.setAttribute('name', 'reference-link-input-' + i);
+          // Add placeholder text with current title.
+          linkInput.setAttribute('placeholder', value[i].firstChild.href);
+          // Label the input field with an instructive title.
+          linkInput.setAttribute('label', 'Link');
 
-      // Label the input field with an instructive title.
-      // Create a label element.
-      var label = document.createElement('label');
-      // Link the label element to the appropriate input field.
-      label.setAttribute('for', key + '-input');
-      // Set the label to be an informative one.
-      label.textContent = key;
+          // Label the input field with an instructive title.
+          // Create a label element.
+          var labelLink = document.createElement('label');
+          // Link the label element to the appropriate input field.
+          labelLink.setAttribute('for', 'reference-title-input-' + i);
+          // Set the label to be an informative one.
+          labelLink.textContent = 'Link';
 
-      // On the image form, use the URL as a placeholder.
-      if (key === 'image') {
-        // Provide placeholder text of current src.
-        inputElement.setAttribute('placeholder', value.src)
 
-      // Otherwise, on all other elements use the innerText as a placeholder.
+          // Append the labels to the inputs
+          formElement.appendChild(labelTitle);
+          // Append an input for the title.
+          formElement.appendChild(titleInput);
+          // Append the labels to the inputs
+          formElement.appendChild(labelLink);
+          // Append an input for the link.
+          formElement.appendChild(linkInput);
+          // Append the form to the product page element.
+          value[i].appendChild(formElement);
+        }
+
       } else {
-        inputElement.setAttribute('placeholder', value.innerText)
+
+        // Create input element.
+        var inputElement = document.createElement('input');
+        // Name the element.
+        inputElement.setAttribute('name', key + '-input');
+
+        // Label the input field with an instructive title.
+        // Create a label element.
+        var label = document.createElement('label');
+        // Link the label element to the appropriate input field.
+        label.setAttribute('for', key + '-input');
+        // Set the label to be an informative one.
+        label.textContent = key;
+
+        // On the image form, use the URL as a placeholder.
+        if (key === 'image') {
+          // Provide placeholder text of current src.
+          inputElement.setAttribute('placeholder', value.src);
+
+        // Otherwise, on all other elements use the innerText as a placeholder.
+        } else {
+          inputElement.setAttribute('placeholder', value.innerText);
+        }
+
+        // Append the labels to the inputs
+        formElement.appendChild(label);
+        // Append the input element to the form element.
+        formElement.appendChild(inputElement);
+        // Append the form to the product page element.
+        value.appendChild(formElement);
       }
+    });
 
-      // Append the labels to the inputs
-      formElement.appendChild(label);
-      // Append the input element to the form element.
-      formElement.appendChild(inputElement);
-      // Append the form to the product page element.
-      value.appendChild(formElement);
+    // TODO: Figure out why there is no image form rendered.
+    // Right now the screen does not show a form for the image.
 
+    // Update form values when users enters input.
+    updateFormValues();
+
+    resolve('Edit form successfully rendered!');
+  });
+}
+
+
+function insertSaveButton() {
+
+  // Return a new promise when this resolves.
+  return new Promise((resolve,reject) => {
+
+    // Find the edit button.
+    var editRequestElement = document.querySelector('.edit');
+
+    // Remove the edit button and its child nodes.
+    while (editRequestElement.firstChild) {
+      editRequestElement.removeChild(editRequestElement.firstChild);
     }
+
+    // Remove edit button container.
+    editRequestElement.parentNode.removeChild(editRequestElement);
+
+    // Create a save element.
+    var saveButton = document.createElement('input');
+    saveButton.setAttribute('id', 'save-edits');
+    saveButton.setAttribute('type', 'button');
+    saveButton.setAttribute('value', 'Save Edits');
+
+    // Get the product page element.
+    var productPage = document.querySelector('.product-page');
+    // Append this button to the bottom of the product page.
+    productPage.appendChild(saveButton);
+
+    // Resolve the promise.
+    resolve("A save button was created!");
 
   });
 
-  // Add a save button for the user to submit their changes.
-  insertSaveButton();
+}
+
+function listenForSave() {
+
+  // Find the save button on the DOM.
+  var saveButton = document.querySelector('#save-edits');
+  // Listen for clicks on the save button.
+  saveButton.addEventListener('click', submitEditForm, {once:false});
 
 }
 
+// Update the form values based on the user's input.
+function updateFormValues() {
 
-// TODO: Save edits.
-function insertSaveButton() {
+  // Select all the form inputs on screen.
+  var inputsToEditProductInfo = document.querySelectorAll('input');
 
-  // Append the button to the document.
-  var editRequestElement = document.querySelector('.edit');
-  var editButton= editRequestElement.children;
-  editButton['edit-product'].setAttribute('value', 'Save Edits');
-  editButton['edit-product']['labels'][0].textContent = "When you're sure ";
+  // Go through each input element on the page.
+  for (var i = 0; i < inputsToEditProductInfo.length; i++)
 
+    // Listen for when the user enters information.
+    inputsToEditProductInfo[i].addEventListener('input', function(){
+      // If there is content in the input field,
+      // then update the value to match.
+      if (this.value.length) {
+        inputsToEditProductInfo.value = this.value;
+      }
+    });
 }
 
-function listenForSave () {
+function submitEditForm() {
 
-  // TODO: Listen for clicks on the submit button
+  console.log('The save button was clicked. Submitting changes.');
 
+  // IN-PROGRESS: REFACTOR CODE TO LOOK FOR INPUTS
 
+  // Look for all the places where a user can request edits.
+  var inputsAvailableToUser = document.querySelectorAll('input');
+
+  // Create an object to store any edits requested by our user.
+  var editRequestsFromUser = {};
+
+  // Find any requested edits from the user.
+  for (var i = 0; i < inputsAvailableToUser.length; i++) {
+    // If the input has a value, save the information.
+    if (inputsAvailableToUser[i].value && inputsAvailableToUser[i].id != 'save-edits') {
+
+      // Identify which information the user would like to change.
+      var infoToChange = inputsAvailableToUser[i].parentNode.name;
+
+      // If it is not a reference, then store the info.
+      if (!infoToChange.startsWith("reference-form")) {
+        // Create a key. Set it equal to the form name.
+        var itemToEdit = inputsAvailableToUser[i].parentNode.name;
+        // Create a value. Store the users edits here.
+        var requestedUpdateFromUser = inputsAvailableToUser[i].value;
+
+        // Store this key-value pair into a single javascript object.
+        // Then we can make a single request to our server.
+        editRequestsFromUser[itemToEdit] = requestedUpdateFromUser;
+      }
+      // If the requested edit was for a reference,
+      // then make an additional array to organize the data.
+      else {
+        // Make a javascript array to store our reference data into.
+        // This will be the 'value' which corresponds to the reference 'key'.
+        var editToThisReference = {};
+
+        // If this edit is for a reference's title, save the title.
+        if (inputsAvailableToUser[i].name.startsWith('reference-title')) {
+
+          // Save the title edit.
+          var referenceTitle = inputsAvailableToUser[i].value;
+
+          // Store this information in the array for this reference id.
+          editToThisReference['referenceTitle'] = referenceTitle;
+
+          // Check for requested changes to the link.
+          if (inputsAvailableToUser[i+1].value) {
+
+            // If there is a change to the link then save the change.
+            var referenceLink = inputsAvailableToUser[i+1].value;
+
+            // Store this information in the array for this reference id.
+            editToThisReference['referenceLink'] = referenceLink;
+
+            // Otherwise, do not save a link value.
+          }
+
+          // No need to check the link input item again.
+          // Increment i to jump to the next relevant input.
+          i++;
+        }
+        // Otherwise, if the requested edit corresponds to a reference's link,
+        // only save the link.
+        else {
+
+          // Save the link.
+          var referenceLink = inputsAvailableToUser[i].value;
+          // There is no change to this reference's title.
+
+          // Store this information in the array for this reference id.
+          editToThisReference['referenceLink'] = referenceLink;
+        }
+
+        // Find the reference id.
+        // This will be how we determine which reference to update in our db.
+        var referenceId = inputsAvailableToUser[i].parentNode.parentNode.id;
+
+        // Append this reference and it's corresponding edits to our storage.
+        // The reference id will be the 'key'
+        // The array which contains our title and link will be the 'value'.
+        editRequestsFromUser[referenceId] = editToThisReference;
+      }
+
+    }
+
+  }
+
+  // Get the id of the product we want to edit
+  var productHeader = document.querySelector('.product-name');
+  var productIdParameter = productHeader.getAttribute('id');
+
+  // Add the product's id to our request.
+  // This tells the server which product to edit.
+  editRequestsFromUser['product-id'] = productIdParameter;
+
+  // TODO: Get category changes and store those as well.
+
+  // Set the product id to be a parameter in our POST request.
+  var parameters = {
+    id: productIdParameter
+  }
+
+  // Send an XHR via POST to the python application at our desired URL.
+  // The URL will probably be the /products URL still.
+  var postToThisURL = Flask.url_for('render_product_page');
+
+  // Use a declaritive variable name.
+  console.log(editRequestsFromUser);
+  var dataToPost = editRequestsFromUser;
+
+  // Convert the JSON to a string.
+  var stringVersion = JSON.stringify(dataToPost);
+
+  var plainJavascriptObjectArray = {"product-id":"3"};
+  var stringToTestFetch = JSON.stringify(plainJavascriptObjectArray);
+
+  fetch(postToThisURL, {
+    method: 'POST', // or 'PUT'
+    body: stringVersion,
+    headers: new Headers({
+      'Content-Type': 'application/json'
+    })
+  }).then(res => res.json())
+  .catch(error => console.error('Error:', error))
+  .then(response => console.log('Success:', response));
+
+  // TODO: When you resolve the promise for this submission,
+  // re-render the page.
 }
-
-function submitSavedChanges () {
-
-  // TODO: Submit the changes to our python application
-  // via the Flask.url_for method.
-
-}
-
 
 // TODO: Update the page to enter 'View Product' state.
 // Call the displayProduct() function.
