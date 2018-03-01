@@ -207,30 +207,46 @@ function displayProduct(jsonOfProductInfo) {
     // See the productJSON.html note
     // for details about structure.
 
-  // Loop through all references for product.
-  for (var i = 0; i < productJsonInfo['reference_titles'].length; i++) {
+  // Check for references.
+  if (productJsonInfo['reference_titles'] != null) {
 
-    // Set references.
-    // Create list item.
-    var referenceListItem = document.createElement('li');
+    // Loop through all references for product.
+    for (var i = 0; i < productJsonInfo['reference_titles'].length; i++) {
 
-    // Set the id of this reference to correspond to the id in our database
-    referenceListItem.setAttribute('id', 'reference-id-' + productJsonInfo['reference_ids'][i]);
+      // Set references.
+      // Create list item.
+      var referenceListItem = document.createElement('li');
 
-    // Create reference variable.
-    // Make it an anchor element.
-    var referenceItemContent = document.createElement('a');
-    // Set text content to title.
-    referenceItemContent.textContent = productJsonInfo['reference_titles'][i];
-    // Set href attribute to link.
-    referenceItemContent.setAttribute("href", productJsonInfo['reference_links'][i]);
-    // Append to the list item.
-    referenceListItem.appendChild(referenceItemContent);
+      // Set the id of this reference to correspond to the id in our database
+      referenceListItem.setAttribute('id', 'reference-id-' + productJsonInfo['reference_ids'][i]);
 
-    // Append list items to ordered list.
-    prodPageReferences.appendChild(referenceListItem);
+      // Create reference variable.
+      // Make it an anchor element.
+      var referenceItemContent = document.createElement('a');
+      // Set text content to title.
+      referenceItemContent.textContent = productJsonInfo['reference_titles'][i];
+      // Set href attribute to link.
+      referenceItemContent.setAttribute("href", productJsonInfo['reference_links'][i]);
+      // Append to the list item.
+      referenceListItem.appendChild(referenceItemContent);
 
+      // Append list items to ordered list.
+      prodPageReferences.appendChild(referenceListItem);
+
+    }
+  } else {
+    // Select the references area.
+    var referenceSection = document.querySelector('.references');
+
+    // Create content for an empty state.
+    var referenceEmptyStateText = document.createElement('p');
+    // Tell the user why the references section is empty.
+    referenceEmptyStateText.textContent = 'No references yet. Please add some. :)';
+
+    // Add the empty state to the page.
+    referenceSection.appendChild(referenceEmptyStateText);
   }
+
 };
 
 // Listen for edit requests
