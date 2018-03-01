@@ -207,37 +207,37 @@ def get_reference(product_with_references):
 
     # Check whether we found references
     if not references_for_product:
-        return apology("We have no references. Please help us research")
+        return (None, None, None, None)
     elif references_for_product == None:
-        return apology("We have no references. Please help us research")
+        return (None, None, None, None)
+    else:
+        # Save the number of research articles for this products.
+        number_of_references = len(references_for_product)
 
-    # Save the number of research articles for this products.
-    number_of_references = len(references_for_product)
+        # Save the titles and links to each reference.
+        # Create an empty list to save our ids.
+        reference_ids = []
+        # Create an empty list to save our titles.
+        reference_titles = []
+        # Create an empty list to save our links.
+        reference_links = []
 
-    # Save the titles and links to each reference.
-    # Create an empty list to save our ids.
-    reference_ids = []
-    # Create an empty list to save our titles.
-    reference_titles = []
-    # Create an empty list to save our links.
-    reference_links = []
+        # Loop through each title in our list of references
+        for reference_article in references_for_product:
 
-    # Loop through each title in our list of references
-    for reference_article in references_for_product:
+            # Save the id.
+            reference_ids.append(reference_article["id"])
 
-        # Save the id.
-        reference_ids.append(reference_article["id"])
+            # Ensure we have a title.
+            if not reference_article["title"]:
+                # If there is no title, then use the link.
+                reference_titles.append(reference_article["link"])
+            # If there is a title, then use the title.
+            else:
+                # Save the title.
+                reference_titles.append(reference_article["title"])
 
-        # Ensure we have a title.
-        if not reference_article["title"]:
-            # If there is no title, then use the link.
-            reference_titles.append(reference_article["link"])
-        # If there is a title, then use the title.
-        else:
-            # Save the title.
-            reference_titles.append(reference_article["title"])
+            # Save the link.
+            reference_links.append(reference_article["link"])
 
-        # Save the link.
-        reference_links.append(reference_article["link"])
-
-    return (number_of_references, reference_ids, reference_titles, reference_links)
+        return (number_of_references, reference_ids, reference_titles, reference_links)
