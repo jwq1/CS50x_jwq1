@@ -208,7 +208,7 @@ function displayProduct(jsonOfProductInfo) {
     // for details about structure.
 
   // Check for references.
-  if (productJsonInfo['reference_titles'] != null) {
+  if (productJsonInfo['reference_titles'].length > 0) {
 
     // Loop through all references for product.
     for (var i = 0; i < productJsonInfo['reference_titles'].length; i++) {
