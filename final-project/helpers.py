@@ -205,12 +205,6 @@ def get_reference(product_with_references):
             WHERE products.product_name=:product
             """, product=product_with_references)
 
-    # Check whether we found references
-    if not references_for_product:
-        return apology("We have no references. Please help us research")
-    elif references_for_product == None:
-        return apology("We have no references. Please help us research")
-
     # Save the number of research articles for this products.
     number_of_references = len(references_for_product)
 
