@@ -149,14 +149,6 @@ def new():
         if "$" in priceRaw:
             price=priceRaw.strip("$")
 
-        print('')
-        print('')
-        print('')
-        print(price)
-        print('')
-        print('')
-        print('')
-
         # Save this product to the database.
         def save_product():
 
