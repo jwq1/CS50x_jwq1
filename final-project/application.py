@@ -143,8 +143,19 @@ def new():
         description=request.form.get("description")
         image=request.form.get("image")
         brand=request.form.get("brand")
-        price=request.form.get("price")
+        priceRaw=request.form.get("price")
 
+        # Stip dollar symbols from the price.
+        if "$" in priceRaw:
+            price=priceRaw.strip("$")
+
+        print('')
+        print('')
+        print('')
+        print(price)
+        print('')
+        print('')
+        print('')
 
         # Save this product to the database.
         def save_product():
