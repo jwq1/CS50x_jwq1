@@ -143,8 +143,11 @@ def new():
         description=request.form.get("description")
         image=request.form.get("image")
         brand=request.form.get("brand")
-        price=request.form.get("price")
+        priceRaw=request.form.get("price")
 
+        # Stip dollar symbols from the price.
+        if "$" in priceRaw:
+            price=priceRaw.strip("$")
 
         # Save this product to the database.
         def save_product():
@@ -528,6 +531,17 @@ def getProductJSON():
     product_info[0]['reference_ids'] = reference_ids
     product_info[0]['reference_titles'] = reference_titles
     product_info[0]['reference_links'] = reference_links
+
+    # Look for price data type.
+    print('')
+    print('')
+    print('')
+    print('')
+    print('price data type')
+    print(type(product_info[0]['price']))
+    print(product_info[0]['price'])
+    print('')
+    print('')
 
     # Return product information in the form of a JSON object.
     return jsonify(product_info[0])

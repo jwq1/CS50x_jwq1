@@ -1,0 +1,11 @@
+
+Recreate the products table
+CREATE TABLE products (
+   id INTEGER PRIMARY KEY NOT NULL
+   , category_id TEXT NOT NULL
+   , product_name TEXT NOT NULL
+   , link TEXT NOT NULL
+   , description TEXT NOT NULL DEFAULT 'No description'
+   , image TEXT NOT NULL DEFAULT 'https://cdn.dribbble.com/users/844846/screenshots/2855815/no_image_to_show_.jpg'
+   , brand TEXT
+   , price NUMERIC);
