@@ -665,7 +665,17 @@ def render_product_page():
         # Receive a JSON with product updates from the user.
         client_product_update = parse_posted_json()
 
-        if isinstance(client_product_update, str):
+        if (client_product_update == "Did not receive a json with edits"):
+
+            print('')
+            print('')
+            print('')
+            print('client product update')
+            print(client_product_update)
+            print('')
+            print('')
+            print('')
+
             return apology("Sorry, we lost the edits you made.")
         else:
             # Update the database with those updates.
