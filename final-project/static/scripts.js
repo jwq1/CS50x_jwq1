@@ -193,8 +193,8 @@ function displayProduct(jsonOfProductInfo) {
   // Set product image.
   prodPageImage.setAttribute('src', productJsonInfo['image']);
 
-  // Set price.
-  prodPagePrice.textContent = "$" + productJsonInfo['price'];
+  // Set price (to two decimal places).
+  prodPagePrice.textContent = "$" + productJsonInfo['price'].toFixed(2);
 
   // Set description.
   prodPageDescription.textContent = productJsonInfo['description'];

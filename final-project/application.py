@@ -532,6 +532,17 @@ def getProductJSON():
     product_info[0]['reference_titles'] = reference_titles
     product_info[0]['reference_links'] = reference_links
 
+    # Look for price data type.
+    print('')
+    print('')
+    print('')
+    print('')
+    print('price data type')
+    print(type(product_info[0]['price']))
+    print(product_info[0]['price'])
+    print('')
+    print('')
+
     # Return product information in the form of a JSON object.
     return jsonify(product_info[0])
 
