@@ -352,6 +352,8 @@ function renderEditProductForm() {
           titleInput.setAttribute('name', 'reference-title-input-' + i);
           // Add placeholder text with current title.
           titleInput.setAttribute('placeholder', value[i].firstChild.innerText);
+          // Give the input a class
+          titleInput.setAttribute('class', 'product-edit-input');
 
           // Label the input field with an instructive title.
           // Create a label element.
@@ -369,6 +371,8 @@ function renderEditProductForm() {
           linkInput.setAttribute('placeholder', value[i].firstChild.href);
           // Label the input field with an instructive title.
           linkInput.setAttribute('label', 'Link');
+          // Give the input a class
+          linkInput.setAttribute('class', 'product-edit-input');
 
           // Label the input field with an instructive title.
           // Create a label element.
@@ -397,6 +401,8 @@ function renderEditProductForm() {
         var inputElement = document.createElement('input');
         // Name the element.
         inputElement.setAttribute('name', key + '-input');
+        // Give the input a class
+        inputElement.setAttribute('class', 'product-edit-input');
 
         // Label the input field with an instructive title.
         // Create a label element.
@@ -476,6 +482,17 @@ function listenForSave() {
   var saveButton = document.querySelector('#save-edits');
   // Listen for clicks on the save button.
   saveButton.addEventListener('click', submitEditForm, {once:false});
+
+  // Listen for clicks on the Enter key
+  // Find the edit inputs
+  var textFieldsWithEdits = document.querySelector('.product-edit-input');
+  // Listen for when the user presses the Enter key
+  textFieldsWithEdits.addEventListener('keyup', function(event) {
+    event.preventDefault();
+    if (event.keyCode === 13) {
+        saveButton.click();
+    }
+  });
 
 }
 

@@ -532,17 +532,6 @@ def getProductJSON():
     product_info[0]['reference_titles'] = reference_titles
     product_info[0]['reference_links'] = reference_links
 
-    # Look for price data type.
-    print('')
-    print('')
-    print('')
-    print('')
-    print('price data type')
-    print(type(product_info[0]['price']))
-    print(product_info[0]['price'])
-    print('')
-    print('')
-
     # Return product information in the form of a JSON object.
     return jsonify(product_info[0])
 
@@ -556,7 +545,7 @@ def parse_posted_json():
         prod_data = request.get_json()
     # If no edits were made, then stop.
     else:
-        return apology("Sorry, we didn't find any edits.")
+        return "Did not receive a json with edits"
 
     # Print the product data key-value pairs (debugger).
     print('It contains', len(prod_data), prod_data.items())
@@ -675,8 +664,21 @@ def render_product_page():
         # Receive a JSON with product updates from the user.
         client_product_update = parse_posted_json()
 
-        # Update the database with those updates.
-        update_database(client_product_update)
+        if (client_product_update == "Did not receive a json with edits"):
+
+            print('')
+            print('')
+            print('')
+            print('client product update')
+            print(client_product_update)
+            print('')
+            print('')
+            print('')
+
+            return apology("We didn't receive any edits. Please try again.")
+        else:
+            # Update the database with those updates.
+            update_database(client_product_update)
 
         # Get the new information for the product.
         latest_product_info = get_new_info(client_product_update['product-id'])
