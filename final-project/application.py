@@ -545,8 +545,7 @@ def parse_posted_json():
         prod_data = request.get_json()
     # If no edits were made, then stop.
     else:
-        tellUserWeLostTheEdits = "Did not receive a json with edits"
-        return tellUserWeLostTheEdits
+        return "Did not receive a json with edits"
 
     # Print the product data key-value pairs (debugger).
     print('It contains', len(prod_data), prod_data.items())
