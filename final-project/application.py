@@ -675,7 +675,7 @@ def render_product_page():
             print('')
             print('')
 
-            return apology("Sorry, we lost the edits you made.")
+            return apology("We didn't receive any edits. Please try again.")
         else:
             # Update the database with those updates.
             update_database(client_product_update)
