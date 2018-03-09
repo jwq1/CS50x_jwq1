@@ -149,6 +149,10 @@ function renderProductPage(productIdentificationNumber) {
 // Display the product information on the page
 function displayProduct(jsonOfProductInfo) {
 
+  // Store JavaScript Object Notation JSON
+  // in a variable to access later.
+  var productJsonInfo = jsonOfProductInfo;
+
 
   // v v v Select DOM elements by css class. v v v
 
@@ -173,9 +177,6 @@ function displayProduct(jsonOfProductInfo) {
   // Select ordered list of references.
   var prodPageReferences = document.querySelector('.references-list');
 
-  // Store JavaScript Object Notation JSON
-  // in a variable to access later.
-  var productJsonInfo = jsonOfProductInfo;
 
 
   // v v v Set content. v v v
@@ -206,6 +207,16 @@ function displayProduct(jsonOfProductInfo) {
     // TODO: Create characteristics in DB.
     // See the productJSON.html note
     // for details about structure.
+
+  // Remove any of the old references on screen.
+  var oldReferencesToRemove = document.querySelector('.references-list');
+
+  if (oldReferencesToRemove != null) {
+    while (oldReferencesToRemove.firstChild) {
+      oldReferencesToRemove.removeChild(oldReferencesToRemove.firstChild);
+    }
+  }
+
 
   // Check for references.
   if (productJsonInfo['reference_titles'].length > 0) {
@@ -645,6 +656,7 @@ function submitEditForm() {
 
   // TODO: When you resolve the promise for this submission,
   // re-render the page.
+  // retrieveJSON(getSearchParams());
 }
 
 // TODO: Update the page to enter 'View Product' state.
