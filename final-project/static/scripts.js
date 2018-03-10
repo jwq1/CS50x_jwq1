@@ -258,6 +258,13 @@ function displayProduct(jsonOfProductInfo) {
     referenceSection.appendChild(referenceEmptyStateText);
   }
 
+  if (!(document.querySelector('#edit-product'))) {
+    // Insert a save button at the end of the form.
+    insertEditButton();
+    // Listen for edit requests.
+    listenForEditRequests();
+  }
+
 };
 
 // Listen for edit requests
@@ -267,10 +274,7 @@ function listenForEditRequests() {
     // Find the edit button element.
     var editButton = document.querySelector('#edit-product');
     // On click, display edit forms.
-    editButton.addEventListener('click',
-      resolve('Waiting for a user to click on the edit button'),
-      {once:false}
-    );
+    editButton.addEventListener('click', renderEditInterface, {once:false});
   })
 
 }
@@ -453,13 +457,50 @@ function renderEditProductForm() {
 }
 
 
+function insertEditButton() {
+
+  // Return a new promise when this resolves.
+  return new Promise((resolve,reject) => {
+
+    // Look for a the save button.
+    var saveRequestElement = document.querySelector('#save-edits');
+
+    // Check if a save button was found.
+    if (saveRequestElement != null) {
+      // Remove the save button and its child nodes.
+      while (saveRequestElement.firstChild) {
+        saveRequestElement.removeChild(saveRequestElement.firstChild);
+      }
+    }
+
+    // Remove save button container.
+    saveRequestElement.parentNode.removeChild(saveRequestElement);
+
+    // Create an edit element.
+    var editButton = document.createElement('input');
+    editButton.setAttribute('id', 'edit-product');
+    editButton.setAttribute('type', 'button');
+    editButton.setAttribute('value', 'Edit');
+
+    // Get the product page element.
+    var productPage = document.querySelector('.product-page');
+    // Append this button to the bottom of the product page.
+    productPage.appendChild(editButton);
+
+    // Resolve the promise.
+    resolve("An edit button was created!");
+
+  });
+
+}
+
 function insertSaveButton() {
 
   // Return a new promise when this resolves.
   return new Promise((resolve,reject) => {
 
     // Find the edit button.
-    var editRequestElement = document.querySelector('.edit');
+    var editRequestElement = document.querySelector('#edit-product');
 
     // Remove the edit button and its child nodes.
     while (editRequestElement.firstChild) {
@@ -529,8 +570,6 @@ function updateFormValues() {
 function submitEditForm() {
 
   console.log('The save button was clicked. Submitting changes.');
-
-  // IN-PROGRESS: REFACTOR CODE TO LOOK FOR INPUTS
 
   // Look for all the places where a user can request edits.
   var inputsAvailableToUser = document.querySelectorAll('input');
