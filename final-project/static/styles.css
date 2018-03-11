@@ -1,5 +1,12 @@
 /*Final Project | styles | (jwq1)*/
 
+
+.marked-for-deletion
+{
+    color: red;
+    text-decoration: line-through;
+}
+
 .categories
 {
     text-transform:capitalize;
