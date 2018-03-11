@@ -234,6 +234,8 @@ function displayProduct(jsonOfProductInfo) {
       // Create reference variable.
       // Make it an anchor element.
       var referenceItemContent = document.createElement('a');
+      // Set the anchor element's id to be unique and descriptive
+      referenceItemContent.setAttribute('id', 'link-to-reference-' + productJsonInfo['reference_ids'][i]);
       // Set text content to title.
       referenceItemContent.textContent = productJsonInfo['reference_titles'][i];
       // Set href attribute to link.
@@ -341,11 +343,6 @@ function renderEditProductForm() {
       // On the references form, loop through all the reference items.
       if (key === 'references') {
 
-        // TODO: Set the reference id value on this UI.
-        // When the user requests reference item edits
-        // we will need to find the correct reference to update
-        // in the database (i.e. search by id).
-
         // Loop through references.
         for(var i = 0; i < value.length; i++) {
 
@@ -408,6 +405,10 @@ function renderEditProductForm() {
           formElement.appendChild(linkInput);
           // Append the form to the product page element.
           value[i].appendChild(formElement);
+
+          // Add a delete button to the reference hyperlink.
+          var referenceHref = value[i].querySelector('a');
+          insertDeleteButton(referenceHref);
         }
 
       } else {
@@ -525,6 +526,69 @@ function insertSaveButton() {
     resolve("A save button was created!");
 
   });
+
+}
+
+// Provide element(s) with delete functionality.
+
+// Append a delete button to the elements.
+function insertDeleteButton(appendToTheseElements) {
+
+  // Return a new promise when this resolves.
+  return new Promise((resolve,reject) => {
+
+  if (appendToTheseElements instanceof NodeList) {
+
+    // Go through each element in a node list.
+    appendToTheseElements.forEach(
+      function(currentValue, currentIndex, listObj) {
+        // Create a delete button.
+        var deleteButton = document.createElement('input');
+        deleteButton.setAttribute('value', 'x');
+        deleteButton.setAttribute('type', 'button');
+        deleteButton.setAttribute('class', 'delete-element');
+
+        if (appendToTheseElements.id != null) {
+          deleteButton.setAttribute('id', 'delete-btn-for' + appendToTheseElements.id);
+        }
+
+        // TODO: Append the delete button to the anchor tag
+
+        // Append the delete button to the element.
+        this.appendChild(deleteButton);
+
+        // Log information in the console.
+        console.log(currentValue + ', ' + currentIndex + ', ' + this);
+      },
+      'myThisArg'
+    );
+  } else {
+    // Create a delete button.
+    var deleteButton = document.createElement('input');
+    deleteButton.setAttribute('value', 'x');
+    deleteButton.setAttribute('type', 'button');
+    deleteButton.setAttribute('class', 'delete-element');
+
+    if (appendToTheseElements.id != null) {
+      deleteButton.setAttribute('id', appendToTheseElements.id + '-delete-btn');
+    }
+
+    // Append the delete button to the element.
+    appendToTheseElements.insertAdjacentElement('afterend', deleteButton);
+  }
+
+  // Resolve the promise.
+  resolve("Delete buttons have been created");
+  });
+}
+
+// TODO Listen for clicks on the delete button.
+function listenForDelete() {
+  var deleteButtons = querySelectorAll('.delete-element');
+}
+
+// TODO Delete data from the database.
+function deleteFromDatabase(dataToDelete) {
 
 }
 
