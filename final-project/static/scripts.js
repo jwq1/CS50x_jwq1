@@ -555,10 +555,7 @@ function insertDeleteButton(appendToTheseElements) {
           // Append the delete button to the element.
           this.appendChild(deleteButton);
 
-          // Log information in the console.
-          console.log(currentValue + ', ' + currentIndex + ', ' + this);
-        },
-        'myThisArg'
+        }
       );
     } else {
       // Create a delete button.
