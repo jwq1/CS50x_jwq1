@@ -474,7 +474,6 @@ def add_reference():
     return apology("TODO")
 
 
-
 # TODO: re-write update function
 @app.route("/update")
 def update():
@@ -666,16 +665,8 @@ def render_product_page():
 
         if (client_product_update == "Did not receive a json with edits"):
 
-            print('')
-            print('')
-            print('')
-            print('client product update')
-            print(client_product_update)
-            print('')
-            print('')
-            print('')
-
             return apology("We didn't receive any edits. Please try again.")
+
         else:
             # Update the database with those updates.
             update_database(client_product_update)
