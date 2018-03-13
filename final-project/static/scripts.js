@@ -78,11 +78,11 @@ function getSearchParams() {
 
 
 // Retrieve product information in the form of a JSON.
-function retrieveJSON(product_id) {
+function retrieveJSON(productId) {
 
   // Set the parameters for the URL.
   var parameters = {
-    id: product_id
+    id: productId
   };
 
   // Set URL to find the product json.
@@ -529,66 +529,98 @@ function insertSaveButton() {
 
 }
 
-// Provide element(s) with delete functionality.
-
 // Append a delete button to the elements.
 function insertDeleteButton(appendToTheseElements) {
 
   // Return a new promise when this resolves.
   return new Promise((resolve,reject) => {
 
-  if (appendToTheseElements instanceof NodeList) {
+    if (appendToTheseElements instanceof NodeList) {
 
-    // Go through each element in a node list.
-    appendToTheseElements.forEach(
-      function(currentValue, currentIndex, listObj) {
-        // Create a delete button.
-        var deleteButton = document.createElement('input');
-        deleteButton.setAttribute('value', 'x');
-        deleteButton.setAttribute('type', 'button');
-        deleteButton.setAttribute('class', 'delete-element');
+      // Go through each element in a node list.
+      appendToTheseElements.forEach(
+        function(currentValue, currentIndex, listObj) {
+          // Create a delete button.
+          var deleteButton = document.createElement('input');
+          deleteButton.setAttribute('value', 'x');
+          deleteButton.setAttribute('type', 'button');
+          deleteButton.setAttribute('class', 'delete-element');
 
-        if (appendToTheseElements.id != null) {
-          deleteButton.setAttribute('id', 'delete-btn-for' + appendToTheseElements.id);
+          if (appendToTheseElements.id != null) {
+            deleteButton.setAttribute('id', 'delete-btn-for' + appendToTheseElements.id);
+          }
+
+          // TODO: Append the delete button to the anchor tag
+
+          // Append the delete button to the element.
+          this.appendChild(deleteButton);
+
         }
+      );
+    } else {
+      // Create a delete button.
+      var deleteButton = document.createElement('input');
+      deleteButton.setAttribute('value', 'x');
+      deleteButton.setAttribute('type', 'button');
+      deleteButton.setAttribute('class', 'delete-element');
 
-        // TODO: Append the delete button to the anchor tag
+      if (appendToTheseElements.id != null) {
+        deleteButton.setAttribute('id', 'delete-btn-for' + appendToTheseElements.id);
+      }
 
-        // Append the delete button to the element.
-        this.appendChild(deleteButton);
+      // Append the delete button to the element.
+      appendToTheseElements.insertAdjacentElement('afterend', deleteButton);
 
-        // Log information in the console.
-        console.log(currentValue + ', ' + currentIndex + ', ' + this);
-      },
-      'myThisArg'
-    );
-  } else {
-    // Create a delete button.
-    var deleteButton = document.createElement('input');
-    deleteButton.setAttribute('value', 'x');
-    deleteButton.setAttribute('type', 'button');
-    deleteButton.setAttribute('class', 'delete-element');
-
-    if (appendToTheseElements.id != null) {
-      deleteButton.setAttribute('id', appendToTheseElements.id + '-delete-btn');
+      // Listen for clicks on the delete button.
+      listenForDelete(deleteButton);
     }
 
-    // Append the delete button to the element.
-    appendToTheseElements.insertAdjacentElement('afterend', deleteButton);
-  }
-
-  // Resolve the promise.
-  resolve("Delete buttons have been created");
+    // Resolve the promise.
+    resolve("Delete buttons have been created");
   });
 }
 
 // TODO Listen for clicks on the delete button.
-function listenForDelete() {
-  var deleteButtons = querySelectorAll('.delete-element');
+function listenForDelete(deleteButton) {
+
+  console.log('Create listener on delete button');
+  deleteButton.addEventListener('click',
+    function() {
+      markReferenceForDeletion(deleteButton)
+    },
+    {once:true});
+
 }
 
-// TODO Delete data from the database.
-function deleteFromDatabase(dataToDelete) {
+
+// TODO Save the reference items for deletion
+// but only submit the removal requests with all the other edits.
+function markReferenceForDeletion(deleteButtonClicked) {
+
+  // Get the reference item to delete
+  var referenceToDelete = deleteButtonClicked.parentNode;
+
+  // Add strikethrough and red font color to the anchor element.
+  var referenceHyperLink = referenceToDelete.querySelector('a');
+  referenceHyperLink.setAttribute('class', 'marked-for-deletion');
+
+  // Remove the delete button.
+  deleteButtonClicked.parentNode.removeChild(deleteButtonClicked);
+
+  // Hide the edit form.
+  var editFormOfReference = referenceToDelete.querySelector('form');
+  editFormOfReference.style.visibility = 'hidden';
+
+  // Update the form values to "deleteReference"
+  // The form info will be collected on save and deleted.
+  var formFields = editFormOfReference.querySelectorAll('.product-edit-input');
+
+  // For each of the form inputs, set the value to deleteReference.
+  formFields.forEach(
+    function(currentValue, currentIndex, listObj) {
+        formFields[currentIndex].setAttribute('value', 'deleteReference');
+      }
+  );
 
 }
 
@@ -643,8 +675,9 @@ function submitEditForm() {
 
   // Find any requested edits from the user.
   for (var i = 0; i < inputsAvailableToUser.length; i++) {
+
     // If the input has a value, save the information.
-    if (inputsAvailableToUser[i].value && inputsAvailableToUser[i].id != 'save-edits') {
+    if (inputsAvailableToUser[i].value && inputsAvailableToUser[i].type == 'text') {
 
       // Identify which information the user would like to change.
       var infoToChange = inputsAvailableToUser[i].parentNode.name;
@@ -725,8 +758,6 @@ function submitEditForm() {
   // Add the product's id to our request.
   // This tells the server which product to edit.
   editRequestsFromUser['product-id'] = productIdParameter;
-
-  // TODO: Get category changes and store those as well.
 
   // Set the product id to be a parameter in our POST request.
   var parameters = {
