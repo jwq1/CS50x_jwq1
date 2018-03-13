@@ -675,8 +675,9 @@ function submitEditForm() {
 
   // Find any requested edits from the user.
   for (var i = 0; i < inputsAvailableToUser.length; i++) {
+
     // If the input has a value, save the information.
-    if (inputsAvailableToUser[i].value && inputsAvailableToUser[i].id != 'save-edits') {
+    if (inputsAvailableToUser[i].value && inputsAvailableToUser[i].type == 'text') {
 
       // Identify which information the user would like to change.
       var infoToChange = inputsAvailableToUser[i].parentNode.name;
