@@ -610,8 +610,8 @@ def get_new_info(get_info_for_product_with_this_id):
 
     # Get the references.
     (number_of_references,
-    reference_titles,
     reference_ids,
+    reference_titles,
     reference_links) = get_reference(product_info[0]["product_name"])
 
     # Append the references to our product information.

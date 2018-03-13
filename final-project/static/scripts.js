@@ -149,6 +149,10 @@ function renderProductPage(productIdentificationNumber) {
 // Display the product information on the page
 function displayProduct(jsonOfProductInfo) {
 
+  // Store JavaScript Object Notation JSON
+  // in a variable to access later.
+  var productJsonInfo = jsonOfProductInfo;
+
 
   // v v v Select DOM elements by css class. v v v
 
@@ -173,9 +177,6 @@ function displayProduct(jsonOfProductInfo) {
   // Select ordered list of references.
   var prodPageReferences = document.querySelector('.references-list');
 
-  // Store JavaScript Object Notation JSON
-  // in a variable to access later.
-  var productJsonInfo = jsonOfProductInfo;
 
 
   // v v v Set content. v v v
@@ -206,6 +207,16 @@ function displayProduct(jsonOfProductInfo) {
     // TODO: Create characteristics in DB.
     // See the productJSON.html note
     // for details about structure.
+
+  // Remove any of the old references on screen.
+  var oldReferencesToRemove = document.querySelector('.references-list');
+
+  if (oldReferencesToRemove != null) {
+    while (oldReferencesToRemove.firstChild) {
+      oldReferencesToRemove.removeChild(oldReferencesToRemove.firstChild);
+    }
+  }
+
 
   // Check for references.
   if (productJsonInfo['reference_titles'].length > 0) {
@@ -247,6 +258,13 @@ function displayProduct(jsonOfProductInfo) {
     referenceSection.appendChild(referenceEmptyStateText);
   }
 
+  if (!(document.querySelector('#edit-product'))) {
+    // Insert a save button at the end of the form.
+    insertEditButton();
+    // Listen for edit requests.
+    listenForEditRequests();
+  }
+
 };
 
 // Listen for edit requests
@@ -256,10 +274,7 @@ function listenForEditRequests() {
     // Find the edit button element.
     var editButton = document.querySelector('#edit-product');
     // On click, display edit forms.
-    editButton.addEventListener('click',
-      resolve('Waiting for a user to click on the edit button'),
-      {once:false}
-    );
+    editButton.addEventListener('click', renderEditInterface, {once:false});
   })
 
 }
@@ -442,13 +457,50 @@ function renderEditProductForm() {
 }
 
 
+function insertEditButton() {
+
+  // Return a new promise when this resolves.
+  return new Promise((resolve,reject) => {
+
+    // Look for a the save button.
+    var saveRequestElement = document.querySelector('#save-edits');
+
+    // Check if a save button was found.
+    if (saveRequestElement != null) {
+      // Remove the save button and its child nodes.
+      while (saveRequestElement.firstChild) {
+        saveRequestElement.removeChild(saveRequestElement.firstChild);
+      }
+    }
+
+    // Remove save button container.
+    saveRequestElement.parentNode.removeChild(saveRequestElement);
+
+    // Create an edit element.
+    var editButton = document.createElement('input');
+    editButton.setAttribute('id', 'edit-product');
+    editButton.setAttribute('type', 'button');
+    editButton.setAttribute('value', 'Edit');
+
+    // Get the product page element.
+    var productPage = document.querySelector('.product-page');
+    // Append this button to the bottom of the product page.
+    productPage.appendChild(editButton);
+
+    // Resolve the promise.
+    resolve("An edit button was created!");
+
+  });
+
+}
+
 function insertSaveButton() {
 
   // Return a new promise when this resolves.
   return new Promise((resolve,reject) => {
 
     // Find the edit button.
-    var editRequestElement = document.querySelector('.edit');
+    var editRequestElement = document.querySelector('#edit-product');
 
     // Remove the edit button and its child nodes.
     while (editRequestElement.firstChild) {
@@ -518,8 +570,6 @@ function updateFormValues() {
 function submitEditForm() {
 
   console.log('The save button was clicked. Submitting changes.');
-
-  // IN-PROGRESS: REFACTOR CODE TO LOOK FOR INPUTS
 
   // Look for all the places where a user can request edits.
   var inputsAvailableToUser = document.querySelectorAll('input');
@@ -641,10 +691,11 @@ function submitEditForm() {
     })
   }).then(res => res.json())
   .catch(error => console.error('Error:', error))
-  .then(response => console.log('Success:', response));
+  .then(response => displayProduct(response));
 
   // TODO: When you resolve the promise for this submission,
   // re-render the page.
+  // retrieveJSON(getSearchParams());
 }
 
 // TODO: Update the page to enter 'View Product' state.
