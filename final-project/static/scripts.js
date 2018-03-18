@@ -349,7 +349,7 @@ function renderEditProductForm() {
           // Create a new form element.
           var formElement = document.createElement('form');
           // Name the form.
-          formElement.setAttribute('name', 'reference-form-' + i);
+          formElement.setAttribute('name', 'reference-form');
           // Set the method to POST.
           formElement.setAttribute('method', 'POST');
           // POST to the url for editing the product.
@@ -703,6 +703,12 @@ function submitEditForm() {
         // If this edit is for a reference's title, save the title.
         if (inputsAvailableToUser[i].name.startsWith('reference-title')) {
 
+          // Save the referenceId
+          var referenceId = inputsAvailableToUser[i].parentNode.parentNode.id;
+
+          // Append the reference id to our reference edits object.
+          editToThisReference['referenceId'] = referenceId;
+
           // Save the title edit.
           var referenceTitle = inputsAvailableToUser[i].value;
 
@@ -729,6 +735,12 @@ function submitEditForm() {
         // only save the link.
         else {
 
+          // Save the referenceId
+          var referenceId = inputsAvailableToUser[i].parentNode.parentNode.id;
+
+          // Append the reference id to our reference edits object.
+          editToThisReference['referenceId'] = referenceId;
+
           // Save the link.
           var referenceLink = inputsAvailableToUser[i].value;
           // There is no change to this reference's title.
@@ -737,14 +749,17 @@ function submitEditForm() {
           editToThisReference['referenceLink'] = referenceLink;
         }
 
+        // TODO Save the reference id into editToThisReference form.
+        // TODO Save 'reference-form' as the key.
+
         // Find the reference id.
         // This will be how we determine which reference to update in our db.
-        var referenceId = inputsAvailableToUser[i].parentNode.parentNode.id;
+        var referenceFormName = inputsAvailableToUser[i].parentNode.name;
 
         // Append this reference and it's corresponding edits to our storage.
         // The reference id will be the 'key'
         // The array which contains our title and link will be the 'value'.
-        editRequestsFromUser[referenceId] = editToThisReference;
+        editRequestsFromUser[referenceFormName] = editToThisReference;
       }
 
     }
