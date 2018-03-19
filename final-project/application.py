@@ -1,6 +1,8 @@
 # Final Project | Application | (jwq1)
 import os
 import re
+import ast
+import json
 from cs50 import SQL
 
 from flask import Flask, jsonify, render_template, request, url_for, flash, session
@@ -563,28 +565,139 @@ def parse_posted_json():
 
 
 # PART 2: Update the database.
-# TODO:
-def update_database(the_new_info):
+def update_database(requested_product_updates):
+
+    print('')
+    print('Request to update the database was heard')
+    print('')
+    print('here are the requested updates')
+    print(requested_product_updates)
+    print('')
 
     # Update only the information our user asked to change.
-    if not the_new_info['product-id']:
+    if not requested_product_updates['product-id']:
         return apology("Unsure which product to update")
-    if 'name-form' in the_new_info:
-        updated_row = db.execute("""
-            UPDATE products SET product_name=:name""",
-            name=the_new_info['name-form'])
-    if 'brand-form' in the_new_info:
-        updated_row = db.execute("""
-            UPDATE products SET brand=:brand""",
-            brand=the_new_info['brand-form'])
-    if 'price-form' in the_new_info:
-        updated_row = db.execute("""
-            UPDATE products SET price=:price""",
-            price=the_new_info['price-form'])
-    if 'description-form' in the_new_info:
-        updated_row = db.execute("""
-            UPDATE products SET description=:description""",
-            description=the_new_info['description-form'])
+    if 'name-form' in requested_product_updates:
+        number_of_updates = db.execute("""
+            UPDATE products SET product_name=:name"""
+            , name=requested_product_updates['name-form'])
+    if 'brand-form' in requested_product_updates:
+        number_of_updates = db.execute("""
+            UPDATE products SET brand=:brand"""
+            , brand=requested_product_updates['brand-form'])
+    if 'price-form' in requested_product_updates:
+        number_of_updates = db.execute("""
+            UPDATE products SET price=:price"""
+            , price=requested_product_updates['price-form'])
+    if 'description-form' in requested_product_updates:
+        number_of_updates = db.execute("""
+            UPDATE products SET description=:description"""
+            , description=requested_product_updates['description-form'])
+
+    # # TODO: Check for references in requested_product_updates
+    if 'reference-form' in requested_product_updates:
+
+        print("references found in product updates")
+
+        # TODO store the reference-form items
+
+
+        # BUG: The following code loops through all the edits returned, not only the reference items.
+        # I thinkkk this means that in certain circumstances v is a string.
+
+        # Loop through each reference
+        for k, v in requested_product_updates.items():
+
+            if (type(v) == dict) and (k == 'reference-form'):
+
+                print('')
+                print('')
+                print('Reference edits')
+                print (v, ' type:', type(v))
+                print('')
+
+                # Loop through the titles and links for each reference.
+                for key, value in v.items():
+
+                    # Look for the reference's id.
+                    if (key == 'referenceId'):
+
+                        print('')
+                        print('Key = ', key)
+                        print('Value =', value)
+                        print('')
+
+                        # Grab the reference id
+                        look_for_reference_id = re.search('\d+', value)
+
+                        reference_id = look_for_reference_id.group()
+                        print('')
+                        print('Parsing only the reference id...')
+                        print(reference_id)
+                        print('')
+
+                    # Check for "deleteReference" value
+                    if (value == 'deleteReference') and (key == 'referenceTitle'):
+
+                        print('')
+                        print('About to delete reference')
+                        print('')
+
+                        # Delete the reference with a matching ref-id and product-id
+                        number_of_updates = db.execute("""
+                            DELETE FROM research
+                            WHERE research.product_id=:product_id
+                            AND research.id=:reference_id"""
+                            , product_id=requested_product_updates['product-id']
+                            , reference_id=reference_id)
+
+                        if (number_of_updates > 0):
+                            print('The reference was successfully deleted')
+                        else:
+                            print('The reference was not deleted')
+
+                    # If the value is 'deleteReference' and we are on the link iteration,
+                    # then this reference data has already been deleted.
+                    elif (value == 'deleteReference') and (key == 'referenceLink'):
+
+                        # Skip this iteration.
+                        continue
+
+                    # Check if an update was made to the reference title.
+                    elif (key == 'referenceTitle'):
+
+                        print('')
+                        print("Updating reference title")
+                        print('')
+
+                        # Update the reference title
+                        number_of_updates = db.execute("""
+                            UPDATE research
+                            SET title=:title
+                            WHERE research.id=reference_id
+                            AND research.product_id=product_id"""
+                            , title=value
+                            , reference_id=reference_id
+                            , product_id=requested_product_edits['product=id'])
+
+                    # Check if an update was made to the reference link.
+                    elif (key == 'referenceLink'):
+
+                        print('')
+                        print("Updating reference link")
+                        print('')
+
+                        # Update the reference link
+                        number_of_updates = db.execute("""
+                            UPDATE research
+                            SET link=:link
+                            WHERE research.id=reference_id
+                            AND research.product_id=product_id"""
+                            , link=value
+                            , reference_id=reference_id
+                            , product_id=requested_product_edits['product=id'])
+
+
 
 
     # TODO: update the references
@@ -645,8 +758,6 @@ def render_product_page():
     # Keep the user logged in.
     user_id = session.get("user_id")
 
-    # If form was submitted, then it was probably an edit request.
-    # Submit the edits.
     if request.method == "GET":
 
         # Get the product id for this page.
@@ -658,6 +769,8 @@ def render_product_page():
                 product_identifier=product_identifier
                 )
 
+    # If form was submitted, then it was probably an edit request.
+    # Submit the edits.
     if request.method == "POST":
 
         # Receive a JSON with product updates from the user.
@@ -669,6 +782,9 @@ def render_product_page():
 
         else:
             # Update the database with those updates.
+            print('')
+            print('calling update_database because edits were found')
+            print('')
             update_database(client_product_update)
 
         # Get the new information for the product.
