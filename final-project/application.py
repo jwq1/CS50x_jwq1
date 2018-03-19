@@ -579,20 +579,32 @@ def update_database(requested_product_updates):
         return apology("Unsure which product to update")
     if 'name-form' in requested_product_updates:
         number_of_updates = db.execute("""
-            UPDATE products SET product_name=:name"""
-            , name=requested_product_updates['name-form'])
+            UPDATE products
+            SET product_name=:name
+            WHERE id=:product_id"""
+            , name=requested_product_updates['name-form']
+            , product_id=requested_product_updates['product-id'])
     if 'brand-form' in requested_product_updates:
         number_of_updates = db.execute("""
-            UPDATE products SET brand=:brand"""
-            , brand=requested_product_updates['brand-form'])
+            UPDATE products
+            SET brand=:brand
+            WHERE id=:product_id"""
+            , brand=requested_product_updates['brand-form']
+            , product_id=requested_product_updates['product-id'])
     if 'price-form' in requested_product_updates:
         number_of_updates = db.execute("""
-            UPDATE products SET price=:price"""
-            , price=requested_product_updates['price-form'])
+            UPDATE products
+            SET price=:price
+            WHERE id=:product_id"""
+            , price=requested_product_updates['price-form']
+            , product_id=requested_product_updates['product-id'])
     if 'description-form' in requested_product_updates:
         number_of_updates = db.execute("""
-            UPDATE products SET description=:description"""
-            , description=requested_product_updates['description-form'])
+            UPDATE products
+            SET description=:description
+            WHERE id=:product_id"""
+            , description=requested_product_updates['description-form']
+            , product_id=requested_product_updates['product-id'])
 
     # # TODO: Check for references in requested_product_updates
     if 'reference-form' in requested_product_updates:
