@@ -248,16 +248,33 @@ function displayProduct(jsonOfProductInfo) {
 
     }
   } else {
+
     // Select the references area.
     var referenceSection = document.querySelector('.references');
 
-    // Create content for an empty state.
-    var referenceEmptyStateText = document.createElement('p');
-    // Tell the user why the references section is empty.
-    referenceEmptyStateText.textContent = 'No references yet. Please add some. :)';
+    // Check for a pre-existing empty state.
+    if (!(referenceSection.querySelector('#reference-empty-state'))) {
 
-    // Add the empty state to the page.
-    referenceSection.appendChild(referenceEmptyStateText);
+      console.log('')
+      console.log('There is no reference empty state. Adding one now...')
+
+      // Create content for an empty state.
+      var referenceEmptyStateText = document.createElement('p');
+      // Tell the user why the references section is empty.
+      referenceEmptyStateText.textContent = 'No references yet. Please add some. :)';
+
+      // Set the element id.
+      referenceEmptyStateText.setAttribute('id', 'reference-empty-state');
+
+      // Add the empty state to the page.
+      referenceSection.appendChild(referenceEmptyStateText);
+    } else {
+
+      console.log('')
+      console.log('Already a reference empty state. Moving on...')
+
+    }
+
   }
 
   if (!(document.querySelector('#edit-product'))) {
