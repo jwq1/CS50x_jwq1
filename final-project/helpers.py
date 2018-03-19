@@ -196,13 +196,16 @@ def get_reference(product_with_references):
     elif product_with_references == None:
         return apology("Please specify product")
 
+    print('')
+    print('get_reference line 200')
+    print('')
     # Search for references to a given product
     references_for_product = db.execute("""
             SELECT research.link, title, research.id
             FROM research
             LEFT JOIN products
             ON products.id=research.product_id
-            WHERE products.product_name=:product
+            WHERE products.id=:product
             """, product=product_with_references)
 
     # Save the number of research articles for this products.
