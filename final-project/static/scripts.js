@@ -9,12 +9,8 @@
 // Check what kind of content to load when the document is ready.
 $(function(){
 
-  // TODO: Edit the product page
-
   // Get product data when user navigates to a product page.
   if ( !!(document.querySelector(".product-page")) ) {
-
-    // TODO: Chain these together in a promise so they are executed in the proper order.
 
     // Pull the id from the URL, then return a JSON object.
     // Display data on screen when fetch resolves.
@@ -22,12 +18,10 @@ $(function(){
 
     // Select the edit button.
     var editButton = document.querySelector('#edit-product');
+
     // Listen for clicks.
     editButton.addEventListener('click', renderEditInterface, {once:false});
-
   }
-
-
 
   // If there are product thumbnails on the page, then make them clickable.
   if ( !!(document.querySelector(".clickable-products")) ) {
@@ -49,7 +43,6 @@ $(function(){
         // Render the product page.
         // Set the URL to include the product ID.
         renderProductPage(productIdNumber);
-
       });
     }
   }
@@ -60,7 +53,6 @@ function renderEditInterface() {
   renderEditProductForm();
   insertSaveButton();
   listenForSave();
-
 }
 
 // Get product search parameters.
@@ -87,48 +79,26 @@ function retrieveJSON(productId) {
 
   // Set URL to find the product json.
   var productUrl = Flask.url_for("getProductJSON", parameters);
-  console.log('');
-  console.log('productUrl built by Flask.url_for');
-  console.log(productUrl);
 
   // Fetch product information.
   fetch(productUrl).then(function(response) {
     if(response.ok) {
       response.json().then(function(json) {
-
-        // Print the data to the console for testing.
-        console.log('');
-        console.log('Success: fetch resolved!')
-        console.log('The JSON data is below.')
-        console.log(json);
         displayProduct(json);
       })
-    } else {
-      // Print an error if nothing was found.
-      console.log('Network request for products.json failed with response '
-        + response.status
-        + ': '
-        + response.statusText
-      );
     }
-
   });
-
 }
 
 
 // Get the product id when it is clicked.
 function getIdOnClick(productClicked) {
 
-  // TODO: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise
-    // Apply await() using the Promise constructor
-
   // Get the id of a product when it is clicked.
   var productIdOfClicked = productClicked.id;
 
   // Return the product's id.
   return productIdOfClicked;
-
 }
 
 
@@ -142,7 +112,6 @@ function renderProductPage(productIdentificationNumber) {
 
   // Render the product page with the selected product name and id.
   window.location.replace(Flask.url_for("render_product_page", parameters));
-
 }
 
 
@@ -178,15 +147,12 @@ function displayProduct(jsonOfProductInfo) {
   var prodPageReferences = document.querySelector('.references-list');
 
 
-
   // v v v Set content. v v v
 
   // Set product name.
   prodPageName.textContent = productJsonInfo['product_name'];
   // Set id of product name.
   prodPageName.setAttribute('id', productJsonInfo['id']);
-  // TODO: Set a link to the product's website info.
-  // e.g. A patagonia sweater should link to Patagonia's page for the product.
 
   // Set brand.
   prodPageBrand.textContent = productJsonInfo['brand'];
@@ -199,14 +165,6 @@ function displayProduct(jsonOfProductInfo) {
 
   // Set description.
   prodPageDescription.textContent = productJsonInfo['description'];
-
-  // Set characteristics.
-  // Populate with empty state values
-  // until characteristics are available.
-  prodPageCharacteristics.textContent = "This section is under construction.";
-    // TODO: Create characteristics in DB.
-    // See the productJSON.html note
-    // for details about structure.
 
   // Remove any of the old references on screen.
   var oldReferencesToRemove = document.querySelector('.references-list');
@@ -255,9 +213,6 @@ function displayProduct(jsonOfProductInfo) {
     // Check for a pre-existing empty state.
     if (!(referenceSection.querySelector('#reference-empty-state'))) {
 
-      console.log('')
-      console.log('There is no reference empty state. Adding one now...')
-
       // Create content for an empty state.
       var referenceEmptyStateText = document.createElement('p');
       // Tell the user why the references section is empty.
@@ -268,13 +223,7 @@ function displayProduct(jsonOfProductInfo) {
 
       // Add the empty state to the page.
       referenceSection.appendChild(referenceEmptyStateText);
-    } else {
-
-      console.log('')
-      console.log('Already a reference empty state. Moving on...')
-
     }
-
   }
 
   if (!(document.querySelector('#edit-product'))) {
@@ -283,7 +232,6 @@ function displayProduct(jsonOfProductInfo) {
     // Listen for edit requests.
     listenForEditRequests();
   }
-
 };
 
 // Listen for edit requests
@@ -295,7 +243,6 @@ function listenForEditRequests() {
     // On click, display edit forms.
     editButton.addEventListener('click', renderEditInterface, {once:false});
   })
-
 }
 
 // Create a form to add a new reference.
@@ -339,50 +286,11 @@ function createNewReferenceForm(appendFormHere) {
 
   // Insert the instructions before the form.
   appendFormHere.insertBefore(instructionsToCreateReference, formToAddReference);
-
-
-}
-
-// TODO: Create a button users can click to add a product reference.
-function createPlusButton() {
-
-  // TODO: Create a new input.
-
-    // TODO: Set the type to button.
-    // TODO: Set the value to '+'.
-    // TODO: Set the id to 'plus-button'.
-
-  // TODO: Return the button.
-
-}
-
-// TODO: Listen for clicks on this button.
-function listenForClicksOnPlusButton() {
-
-  // TODO: Select the 'plus-button'.
-
-  // TODO: Listen for clicks on the button.
-
-}
-
-// TODO: Remove the plus button (required when the edit form is closed).
-function removePlusButton() {
-
-  // TODO: Select the plus button.
-
-  // TODO: Remove the event listener.
-
-  // TODO: Remove the button from the page.
-
-
 }
 
 
 // Render "edit product info" UI.
 function renderEditProductForm() {
-
-  // TODO: Create form elements for all the required page elements.
-  // Submit the form via the POST method.
 
   return new Promise((resolve, reject) => {
 
@@ -451,9 +359,6 @@ function renderEditProductForm() {
           formElement.setAttribute('method', 'POST');
           // POST to the url for editing the product.
           formElement.setAttribute('action', Flask.url_for('render_product_page'));
-          // TODO: See if this form action can be removed
-          // based on how we submit the XHR.
-
 
           // Create an input for the title of this reference.
           var titleInput = document.createElement('input');
@@ -491,7 +396,6 @@ function renderEditProductForm() {
           // Set the label to be an informative one.
           labelLink.textContent = 'Link';
 
-
           // Append the labels to the inputs
           formElement.appendChild(labelTitle);
           // Append an input for the title.
@@ -506,11 +410,11 @@ function renderEditProductForm() {
           // Add a delete button to the reference hyperlink.
           var referenceHref = value[i].querySelector('a');
           insertDeleteButton(referenceHref);
-
         }
 
-        // TODO: TEST
+        // Create a form to add new references.
         createNewReferenceForm(prodPageReferences);
+
 
       } else {
 
@@ -547,9 +451,6 @@ function renderEditProductForm() {
         value.appendChild(formElement);
       }
     });
-
-    // TODO: Figure out why there is no image form rendered.
-    // Right now the screen does not show a form for the image.
 
     // Update form values when users enters input.
     updateFormValues();
@@ -591,9 +492,7 @@ function insertEditButton() {
 
     // Resolve the promise.
     resolve("An edit button was created!");
-
   });
-
 }
 
 function insertSaveButton() {
@@ -625,9 +524,7 @@ function insertSaveButton() {
 
     // Resolve the promise.
     resolve("A save button was created!");
-
   });
-
 }
 
 // Append a delete button to the elements.
@@ -651,14 +548,12 @@ function insertDeleteButton(appendToTheseElements) {
             deleteButton.setAttribute('id', 'delete-btn-for' + appendToTheseElements.id);
           }
 
-          // TODO: Append the delete button to the anchor tag
-
           // Append the delete button to the element.
           this.appendChild(deleteButton);
-
         }
       );
     } else {
+
       // Create a delete button.
       var deleteButton = document.createElement('input');
       deleteButton.setAttribute('value', 'x');
@@ -681,10 +576,11 @@ function insertDeleteButton(appendToTheseElements) {
   });
 }
 
-// TODO Listen for clicks on the delete button.
+// Listen for deletion requests.
 function listenForDelete(deleteButton) {
 
-  console.log('Create listener on delete button');
+  // When the user clicks the delete button,
+  // mark the reference for deletion.
   deleteButton.addEventListener('click',
     function() {
       markReferenceForDeletion(deleteButton)
@@ -694,7 +590,7 @@ function listenForDelete(deleteButton) {
 }
 
 
-// TODO Save the reference items for deletion
+// Save the reference items for deletion
 // but only submit the removal requests with all the other edits.
 function markReferenceForDeletion(deleteButtonClicked) {
 
@@ -765,8 +661,6 @@ function updateFormValues() {
 }
 
 function submitEditForm() {
-
-  console.log('The save button was clicked. Submitting changes.');
 
   // Look for all the places where a user can request edits.
   var inputsAvailableToUser = document.querySelectorAll('input');
@@ -850,9 +744,6 @@ function submitEditForm() {
           editToThisReference['referenceLink'] = referenceLink;
         }
 
-        // TODO Save the reference id into editToThisReference form.
-        // TODO Save 'reference-form' as the key.
-
         // Find the reference id.
         // This will be how we determine which reference to update in our db.
         var referenceFormName = inputsAvailableToUser[i].parentNode.name;
@@ -885,7 +776,6 @@ function submitEditForm() {
   var postToThisURL = Flask.url_for('render_product_page');
 
   // Use a declaritive variable name.
-  console.log(editRequestsFromUser);
   var dataToPost = editRequestsFromUser;
 
   // Convert the JSON to a string.
@@ -904,22 +794,4 @@ function submitEditForm() {
   .catch(error => console.error('Error:', error))
   .then(response => displayProduct(response));
 
-  // TODO: When you resolve the promise for this submission,
-  // re-render the page.
-  // retrieveJSON(getSearchParams());
 }
-
-// TODO: Update the page to enter 'View Product' state.
-// Call the displayProduct() function.
-// Only call after the edits have been submitted
-// and changes are saved to the database.
-// Otherwise, the user will not get the latest data.
-
-
-
-
-// TODO: Create function to close the edit interface when the user is done.
-
-
-
-// TODO: Create generic page update function for interactive tasks.
