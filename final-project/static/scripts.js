@@ -307,6 +307,9 @@ function createNewReferenceForm(appendFormHere) {
   // Set the form class.
   formToAddReference.setAttribute('class', 'create-new-reference');
 
+  // Name the form.
+  formToAddReference.setAttribute('name', 'reference-form');
+
   // Create inputs
   var titleInput = document.createElement('input');
   var linkInput = document.createElement('input');
@@ -318,6 +321,10 @@ function createNewReferenceForm(appendFormHere) {
   // Set the input class.
   titleInput.setAttribute('class', 'new-reference-title')
   linkInput.setAttribute('class', 'new-reference-link')
+
+  // Set the input names.
+  titleInput.setAttribute('name', 'reference-title')
+  linkInput.setAttribute('name', 'reference-link')
 
   // Append the inputs to the form.
   formToAddReference.appendChild(titleInput);
