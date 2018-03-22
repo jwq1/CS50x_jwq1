@@ -298,6 +298,79 @@ function listenForEditRequests() {
 
 }
 
+// Create a form to add a new reference.
+function createNewReferenceForm(appendFormHere) {
+
+  // Add a new form.
+  var formToAddReference = document.createElement('form');
+
+  // Set the form class.
+  formToAddReference.setAttribute('class', 'create-new-reference');
+
+  // Create inputs
+  var titleInput = document.createElement('input');
+  var linkInput = document.createElement('input');
+
+  // Set the placeholder text.
+  titleInput.setAttribute('placeholder', 'Insert a Title');
+  linkInput.setAttribute('placeholder', 'Insert a Link');
+
+  // Set the input class.
+  titleInput.setAttribute('class', 'new-reference-title')
+  linkInput.setAttribute('class', 'new-reference-link')
+
+  // Append the inputs to the form.
+  formToAddReference.appendChild(titleInput);
+  formToAddReference.appendChild(linkInput);
+
+  // Append new form to page.
+  appendFormHere.appendChild(formToAddReference);
+
+  // Create instructions for the new reference item.
+  var instructionsToCreateReference = document.createElement('h5');
+  instructionsToCreateReference.textContent = 'Please add new references here.'
+
+  // Insert the instructions before the form.
+  appendFormHere.insertBefore(instructionsToCreateReference, formToAddReference);
+
+
+}
+
+// TODO: Create a button users can click to add a product reference.
+function createPlusButton() {
+
+  // TODO: Create a new input.
+
+    // TODO: Set the type to button.
+    // TODO: Set the value to '+'.
+    // TODO: Set the id to 'plus-button'.
+
+  // TODO: Return the button.
+
+}
+
+// TODO: Listen for clicks on this button.
+function listenForClicksOnPlusButton() {
+
+  // TODO: Select the 'plus-button'.
+
+  // TODO: Listen for clicks on the button.
+
+}
+
+// TODO: Remove the plus button (required when the edit form is closed).
+function removePlusButton() {
+
+  // TODO: Select the plus button.
+
+  // TODO: Remove the event listener.
+
+  // TODO: Remove the button from the page.
+
+
+}
+
+
 // Render "edit product info" UI.
 function renderEditProductForm() {
 
@@ -426,7 +499,11 @@ function renderEditProductForm() {
           // Add a delete button to the reference hyperlink.
           var referenceHref = value[i].querySelector('a');
           insertDeleteButton(referenceHref);
+
         }
+
+        // TODO: TEST
+        createNewReferenceForm(prodPageReferences);
 
       } else {
 

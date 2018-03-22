@@ -648,6 +648,15 @@ def update_database(requested_product_updates):
                         print(reference_id)
                         print('')
 
+                    # TODO: Check if this is a new reference
+
+                        # On the reference table
+
+                        # If reference does not have an id yet,
+                        # then the database should auto-add it.
+
+                        # Where the product id matches the specified product id.
+
                     # Check for "deleteReference" value
                     if (value == 'deleteReference') and (key == 'referenceTitle'):
 
