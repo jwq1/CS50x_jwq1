@@ -620,6 +620,9 @@ def update_database(requested_product_updates):
         # Loop through each reference
         for k, v in requested_product_updates.items():
 
+            # Save the product id
+            current_product_id = requested_product_updates['product-id']
+
             if (type(v) == dict) and (k == 'reference-form'):
 
                 print('')
@@ -631,38 +634,58 @@ def update_database(requested_product_updates):
                 # Loop through the titles and links for each reference.
                 for key, value in v.items():
 
-                    # Look for the reference's id.
-                    if (key == 'referenceId'):
+                    # TODO: Pause right here and save the
+                    # referenceId,
+                    # referenceTitle,
+                    # and referenceLink
+                    if key == 'referenceId':
+                       reference_id = value
+                    elif key == 'referenceTitle':
+                        reference_title = value
+                    else:
+                        reference_link = value
 
-                        print('')
-                        print('Key = ', key)
-                        print('Value =', value)
-                        print('')
+                print("\nreference id = ", reference_id, "\n")
+                print("\nreference title = ", reference_title, "\n")
+                print("\nreference link = ", reference_link, "\n")
 
-                        # Grab the reference id
-                        look_for_reference_id = re.search('\d+', value)
+                    # Then when all of those are saved
+                    # exit this for loop.
 
-                        reference_id = look_for_reference_id.group()
-                        print('')
-                        print('Parsing only the reference id...')
-                        print(reference_id)
-                        print('')
+                    # Then Insert into, update, or delete from the database.
+                    # Otherwise I cannot check for combinations of reference values.
 
-                    # TODO: Check if this is a new reference
+                    # e.g. reference id is null, but there are titles and links.
+                    # e.g. reference id is present, and the user wants to delete the reference.
+                    # e.g. reference id is present, and the user submitted edits for title or link.
 
-                        # On the reference table
+                if reference_id == "":
 
-                        # If reference does not have an id yet,
-                        # then the database should auto-add it.
+                    print('\nrecognized new reference\n')
 
-                        # Where the product id matches the specified product id.
+                    # Create a new reference.
+                    number_of_updates = db.execute("""
+                        INSERT INTO research (title, link, product_id)
+                        VALUES (:title, :link, :product_id)"""
+                        , title=reference_title
+                        , link=reference_link
+                        , product_id=current_product_id)
+
+                else:
+                    # Grab the reference id
+                    look_for_reference_id = re.search('\d+', reference_id)
+
+                    reference_id = look_for_reference_id.group()
+                    print('')
+                    print('Parsing only the reference id...')
+                    print(reference_id)
+                    print('')
+
 
                     # Check for "deleteReference" value
-                    if (value == 'deleteReference') and (key == 'referenceTitle'):
+                    if (reference_title == 'deleteReference') or (reference_link == 'deleteReference'):
 
-                        print('')
-                        print('About to delete reference')
-                        print('')
+                        print('\nrecognized delete request\n')
 
                         # Delete the reference with a matching ref-id and product-id
                         number_of_updates = db.execute("""
@@ -677,46 +700,40 @@ def update_database(requested_product_updates):
                         else:
                             print('The reference was not deleted')
 
-                    # If the value is 'deleteReference' and we are on the link iteration,
-                    # then this reference data has already been deleted.
-                    elif (value == 'deleteReference') and (key == 'referenceLink'):
-
-                        # Skip this iteration.
-                        continue
-
                     # Check if an update was made to the reference title.
-                    elif (key == 'referenceTitle'):
+                    else:
 
-                        print('')
-                        print("Updating reference title")
-                        print('')
+                        print('\nrecognized update request\n')
 
-                        # Update the reference title
-                        number_of_updates = db.execute("""
-                            UPDATE research
-                            SET title=:title
-                            WHERE research.id=reference_id
-                            AND research.product_id=product_id"""
-                            , title=value
-                            , reference_id=reference_id
-                            , product_id=requested_product_edits['product=id'])
+                        # Check for reference title updates.
+                        if reference_title != "":
 
-                    # Check if an update was made to the reference link.
-                    elif (key == 'referenceLink'):
+                            print('\nrecognized title\n')
 
-                        print('')
-                        print("Updating reference link")
-                        print('')
+                            # Update the reference title
+                            number_of_updates = db.execute("""
+                                UPDATE research
+                                SET title=:title
+                                WHERE research.id=reference_id
+                                AND research.product_id=product_id"""
+                                , title=reference_title
+                                , reference_id=reference_id
+                                , product_id=current_product_id)
 
-                        # Update the reference link
-                        number_of_updates = db.execute("""
-                            UPDATE research
-                            SET link=:link
-                            WHERE research.id=reference_id
-                            AND research.product_id=product_id"""
-                            , link=value
-                            , reference_id=reference_id
-                            , product_id=requested_product_edits['product=id'])
+                        # Check if an update was made to the reference link.
+                        elif reference_link != "":
+
+                            print('\nrecognized link\n')
+
+                            # Update the reference link
+                            number_of_updates = db.execute("""
+                                UPDATE research
+                                SET link=:link
+                                WHERE research.id=reference_id
+                                AND research.product_id=product_id"""
+                                , link=reference_link
+                                , reference_id=reference_id
+                                , product_id=current_product_id)
 
 
 
