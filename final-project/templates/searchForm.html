@@ -8,11 +8,12 @@
 
 {% block main %}
     <header>
-        <h1>Search for a Product</h1>
+        <h1>Search</h1>
     </header>
     <div>
+        <h4>Please enter in a product name:</h4>
         <form action="{{ url_for('search') }}" method="post">
-            <input autocomplete="off" autofocus class="form-control" name="product_name" placeholder="e.g. Macbook" type="text"/>
+            <input autocomplete="off" autofocus class="form-control" name="product_name" placeholder="product name" type="text"/>
             <button class="btn btn-default" type="submit">Submit</button>
         </form>
     </div>
