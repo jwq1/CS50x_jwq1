@@ -111,9 +111,6 @@ def category():
     # TODO
     return apology("TODO")
 
-
-
-
 @app.route("/new", methods=["GET", "POST"])
 def new():
     """Add new product"""
@@ -188,10 +185,6 @@ def new():
             if new_product_row == None:
                 return apology("Something went wrong. Please try again later.")
 
-
-        # TODO: Append these parameters to the end of
-        # Actual: ide50-jwq11.cs50.io:8080/product
-        # Expected: ide50-jwq11.cs50.io:8080/product?product=crew sweatshirt
         # Put input, in the form of a URL query parameter.
         def make_parameter(query_input):
             # Format the parameters to serve as query.
@@ -467,32 +460,6 @@ def search_category():
         users_selected_category=users_selected_category)
 
 
-# TODO: Add references to product research
-@app.route("/add_reference")
-def add_reference():
-    """Add reference(s) to product research."""
-
-    # Tell the user their reference was successfully added.
-    return apology("TODO")
-
-
-# TODO: re-write update function
-@app.route("/update")
-def update():
-    """Update product search page and/or the specific product page when new content added"""
-
-    # TODO: ensure parameters are present
-
-    # TODO: ensure parameters are in the correct format
-
-    # TODO: Find the products which match the search.
-
-    # TODO: Render the list of products
-
-    # TODO
-    return apology("TODO Update")
-
-
 @app.route("/get-product-json")
 # @login_required
 def getProductJSON():
@@ -567,13 +534,6 @@ def parse_posted_json():
 # PART 2: Update the database.
 def update_database(requested_product_updates):
 
-    print('')
-    print('Request to update the database was heard')
-    print('')
-    print('here are the requested updates')
-    print(requested_product_updates)
-    print('')
-
     # Update only the information our user asked to change.
     if not requested_product_updates['product-id']:
         return apology("Unsure which product to update")
@@ -606,16 +566,10 @@ def update_database(requested_product_updates):
             , description=requested_product_updates['description-form']
             , product_id=requested_product_updates['product-id'])
 
-    # # TODO: Check for references in requested_product_updates
+    # Check for references in requested_product_updates
     if 'reference-form' in requested_product_updates:
 
         print("references found in product updates")
-
-        # TODO store the reference-form items
-
-
-        # BUG: The following code loops through all the edits returned, not only the reference items.
-        # I thinkkk this means that in certain circumstances v is a string.
 
         # Loop through each reference
         for k, v in requested_product_updates.items():
@@ -634,10 +588,6 @@ def update_database(requested_product_updates):
                 # Loop through the titles and links for each reference.
                 for key, value in v.items():
 
-                    # TODO: Pause right here and save the
-                    # referenceId,
-                    # referenceTitle,
-                    # and referenceLink
                     if key == 'referenceId':
                        reference_id = value
                     elif key == 'referenceTitle':
@@ -645,23 +595,7 @@ def update_database(requested_product_updates):
                     else:
                         reference_link = value
 
-                print("\nreference id = ", reference_id, "\n")
-                print("\nreference title = ", reference_title, "\n")
-                print("\nreference link = ", reference_link, "\n")
-
-                    # Then when all of those are saved
-                    # exit this for loop.
-
-                    # Then Insert into, update, or delete from the database.
-                    # Otherwise I cannot check for combinations of reference values.
-
-                    # e.g. reference id is null, but there are titles and links.
-                    # e.g. reference id is present, and the user wants to delete the reference.
-                    # e.g. reference id is present, and the user submitted edits for title or link.
-
                 if reference_id == "":
-
-                    print('\nrecognized new reference\n')
 
                     # Create a new reference.
                     number_of_updates = db.execute("""
@@ -676,16 +610,10 @@ def update_database(requested_product_updates):
                     look_for_reference_id = re.search('\d+', reference_id)
 
                     reference_id = look_for_reference_id.group()
-                    print('')
-                    print('Parsing only the reference id...')
-                    print(reference_id)
-                    print('')
 
 
                     # Check for "deleteReference" value
                     if (reference_title == 'deleteReference') or (reference_link == 'deleteReference'):
-
-                        print('\nrecognized delete request\n')
 
                         # Delete the reference with a matching ref-id and product-id
                         number_of_updates = db.execute("""
@@ -695,20 +623,11 @@ def update_database(requested_product_updates):
                             , product_id=requested_product_updates['product-id']
                             , reference_id=reference_id)
 
-                        if (number_of_updates > 0):
-                            print('The reference was successfully deleted')
-                        else:
-                            print('The reference was not deleted')
-
                     # Check if an update was made to the reference title.
                     else:
 
-                        print('\nrecognized update request\n')
-
                         # Check for reference title updates.
                         if reference_title != "":
-
-                            print('\nrecognized title\n')
 
                             # Update the reference title
                             number_of_updates = db.execute("""
@@ -723,8 +642,6 @@ def update_database(requested_product_updates):
                         # Check if an update was made to the reference link.
                         elif reference_link != "":
 
-                            print('\nrecognized link\n')
-
                             # Update the reference link
                             number_of_updates = db.execute("""
                                 UPDATE research
@@ -734,14 +651,6 @@ def update_database(requested_product_updates):
                                 , link=reference_link
                                 , reference_id=reference_id
                                 , product_id=current_product_id)
-
-
-
-
-    # TODO: update the references
-    # TODO: update product image
-    # TODO: update the characteristics
-    # TODO: update the product link (e.g. LLBean's website)
 
 
 # PART 3: Return the new product information.
@@ -820,9 +729,6 @@ def render_product_page():
 
         else:
             # Update the database with those updates.
-            print('')
-            print('calling update_database because edits were found')
-            print('')
             update_database(client_product_update)
 
         # Get the new information for the product.
