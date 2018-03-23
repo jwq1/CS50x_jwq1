@@ -47,7 +47,6 @@
                     <div class="collapse navbar-collapse" id="navbar">
                         {% if session.user_id %}
                             <ul class="nav navbar-nav">
-                                <li><a href="{{ url_for('category') }}">Categories</a></li>
                                 <li><a href="{{ url_for('new') }}">Add Product</a></li>
                                 <li><a href="{{ url_for('search') }}">Search</a></li>
                                 <li><a href="{{ url_for('password') }}">Reset Password</a></li>
