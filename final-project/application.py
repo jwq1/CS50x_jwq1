@@ -400,22 +400,33 @@ def register():
 
 
 # TODO: Search for products.
-@app.route("/search")
+@app.route("/search", methods=['POST', 'GET'])
 def search():
     """Search for products that match query."""
 
     # Keep the user logged in.
     user_id = session.get("user_id")
 
-    # Get the product to search from the user.
-    product_search = request.args.get("search")
+    if request.method == "GET":
 
-    # Ensure a product was received from the user.
-    if not product_search:
-        return apology("Please specify a product")
+        # Get the product to search from the user.
+        product_search = request.args.get("search")
+
+        # Ensure a product was received from the user.
+        if not product_search:
+            return render_template("searchForm.html")
+
+    if request.method == "POST":
+
+        # Get the product to search from the user
+        product_search = request.form.get("product_name")
+
+        # Ensure a product was received from the user.
+        if not product_search:
+            return apology("Please specify a product")
 
     # Find products from criteria
-    product_info = find_product(product_search)
+    product_info = search_products(product_search)
 
     # Ensure a product was found in the database
     if not product_info:
