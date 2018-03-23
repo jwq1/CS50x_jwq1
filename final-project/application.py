@@ -142,11 +142,13 @@ def new():
         description=request.form.get("description")
         image=request.form.get("image")
         brand=request.form.get("brand")
-        priceRaw=request.form.get("price")
+        price_raw=request.form.get("price")
 
         # Stip dollar symbols from the price.
-        if "$" in priceRaw:
-            price=priceRaw.strip("$")
+        if "$" in price_raw:
+            price_formatted=price_raw.strip("$")
+        else:
+            price_formatted=price_raw
 
         # Save this product to the database.
         def save_product():
@@ -169,13 +171,13 @@ def new():
                         price)
                         VALUES (NULL, 1, :product_name,
                         :link, :description, :image,
-                        :brand, :price)""",
+                        :brand, :prod_price)""",
                         product_name=product_name,
                         link=link,
                         description=description,
                         image=image,
                         brand=brand,
-                        price=price)
+                        prod_price=price_formatted)
 
             except RuntimeError:
                 # If db.execute raises an error, return a help message.
