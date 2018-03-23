@@ -314,9 +314,6 @@ function renderEditProductForm() {
     // Select description.
     var prodPageDescription = document.querySelector('.description');
 
-    // Select characteristics
-    var prodPageCharacteristics = document.querySelector('.characteristics');
-
     // Select references.
     // Select ordered list of references.
     var prodPageReferences = document.querySelector('.references-list');
@@ -332,7 +329,6 @@ function renderEditProductForm() {
     prodPageElements.set('image', prodPageImage);
     prodPageElements.set('price', prodPagePrice);
     prodPageElements.set('description', prodPageDescription);
-    prodPageElements.set('characteristics', prodPageCharacteristics);
     prodPageElements.set('references', referenceList);
 
 
