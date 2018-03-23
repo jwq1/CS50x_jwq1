@@ -6,6 +6,8 @@
 // Enforce strict js code conventions
 "use strict";
 
+
+
 // Check what kind of content to load when the document is ready.
 $(function(){
 
@@ -21,6 +23,7 @@ $(function(){
 
     // Listen for clicks.
     editButton.addEventListener('click', renderEditInterface, {once:false});
+
   }
 
   // If there are product thumbnails on the page, then make them clickable.
@@ -340,10 +343,8 @@ function renderEditProductForm() {
       var formElement = document.createElement('form');
       // Name the form.
       formElement.setAttribute('name', key + '-form');
-      // Set the method to POST.
-      formElement.setAttribute('method', 'POST');
-      // POST to the url for editing the product.
-      formElement.setAttribute('action', Flask.url_for('render_product_page'));
+      // Prevent page refresh when the user clicks the enter key.
+      formElement.setAttribute('onsubmit', 'event.preventDefault();');
 
       // On the references form, loop through all the reference items.
       if (key === 'references') {
@@ -355,10 +356,8 @@ function renderEditProductForm() {
           var formElement = document.createElement('form');
           // Name the form.
           formElement.setAttribute('name', 'reference-form');
-          // Set the method to POST.
-          formElement.setAttribute('method', 'POST');
-          // POST to the url for editing the product.
-          formElement.setAttribute('action', Flask.url_for('render_product_page'));
+          // Prevent page refresh when the user clicks the enter key.
+          formElement.setAttribute('onsubmit', 'event.preventDefault();');
 
           // Create an input for the title of this reference.
           var titleInput = document.createElement('input');
@@ -630,15 +629,17 @@ function listenForSave() {
 
   // Listen for clicks on the Enter key
   // Find the edit inputs
-  var textFieldsWithEdits = document.querySelector('.product-edit-input');
-  // Listen for when the user presses the Enter key
-  textFieldsWithEdits.addEventListener('keyup', function(event) {
-    event.preventDefault();
-    if (event.keyCode === 13) {
-        saveButton.click();
-    }
-  });
+  var textFieldsWithEdits = document.querySelectorAll('.product-edit-input');
 
+  for (var i = 0; i < textFieldsWithEdits.length; i++) {
+    // Listen for when the user presses the Enter key
+    textFieldsWithEdits[i].addEventListener('keyup', function(event) {
+      event.preventDefault();
+      if (event.keyCode === 13) {
+          saveButton.click();
+      }
+    });
+  }
 }
 
 // Update the form values based on the user's input.
