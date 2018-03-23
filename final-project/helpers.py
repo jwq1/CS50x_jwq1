@@ -175,3 +175,24 @@ def get_reference(product_with_references):
         reference_links.append(reference_article["link"])
 
     return (number_of_references, reference_ids, reference_titles, reference_links)
+
+
+# Find our record for this product
+def search_products(product_name_requested):
+
+    # Create a parameter to search our database
+    # for any records, which contain the product name.
+    product_parameter = "%" + str(product_name_requested) + "%"
+
+    #Search the database for the requested product.
+    product_data = db.execute("""
+        SELECT *
+        FROM products
+        WHERE product_name
+        LIKE :product_name
+        LIMIT 30""",
+        product_name=product_parameter)
+
+
+    # Return information about the requested product.
+    return product_data

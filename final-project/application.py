@@ -415,7 +415,7 @@ def search():
         return apology("Please specify a product")
 
     # Find products from criteria
-    product_info = find_product(product_search)
+    product_info = search_products(product_search)
 
     # Ensure a product was found in the database
     if not product_info:
