@@ -6,24 +6,18 @@
 
     <head>
 
-        <!--Finance Application Imports-->
-
         <!-- https://developer.mozilla.org/en-US/docs/Web/HTML/Element/meta -->
         <meta charset="utf-8"/>
         <meta content="initial-scale=1, width=device-width" name="viewport"/>
 
+        <!--Link to style sheet-->
         <link href="{{ url_for('static', filename='styles.css') }}" rel="stylesheet"/>
-
-
-        <!--Map Application Imports-->
 
         <!-- http://getbootstrap.com/ -->
         <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet"/>
 
-
         <!-- http://stewartjpark.com/Flask-JSGlue/ -->
         {{ JSGlue.include() }}
-
 
         <title>Final Project: {% block title %}{% endblock %}</title>
 
@@ -42,7 +36,7 @@
                             <span class="icon-bar"></span>
                             <span class="icon-bar"></span>
                         </button>
-                        <a class="navbar-brand" href="{{ url_for('index') }}"><span class="red">JWQ1 Final Project</span></a>
+                        <a class="navbar-brand" href="{{ url_for('index') }}"><span class="green">Responsible Consumer Research</span></a>
                     </div>
                     <div class="collapse navbar-collapse" id="navbar">
                         {% if session.user_id %}
@@ -63,15 +57,6 @@
                     </div>
                 </div>
             </nav>
-
-            <!--TODO: implement helper messages upon success or failure-->
-            {% if get_flashed_messages() %}
-                <header>
-                    <div class="alert alert-info" role="alert">
-                        {{ get_flashed_messages() | join(" ") }}
-                    </div>
-                </header>
-            {% endif %}
 
             <main>
                 {% block main %}{% endblock %}
