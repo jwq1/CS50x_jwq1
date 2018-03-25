@@ -13,7 +13,7 @@
     <div>
         <h4>Please enter in a product name:</h4>
         <form action="{{ url_for('search') }}" method="post">
-            <input autocomplete="off" autofocus class="form-control" name="product_name" placeholder="product name" type="text"/>
+            <input autocomplete="off" autofocus class="form-control" name="product_name" placeholder="product name" type="search" required/>
             <button class="btn btn-default" type="submit">Submit</button>
         </form>
     </div>

@@ -15,7 +15,7 @@
     <div>
         <p>Search again:</p>
         <form action="{{ url_for('search') }}" method="post">
-            <input autocomplete="off" autofocus class="form-control" name="product_name" placeholder="e.g. Macbook" type="text"/>
+            <input autocomplete="off" autofocus class="form-control" name="product_name" placeholder="e.g. Macbook" type="search" required/>
             <button class="btn btn-default" type="submit">Submit</button>
         </form>
     </div>
