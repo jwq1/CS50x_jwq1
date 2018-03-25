@@ -1,6 +1,11 @@
 /*Final Project | styles | (jwq1)*/
 
 
+.clickable-products
+{
+    padding-bottom: 24px;
+}
+
 .marked-for-deletion
 {
     color: red;
@@ -28,9 +33,14 @@
 }
 
 /* colors for navbar */
-.navbar-default .navbar-brand .red
+.navbar-header
 {
-    color: #ea433b;
+    color: #fbc5a8;
+}
+
+.navbar-brand .green
+{
+    color: #395357;
 }
 
 main .form-control
