@@ -12,10 +12,10 @@
 
 {% block main %}
 
-    <div>
+    <div class="search-page">
         <p>Search again:</p>
         <form action="{{ url_for('search') }}" method="post">
-            <input autocomplete="off" autofocus class="form-control" name="product_name" placeholder="e.g. Macbook" type="search" required/>
+            <input autocomplete="off" autofocus class="form-control" name="product_name" placeholder="search by product name" type="search" required/>
             <button class="btn btn-default" type="submit">Submit</button>
         </form>
     </div>
@@ -28,9 +28,9 @@
 
     <div id=products_found>
         {% for product in product_info %}
-            <img src={{product["image"]}} height=250>
-            <div id=product_name>
-                {{product["product_name"]}}
+            <div id={{product["id"]}} class="clickable-products">
+                <img src={{product["image"]}} height=250>
+                <h5>{{product["product_name"]}}</h5>
             </div>
         {% endfor %}
     </div>

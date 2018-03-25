@@ -113,8 +113,11 @@ function renderProductPage(productIdentificationNumber) {
     id: productIdentificationNumber
   }
 
+  // Generate the URL for the soon to be rendered product.
+  var productUrl = Flask.url_for("render_product_page", parameters);
+
   // Render the product page with the selected product name and id.
-  window.location.replace(Flask.url_for("render_product_page", parameters));
+  window.location.replace(productUrl);
 }
 
 
