@@ -272,12 +272,16 @@ function createNewReferenceForm(appendFormHere) {
   linkInput.setAttribute('placeholder', 'Insert a Link');
 
   // Set the input class.
-  titleInput.setAttribute('class', 'new-reference-title')
-  linkInput.setAttribute('class', 'new-reference-link')
+  titleInput.setAttribute('class', 'new-reference-title');
+  linkInput.setAttribute('class', 'new-reference-link');
 
   // Set the input names.
-  titleInput.setAttribute('name', 'reference-title')
-  linkInput.setAttribute('name', 'reference-link')
+  titleInput.setAttribute('name', 'reference-title');
+  linkInput.setAttribute('name', 'reference-link');
+
+  // Set input types.
+  titleInput.setAttribute('type', 'text');
+  linkInput.setAttribute('type', 'url');
 
   // Append the inputs to the form.
   formToAddReference.appendChild(titleInput);
@@ -366,6 +370,8 @@ function renderEditProductForm() {
           titleInput.setAttribute('placeholder', value[i].firstChild.innerText);
           // Give the input a class
           titleInput.setAttribute('class', 'product-edit-input');
+          // Set input type.
+          titleInput.setAttribute('type', 'text');
 
           // Label the input field with an instructive title.
           // Create a label element.
@@ -385,6 +391,8 @@ function renderEditProductForm() {
           linkInput.setAttribute('label', 'Link');
           // Give the input a class
           linkInput.setAttribute('class', 'product-edit-input');
+          // Set the input type.
+          linkInput.setAttribute('type', 'url');
 
           // Label the input field with an instructive title.
           // Create a label element.
@@ -422,6 +430,8 @@ function renderEditProductForm() {
         inputElement.setAttribute('name', key + '-input');
         // Give the input a class
         inputElement.setAttribute('class', 'product-edit-input');
+        // Set the input type.
+        inputElement.setAttribute('type', 'text');
 
         // Label the input field with an instructive title.
         // Create a label element.
@@ -435,6 +445,9 @@ function renderEditProductForm() {
         if (key === 'image') {
           // Provide placeholder text of current src.
           inputElement.setAttribute('placeholder', value.src);
+
+          // Set the input type.
+          inputElement.setAttribute('type', 'url');
 
         // Otherwise, on all other elements use the innerText as a placeholder.
         } else {
