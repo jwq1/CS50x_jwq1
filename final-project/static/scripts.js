@@ -185,6 +185,16 @@ function displayProduct(jsonOfProductInfo) {
   // Check for references.
   if (productJsonInfo['reference_titles'].length > 0) {
 
+    // Find the reference empty state
+    var referenceEmptyState = document.querySelector('#reference-empty-state');
+
+    // Check if an empty state exists.
+    if (!!(referenceEmptyState)) {
+
+      // Remove the empty state.
+      referenceEmptyState.parentNode.removeChild(referenceEmptyState);
+    }
+
     // Loop through all references for product.
     for (var i = 0; i < productJsonInfo['reference_titles'].length; i++) {
 
@@ -296,6 +306,12 @@ function createNewReferenceForm(appendFormHere) {
 
   // Insert the instructions before the form.
   appendFormHere.insertBefore(instructionsToCreateReference, formToAddReference);
+
+  // Select the reference empty state text.
+  var refEmptyStateText = document.querySelector('#reference-empty-state');
+  // Remove the reference empty state text.
+  refEmptyStateText.parentNode.removeChild(refEmptyStateText);
+
 }
 
 
